@@ -36,6 +36,12 @@ Chinese example:
 请使用 $support-triage 处理下面这个客户机器人问题。
 ```
 
+If you invoke it without case details, Hermes should return a compact intake form first:
+
+```text
+/support-triage
+```
+
 ## Recommended Workflow
 
 1. Paste the customer message and case background into Hermes.
