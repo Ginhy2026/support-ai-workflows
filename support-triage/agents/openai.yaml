@@ -1,0 +1,4 @@
+interface:
+  display_name: "Support Triage"
+  short_description: "Triage overseas robot support cases and draft customer replies."
+  default_prompt: "Use $support-triage to triage this customer robot issue and prepare Markdown outputs for Feishu, WhatsApp, email, and FAQ."
