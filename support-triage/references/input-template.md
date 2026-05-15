@@ -96,3 +96,31 @@ Use this when the user asks for a more complete intake form:
 
 飞书知识问答结果：
 ```
+
+## Targeted Troubleshooting Info Template
+
+Use this when the visible case is a troubleshooting issue but the first screenshot/message lacks key evidence:
+
+```markdown
+为了进一步确认问题，请客户补充：
+
+1. 故障发生时间和频率：是每次任务结束都出现，还是偶发？
+2. 完整视频：请拍到故障前 5-10 秒、故障发生过程、机器人提示音/屏幕/运动状态。
+3. 近距离照片或截图：异常部件、错误码、屏幕提示、现场环境。
+4. 机器人信息：SN、软件版本、地图/任务名称。
+5. 最近变化：是否刚做过维修、更换部件、升级、移动设备、调整现场环境。
+6. 已尝试的基础排查：是否重启机器人、重新执行任务、清洁相关部件、检查是否有异物或松动。
+```
+
+## Lightweight Consultation Info Template
+
+Use this when the case is only a feature or usage consultation:
+
+```markdown
+为了更准确查询资料，请补充：
+
+1. 产品/机型：
+2. 使用场景：
+3. 想确认的功能或限制：
+4. 如果和版本有关，请补充软件版本：
+```

@@ -19,15 +19,23 @@ Use this skill to turn messy customer support messages into structured Markdown 
 ## Workflow
 
 1. If the user invokes `/support-triage`, `$support-triage`, or "use support-triage" with no customer case content, output only the compact intake template from `references/input-template.md`. Do not triage, ask follow-up questions, or explain the workflow unless the user asks.
-2. Identify whether the request is first-pass or second-pass:
+2. If the user provides only a WhatsApp/Feishu screenshot, video screenshot, pasted chat, or partial customer message, first read the visible text and observable media clues, then classify the case as one of:
+   - Consultation: feature, usage, configuration, policy, compatibility, or "how to" question without a concrete malfunction.
+   - Troubleshooting: abnormal behavior, error, noise, failure, repeated issue, performance degradation, physical damage, or customer asking for cause/temporary workaround.
+   - Escalation-sensitive: safety risk, repeated failures on the same robot, key account impact, severe business interruption, or multiple unresolved symptoms.
+3. Use adaptive intake instead of asking for every field:
+   - For consultation, do not ask for SN, failure time, location, video, or logs unless needed to identify product/version. Generate Feishu knowledge-base query questions directly from the visible question and known product context.
+   - For troubleshooting, output an initial judgment plus a targeted customer information request. Ask only for fields needed for the likely module: fault time, frequency, complete symptom video, close-up screenshot/error code, robot SN/version, recent changes, and basic checks already tried such as restart, cleaning, repositioning, or reattempting the task.
+   - For escalation-sensitive cases, recommend internal escalation while still drafting a customer-facing request for evidence.
+4. Identify whether the request is first-pass or second-pass:
    - First-pass: no Feishu knowledge-base answer is provided.
    - Second-pass: the user includes Feishu knowledge-base answer content or asks to整理/生成正式回复 after Feishu lookup.
-3. Preserve the customer's original language and infer it if not explicitly provided. Customer-facing drafts default to the customer's language. Internal notes default to Chinese.
-4. Extract or infer: customer original text, customer language, customer background, product/model, scenario, images/logs/error codes, user's preliminary judgment, and Feishu answer if present.
-5. Classify the issue type and affected product/module. Prefer conservative categories such as hardware, software/app, cloud/platform, network, map/navigation, task/dispatch, charging/power, account/permission, installation/configuration, operation guidance, bug/regression, or unknown.
-6. Separate facts, assumptions, and missing information. Never present unsupported internal guesses as customer-facing conclusions.
-7. For first-pass output, generate a precise Feishu knowledge-base query question and an initial customer reply draft.
-8. For second-pass output, organize the Feishu answer, produce the final technical judgment, draft the customer response in the customer's language, and create Chinese internal notes, escalation text, and FAQ draft when appropriate.
+5. Preserve the customer's original language and infer it if not explicitly provided. Customer-facing drafts default to the customer's language. Internal notes default to Chinese.
+6. Extract or infer: customer original text, customer language, customer background, product/model, scenario, images/logs/error codes, user's preliminary judgment, and Feishu answer if present.
+7. Classify the issue type and affected product/module. Prefer conservative categories such as hardware, software/app, cloud/platform, network, map/navigation, task/dispatch, charging/power, account/permission, installation/configuration, operation guidance, bug/regression, or unknown.
+8. Separate facts, assumptions, and missing information. Never present unsupported internal guesses as customer-facing conclusions.
+9. For first-pass output, generate a precise Feishu knowledge-base query question and an initial customer reply draft.
+10. For second-pass output, organize the Feishu answer, produce the final technical judgment, draft the customer response in the customer's language, and create Chinese internal notes, escalation text, and FAQ draft when appropriate.
 
 ## Customer Reply Rules
 

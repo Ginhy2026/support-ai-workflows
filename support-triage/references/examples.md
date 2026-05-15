@@ -90,6 +90,74 @@ Bonjour, le robot affiche E203 apres la mise a jour et ne demarre plus les tache
 E203 通常表示任务服务初始化失败或配置未同步。建议检查网络连接、重新登录账号、同步配置；若升级后持续出现，需收集 SN、版本号、升级时间、日志并升级研发确认。
 ```
 
+## Example 3: Screenshot/Chat First-Pass, French Troubleshooting
+
+### Input
+
+```markdown
+用户上传 WhatsApp 截图：
+客户发来一个 6 秒机器人视频，并用法语说明：
+"Bonjour, un robot fait un bruit fort et anormal lors de l'elimination des traces en fin de taches. Savez-vous d'ou vient le probleme ? Avez-vous une solution temporaire pour reduire le bruit ?"
+
+后续补充：
+"J'ai rempli un formulaire. Ce robot connait de nombreuses pannes en avalanche. Il a deja eu un changement de CT4 il y a a peine 1 mois. C'est aussi ce CC1 qui a le probleme d'ecran retourne. Et il a aussi le probleme de la raclette decalee sur la droite. Cela fait beaucoup de problemes pour un seul robot."
+```
+
+### Output
+
+```markdown
+# 技术支持分诊 - 截图/聊天首轮
+
+## 1. 从截图/聊天中提取到的信息
+- 客户语言：法语
+- 客户/项目：Evotion (SAV)
+- 产品/机型：清洁类机器人，具体型号待确认
+- 可见现象：客户反馈任务结束“消除痕迹”阶段出现强烈异常噪音；视频仅能看到机器人背面和短视频封面，无法确认噪音来源。
+- 客户诉求：询问问题来源，以及是否有临时方案降低噪音。
+- 已知历史：同一机器人近期问题较多，约 1 个月前更换过 CT4；还存在屏幕倒置、右侧刮水组件偏移等问题。
+
+## 2. 问题形态判断
+- 形态：升级敏感类 + 排障类
+- 理由：异常噪音与机械/清洁组件相关，且同一机器人连续出现多个问题并刚更换过部件，可能需要内部技术团队结合维修历史判断。
+- 是否需要完整输入模板：不需要一开始让客户填写完整模板；应先索要针对性证据。
+
+## 3. 一句话问题摘要
+法国客户反馈同一清洁机器人在任务结束清洁痕迹处理阶段出现强烈异常噪音，并且该机器人近期已连续出现多项故障。
+
+## 4. 当前可以直接问飞书知识问答的问题
+1. 清洁机器人在任务结束的消除痕迹/刮水/清洁收尾阶段出现强烈异常噪音，常见机械原因和临时降噪排查方法是什么？
+2. 清洁机器人更换 CT4 后仍出现异常噪音、屏幕倒置、刮水组件偏移等连续故障，应该收集哪些信息并如何判断是否需要升级？
+3. 清洁机器人刮水组件偏移到右侧时，是否可能导致任务结束阶段异响或清洁异常？推荐排查步骤是什么？
+
+## 5. 需要客户补充的信息
+- 机器人 SN、型号和当前软件版本。
+- 完整视频：请拍到任务结束前、异常噪音出现过程、机器人底部/刮水组件动作和屏幕提示。
+- 噪音发生频率：每次任务结束都会出现，还是偶发。
+- 异常噪音具体位置：底盘、刷盘、刮水组件、吸水电机、轮组或其他位置。
+- 最近维修记录：CT4 更换日期、更换原因、更换后是否立刻出现噪音。
+- 已做基础排查：是否重启、检查刮水组件是否偏移/松动、是否有异物卡住、是否清洁过底部组件。
+
+## 6. 是否需要内部升级
+- 判断：建议升级或至少提前同步内部技术支持。
+- 理由：同一机器人短期内连续出现多项异常，且涉及更换 CT4 后的历史维修背景，单靠客户现场描述较难判断。
+
+## 7. 给客户的初步回复草稿
+Bonjour, merci pour ces informations.
+
+Comme ce robot a deja eu plusieurs problemes recents, nous allons verifier ce cas avec attention. Pour identifier l'origine du bruit, pourriez-vous nous envoyer les elements suivants ?
+
+1. Le numero de serie du robot, le modele et la version logicielle actuelle.
+2. Une video complete montrant la fin de la tache, le moment ou le bruit apparait, l'ecran du robot et si possible la partie inferieure / la raclette.
+3. La frequence du probleme : est-ce que le bruit apparait a chaque fin de tache ou seulement de temps en temps ?
+4. Les controles deja effectues : redemarrage du robot, verification de la raclette, presence eventuelle d'un objet bloque ou d'une piece desserree.
+
+En attendant, nous recommandons de verifier qu'aucun objet n'est coince autour de la raclette ou sous le robot, et d'eviter de continuer les taches si le bruit devient plus fort ou si une piece semble mal positionnee. Apres reception des informations, nous confirmerons les prochaines etapes avec l'equipe technique.
+
+## 8. 是否建议后续沉淀为 FAQ
+- 判断：建议沉淀。
+- 建议 FAQ 主题：清洁机器人任务结束阶段异常噪音的初步排查和升级信息收集。
+```
+
 ### Output
 
 ```markdown

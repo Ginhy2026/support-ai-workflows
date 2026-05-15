@@ -47,6 +47,51 @@ Use when no Feishu knowledge-base result is provided.
 - 沉淀价值：
 ```
 
+## Screenshot Or Chat First-Pass Output
+
+Use when the user provides a WhatsApp/Feishu screenshot, video screenshot, or short pasted chat instead of a filled form.
+
+```markdown
+# 技术支持分诊 - 截图/聊天首轮
+
+## 1. 从截图/聊天中提取到的信息
+- 客户语言：
+- 客户/项目：
+- 产品/机型：
+- 可见现象：
+- 客户诉求：
+- 已知历史：
+
+## 2. 问题形态判断
+- 形态：咨询类 / 排障类 / 升级敏感类
+- 理由：
+- 是否需要完整输入模板：是 / 否
+
+## 3. 一句话问题摘要
+
+## 4. 当前可以直接问飞书知识问答的问题
+1. 
+2. 
+3. 
+
+## 5. 需要客户补充的信息
+> 咨询类只列最少必要信息；排障类列针对性排障信息。
+
+- 
+
+## 6. 是否需要内部升级
+- 判断：
+- 理由：
+
+## 7. 给客户的初步回复草稿
+> 使用客户原语言；排障类可包含基础排查和补充信息请求。
+
+
+## 8. 是否建议后续沉淀为 FAQ
+- 判断：
+- 建议 FAQ 主题：
+```
+
 ## Second-Pass Output
 
 Use when Feishu knowledge-base result is provided.
