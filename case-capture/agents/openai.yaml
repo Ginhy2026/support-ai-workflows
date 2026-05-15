@@ -1,0 +1,4 @@
+interface:
+  display_name: "Case Capture"
+  short_description: "Turn support cases into candidate FAQ and SOP drafts."
+  default_prompt: "Use $case-capture to convert this support case, knowledge answer, discussion, and solution into a structured FAQ or SOP draft."

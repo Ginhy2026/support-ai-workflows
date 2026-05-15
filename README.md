@@ -14,6 +14,16 @@ Skill folder:
 support-triage/
 ```
 
+### case-capture
+
+`case-capture` converts customer issues, Feishu knowledge-base answers, internal discussions, troubleshooting notes, and final solutions into candidate FAQ or SOP drafts. It labels information confidence and whether the content is suitable for a formal knowledge base.
+
+Skill folder:
+
+```text
+case-capture/
+```
+
 ## Install
 
 Copy the `support-triage` folder into your Hermes/Codex skills directory.
@@ -28,6 +38,12 @@ Then invoke it with:
 
 ```text
 Use $support-triage to triage this customer robot issue.
+```
+
+For case capture:
+
+```text
+Use $case-capture to convert this resolved support case into a candidate FAQ or SOP draft.
 ```
 
 Chinese example:
@@ -55,6 +71,14 @@ If you invoke it without case details, Hermes should return a compact intake for
 ```text
 .
 ├── README.md
+├── case-capture/
+│   ├── SKILL.md
+│   ├── agents/
+│   │   └── openai.yaml
+│   └── references/
+│       ├── examples.md
+│       ├── input-template.md
+│       └── output-templates.md
 └── support-triage/
     ├── SKILL.md
     ├── README.md
