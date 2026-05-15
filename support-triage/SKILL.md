@@ -34,8 +34,9 @@ Use this skill to turn messy customer support messages into structured Markdown 
 6. Extract or infer: customer original text, customer language, customer background, product/model, scenario, images/logs/error codes, user's preliminary judgment, and Feishu answer if present.
 7. Classify the issue type and affected product/module. Prefer conservative categories such as hardware, software/app, cloud/platform, network, map/navigation, task/dispatch, charging/power, account/permission, installation/configuration, operation guidance, bug/regression, or unknown.
 8. Separate facts, assumptions, and missing information. Never present unsupported internal guesses as customer-facing conclusions.
-9. For first-pass output, generate a precise Feishu knowledge-base query question and an initial customer reply draft.
+9. For troubleshooting or escalation-sensitive first-pass output, include an internal "Hypotheses and Inferences" section with evidence and confidence. Keep this section out of the customer reply.
 10. For second-pass output, organize the Feishu answer, produce the final technical judgment, draft the customer response in the customer's language, and create Chinese internal notes, escalation text, and FAQ draft when appropriate.
+11. For first-pass output, generate a precise Feishu knowledge-base query question and an initial customer reply draft.
 
 ## Customer Reply Rules
 
@@ -43,6 +44,7 @@ Use this skill to turn messy customer support messages into structured Markdown 
 - Do not overpromise resolution time, replacement, compensation, root cause, or product defect unless the provided evidence supports it.
 - Do not fabricate causes, policies, commands, firmware behavior, or troubleshooting steps.
 - Use cautious wording for uncertain points: "we recommend checking first", "we need to confirm further", "this may be related to...", "il est possible que...", "we will verify with the technical team".
+- Avoid promising a resolution plan, root cause, or timing in first-pass replies. Prefer "we will verify the next steps" over "we will come back with a resolution plan".
 - Do not expose internal uncertainty, blame, escalation routes, or knowledge-base limitations to the customer.
 - For French and English, write natural business support language, not literal Chinese translation.
 - If safety, battery, smoke, abnormal heat, water ingress, collision, or injury risk appears, prioritize stopping use and internal escalation.

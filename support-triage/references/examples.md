@@ -124,24 +124,36 @@ E203 通常表示任务服务初始化失败或配置未同步。建议检查网
 ## 3. 一句话问题摘要
 法国客户反馈同一清洁机器人在任务结束清洁痕迹处理阶段出现强烈异常噪音，并且该机器人近期已连续出现多项故障。
 
-## 4. 当前可以直接问飞书知识问答的问题
+## 4. 假设与推断（内部）
+| 假设 | 依据 | 置信度 |
+|---|---|---|
+| 异常噪音可能与任务结束阶段参与工作的清洁/吸水/刮水相关部件有关 | 噪音发生在任务结束和“消除痕迹”阶段，但视频内容未完整分析 | 中 |
+| 右侧刮水组件偏移可能与异常噪音或清洁收尾异常有关 | 客户同时提到刮水耙向右偏移和收尾阶段噪音 | 中 |
+| 同一机器人近期连续多故障，可能存在维修后未完全恢复、装配/结构异常或历史问题未闭环 | 1 个月前更换 CT4，随后仍出现屏幕倒置、刮水偏移、异常噪音 | 中 |
+| 屏幕倒置可能是独立的软件/配置/显示方向问题，不一定与机械噪音同源 | 屏幕倒置与机械噪音模块不同，当前缺少日志和版本信息 | 低 |
+
+## 5. 当前可以直接问飞书知识问答的问题
 1. 清洁机器人在任务结束的消除痕迹/刮水/清洁收尾阶段出现强烈异常噪音，常见机械原因和临时降噪排查方法是什么？
 2. 清洁机器人更换 CT4 后仍出现异常噪音、屏幕倒置、刮水组件偏移等连续故障，应该收集哪些信息并如何判断是否需要升级？
 3. 清洁机器人刮水组件偏移到右侧时，是否可能导致任务结束阶段异响或清洁异常？推荐排查步骤是什么？
 
-## 5. 需要客户补充的信息
+## 6. 需要补充的信息
+### 需要客户补充
 - 机器人 SN、型号和当前软件版本。
 - 完整视频：请拍到任务结束前、异常噪音出现过程、机器人底部/刮水组件动作和屏幕提示。
 - 噪音发生频率：每次任务结束都会出现，还是偶发。
 - 异常噪音具体位置：底盘、刷盘、刮水组件、吸水电机、轮组或其他位置。
-- 最近维修记录：CT4 更换日期、更换原因、更换后是否立刻出现噪音。
 - 已做基础排查：是否重启、检查刮水组件是否偏移/松动、是否有异物卡住、是否清洁过底部组件。
 
-## 6. 是否需要内部升级
+### 内部需要查询/确认
+- CT4 更换工单、实际更换部件、更换原因和更换后测试结果。
+- 该机器人历史故障记录、运行时长、当前版本和是否存在同批次类似反馈。
+
+## 7. 是否需要内部升级
 - 判断：建议升级或至少提前同步内部技术支持。
 - 理由：同一机器人短期内连续出现多项异常，且涉及更换 CT4 后的历史维修背景，单靠客户现场描述较难判断。
 
-## 7. 给客户的初步回复草稿
+## 8. 给客户的初步回复草稿
 Bonjour, merci pour ces informations.
 
 Comme ce robot a deja eu plusieurs problemes recents, nous allons verifier ce cas avec attention. Pour identifier l'origine du bruit, pourriez-vous nous envoyer les elements suivants ?
@@ -153,7 +165,7 @@ Comme ce robot a deja eu plusieurs problemes recents, nous allons verifier ce ca
 
 En attendant, nous recommandons de verifier qu'aucun objet n'est coince autour de la raclette ou sous le robot, et d'eviter de continuer les taches si le bruit devient plus fort ou si une piece semble mal positionnee. Apres reception des informations, nous confirmerons les prochaines etapes avec l'equipe technique.
 
-## 8. 是否建议后续沉淀为 FAQ
+## 9. 是否建议后续沉淀为 FAQ
 - 判断：建议沉淀。
 - 建议 FAQ 主题：清洁机器人任务结束阶段异常噪音的初步排查和升级信息收集。
 ```
