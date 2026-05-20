@@ -68,6 +68,86 @@ Chinese example:
 请使用 $support-triage 处理下面这个客户机器人问题。
 ```
 
+---
+
+### knowledge — Knowledge Pipeline Skills
+
+This suite of 7 skills forms a complete knowledge management pipeline: ingest → digest → output → push to GitHub. They work with an Obsidian vault at `$HOME/Espace_Obsidian`.
+
+Invocation in Hermes (Feishu/Telegram): `/<skill-name>` (e.g. `/web-in`)
+
+#### Skill Overview
+
+| Skill | Purpose | Input | Output |
+|-------|---------|-------|--------|
+| **web-in** | Ingest web pages | URL | Raw article + summary + concept pages in vault |
+| **paper-in** | Ingest academic papers | arXiv URL/ID | Raw paper + summary + concept pages in vault |
+| **media-in** | Ingest video/audio content | Video/audio URL + description | Raw transcript or text summary in vault |
+| **digest** | Digest unsorted raw materials | None (scans vault) | Summary + concept pages for all unprocessed entries |
+| **feynman** | Generate teaching output | None (scans vault) | Feynman-style teaching notes in `输出/教学/` |
+| **output** | Generate review/retrospective reports | None (scans vault) | Review reports in `输出/回顾/` |
+| **pipeline** | Full end-to-end run | None | Digest → feynman → output → Health report → GitHub push |
+
+#### File Structure in Vault
+
+```
+$HOME/Espace_Obsidian/
+├── 原始材料/
+│   ├── 文章/        ← web-in, paper-in write here
+│   └── 视频/        ← media-in write here
+├── 知识库/
+│   ├── 摘要/        ← Summaries of ingested content
+│   ├── 概念/        ← Concept pages (linked from summaries)
+│   └── 索引.md      ← Central index, updated after every ingest
+├── 输出/
+│   ├── 教学/        ← feynman writes here
+│   └── 回顾/        ← output writes here
+└── README.md
+```
+
+#### Data Flow
+
+```
+External source (web/paper/media)
+    │
+    ▼
+[web-in / paper-in / media-in]  ──►  raw material + summary + concept pages
+    │
+    ▼
+[digest]  ──►  process backlog, fill missing summaries/concepts
+    │
+    ▼
+[feynman / output]  ──►  generate teaching notes & review reports
+    │
+    ▼
+[pipeline]  ──►  entire chain + health report + git commit & push to GitHub
+```
+
+#### Cron Automation
+
+A scheduled cron job (`job_id: dc8e06cd9a7e`) runs `pipeline` every Sunday at 09:00, which automatically:
+1. Scans all raw materials for unprocessed items
+2. Fills in missing summaries and concept pages
+3. Generates Feynman teaching notes
+4. Creates a health report
+5. Commits and pushes everything to `github.com/Ginhy2026/Espace_Obsidian`
+
+#### For Codex: How to Read & Modify These Skills
+
+Each skill is a standalone `.md` file in `skills/knowledge/`:
+- YAML frontmatter: metadata (name, description, version)
+- Body: trigger conditions, execution steps, file paths, format templates, verification checklist
+
+To create a new skill (e.g., a Feishu knowledge capture skill):
+1. Design the execution flow (what triggers it, what it reads, what it writes)
+2. Define file paths and format templates in the vault
+3. Include verification steps and anti-footgun rules (like "no skill_manage")
+4. Add the skill to `~/.hermes/skills/knowledge/` as a SKILL.md
+
+---
+
+### case-capture
+
 If you invoke it without case details, Hermes should return a compact intake form first:
 
 ```text
@@ -104,6 +184,15 @@ If you invoke it without case details, Hermes should return a compact intake for
 │       ├── checklist.md
 │       ├── commands.md
 │       └── troubleshooting.md
+├── skills/
+│   └── knowledge/
+│       ├── web-in.md
+│       ├── paper-in.md
+│       ├── media-in.md
+│       ├── digest.md
+│       ├── feynman.md
+│       ├── output.md
+│       └── pipeline.md
 └── support-triage/
     ├── SKILL.md
     ├── README.md
