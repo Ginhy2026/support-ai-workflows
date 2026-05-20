@@ -1,6 +1,6 @@
-# support-triage Skill 使用文档 v1
+# support-triage Skill 使用文档 v1.1
 
-本文档用于帮助海外技术支持同事在 Hermes / 飞书智能体中安装和使用 `support-triage` skill。
+本文档用于帮助海外技术支持同事在 Hermes / 飞书智能体中安装和使用 `support-triage` skill，并说明如何配合 `feishu-cli-setup` 打通飞书知识库检索。
 
 ## 1. 这个 skill 是做什么的
 
@@ -12,6 +12,7 @@
 - 从 WhatsApp 截图、聊天记录、邮件中提取关键信息
 - 归纳客户问题
 - 生成适合复制到飞书知识问答的问题
+- 在本机已配置 `lark-cli` 时，辅助检索飞书知识库资料
 - 生成客户回复草稿，默认使用客户原语言
 - 生成中文内部说明
 - 生成内部升级工单描述
@@ -125,6 +126,33 @@ $support-triage
 - 内部升级工单描述
 - FAQ 草稿
 
+### 3.6 飞书知识库自动检索
+
+如果本机已经打通飞书 CLI，`support-triage` 可以优先使用飞书知识库检索结果来辅助判断。
+
+推荐检索链路：
+
+```text
+support-triage
+→ 生成产品/模块/现象/错误码关键词
+→ 通过 lark-cli 搜索飞书 Wiki / Docx
+→ 结合搜索结果输出分诊和客户回复草稿
+```
+
+如果 CLI 没有配置好，`support-triage` 不会停止工作，而是会：
+
+- 提示调用 `$feishu-cli-setup` 检查本机配置
+- 输出建议检索词，方便手动复制到飞书知识问答
+- 避免把未检索到的知识库内容当成已验证依据
+
+可以手动测试：
+
+```powershell
+lark-cli auth check --scope "search:docs:read"
+lark-cli drive +search --query "CT4" --doc-types wiki,docx --page-size 10 --format json
+python tools\feishu_search_docs.py "CT4" --type wiki --type docx --count 5
+```
+
 ## 4. 推荐输入示例
 
 ### 4.1 WhatsApp 截图场景
@@ -206,7 +234,40 @@ description: ...
 
 但建议优先保留，因为这段有助于智能体识别 skill 的名称和触发场景。
 
-### 6.3 测试安装
+### 6.3 可选：安装 feishu-cli-setup
+
+如果希望同事用飞书 CLI 自动检索知识库，建议同时安装 `feishu-cli-setup` skill。
+
+新建另一个 skill：
+
+```text
+skill name: feishu-cli-setup
+```
+
+安装后可输入：
+
+```text
+/feishu-cli-setup
+```
+
+或：
+
+```text
+请使用 $feishu-cli-setup 检查本机飞书 CLI 是否可以搜索知识库。
+```
+
+这个 skill 会检查：
+
+- Node.js 是否存在
+- `lark-cli` 是否安装
+- 飞书 CLI 是否已登录
+- token 是否有效
+- 是否具备 `search:docs:read`
+- 是否能执行一次测试搜索
+
+注意：`feishu-cli-setup` 不会自动安装软件、不会修改系统配置、不会保存凭证，只会给出检查结果和下一步命令。
+
+### 6.4 测试安装
 
 安装后，输入：
 
@@ -243,6 +304,7 @@ Use this skill to turn messy customer support messages into structured Markdown 
 ## Load References
 
 - For the full reusable system prompt, read `references/main-prompt.md`.
+- For Feishu knowledge-base source guidance, read `references/knowledge-sources.md`.
 - For empty invocation behavior and copyable intake fields, read `references/input-template.md`.
 - For first-pass and second-pass Markdown output structures, read `references/output-templates.md`.
 - For realistic examples, read `references/examples.md` only when the user asks for examples or when validating the workflow.
@@ -261,13 +323,15 @@ Use this skill to turn messy customer support messages into structured Markdown 
 4. Identify whether the request is first-pass or second-pass:
    - First-pass: no Feishu knowledge-base answer is provided.
    - Second-pass: the user includes Feishu knowledge-base answer content or asks to整理/生成正式回复 after Feishu lookup.
-5. Preserve the customer's original language and infer it if not explicitly provided. Customer-facing drafts default to the customer's language. Internal notes default to Chinese.
-6. Extract or infer: customer original text, customer language, customer background, product/model, scenario, images/logs/error codes, user's preliminary judgment, and Feishu answer if present.
-7. Classify the issue type and affected product/module. Prefer conservative categories such as hardware, software/app, cloud/platform, network, map/navigation, task/dispatch, charging/power, account/permission, installation/configuration, operation guidance, bug/regression, or unknown.
-8. Separate facts, assumptions, and missing information. Never present unsupported internal guesses as customer-facing conclusions.
-9. For troubleshooting or escalation-sensitive first-pass output, include an internal "Hypotheses and Inferences" section with evidence and confidence. Keep this section out of the customer reply.
-10. For second-pass output, organize the Feishu answer, produce the final technical judgment, draft the customer response in the customer's language, and create Chinese internal notes, escalation text, and FAQ draft when appropriate.
-11. For first-pass output, generate a precise Feishu knowledge-base query question and an initial customer reply draft.
+5. Before making technical judgments, use the linked PUDU Feishu knowledge base when the environment has access. If not accessible, say internally that the knowledge base could not be accessed and ask the user to paste the relevant Feishu knowledge-base result. Never claim to have read that link unless its contents are available in the current context.
+6. If a Feishu API/search utility is available, search by product/model, module, symptom, error code, and key customer phrases before drafting technical conclusions. If `lark-cli` is missing, not logged in, lacks `search:docs:read`, or search fails, tell the user to run `$feishu-cli-setup` and include exact suggested search queries for manual Feishu lookup.
+7. Preserve the customer's original language and infer it if not explicitly provided. Customer-facing drafts default to the customer's language. Internal notes default to Chinese.
+8. Extract or infer: customer original text, customer language, customer background, product/model, scenario, images/logs/error codes, user's preliminary judgment, and Feishu answer if present.
+9. Classify the issue type and affected product/module. Prefer conservative categories such as hardware, software/app, cloud/platform, network, map/navigation, task/dispatch, charging/power, account/permission, installation/configuration, operation guidance, bug/regression, or unknown.
+10. Separate facts, assumptions, and missing information. Never present unsupported internal guesses as customer-facing conclusions.
+11. For troubleshooting or escalation-sensitive first-pass output, include an internal "Hypotheses and Inferences" section with evidence and confidence. Keep this section out of the customer reply.
+12. For second-pass output, organize the Feishu answer, produce the final technical judgment, draft the customer response in the customer's language, and create Chinese internal notes, escalation text, and FAQ draft when appropriate.
+13. For first-pass output, generate a precise Feishu knowledge-base query question and an initial customer reply draft.
 
 ## Customer Reply Rules
 
@@ -300,6 +364,10 @@ Recommend internal escalation when any of these apply:
 
 ## Feishu Knowledge-Base Query Guidance
 
+Primary reference source when accessible:
+
+`https://pudutech.feishu.cn/wiki/ZXWUw8OBniPEzqkYbymc2E6AnJe?from=from_copylink`
+
 Create one to three focused query questions. Each question should include product/model, module, symptom, scenario, exact error code/log phrase if available, recent changes, and expected answer type. Avoid vague questions like "how to fix this robot problem".
 
 Good query pattern:
@@ -316,6 +384,7 @@ When the customer language is not Chinese, still write Feishu query questions in
 - 问题分流不准：修改 `Workflow` 第 2-3 条
 - 客户回复太强硬或承诺过度：修改 `Customer Reply Rules`
 - 飞书知识问答问题不够好：修改 `Feishu Knowledge-Base Query Guidance`
+- 飞书 CLI 检索不可用：先使用 `$feishu-cli-setup` 检查 `lark-cli` 登录和 `search:docs:read`
 - 排障报告缺少某个字段：修改 `Output Requirements`
 
 建议每次修改后都用两个案例测试：
