@@ -12,3 +12,6 @@ __pycache__/
 # Local temporary files
 *.tmp
 *.log
+
+# Feishu internal knowledge-base exports
+support-triage/references/feishu-kb-*.md
