@@ -12,6 +12,7 @@ Use this skill to turn messy customer support messages into structured Markdown 
 ## Load References
 
 - For the full reusable system prompt, read `references/main-prompt.md`.
+- For Feishu knowledge-base source guidance, read `references/knowledge-sources.md`.
 - For empty invocation behavior and copyable intake fields, read `references/input-template.md`.
 - For first-pass and second-pass Markdown output structures, read `references/output-templates.md`.
 - For realistic examples, read `references/examples.md` only when the user asks for examples or when validating the workflow.
@@ -30,13 +31,14 @@ Use this skill to turn messy customer support messages into structured Markdown 
 4. Identify whether the request is first-pass or second-pass:
    - First-pass: no Feishu knowledge-base answer is provided.
    - Second-pass: the user includes Feishu knowledge-base answer content or asks to整理/生成正式回复 after Feishu lookup.
-5. Preserve the customer's original language and infer it if not explicitly provided. Customer-facing drafts default to the customer's language. Internal notes default to Chinese.
-6. Extract or infer: customer original text, customer language, customer background, product/model, scenario, images/logs/error codes, user's preliminary judgment, and Feishu answer if present.
-7. Classify the issue type and affected product/module. Prefer conservative categories such as hardware, software/app, cloud/platform, network, map/navigation, task/dispatch, charging/power, account/permission, installation/configuration, operation guidance, bug/regression, or unknown.
-8. Separate facts, assumptions, and missing information. Never present unsupported internal guesses as customer-facing conclusions.
-9. For troubleshooting or escalation-sensitive first-pass output, include an internal "Hypotheses and Inferences" section with evidence and confidence. Keep this section out of the customer reply.
-10. For second-pass output, organize the Feishu answer, produce the final technical judgment, draft the customer response in the customer's language, and create Chinese internal notes, escalation text, and FAQ draft when appropriate.
-11. For first-pass output, generate a precise Feishu knowledge-base query question and an initial customer reply draft.
+5. Before making technical judgments, use the linked PUDU Feishu knowledge base when the environment has access. If not accessible, say internally that the knowledge base could not be accessed and ask the user to paste the relevant Feishu knowledge-base result. Never claim to have read that link unless its contents are available in the current context.
+6. Preserve the customer's original language and infer it if not explicitly provided. Customer-facing drafts default to the customer's language. Internal notes default to Chinese.
+7. Extract or infer: customer original text, customer language, customer background, product/model, scenario, images/logs/error codes, user's preliminary judgment, and Feishu answer if present.
+8. Classify the issue type and affected product/module. Prefer conservative categories such as hardware, software/app, cloud/platform, network, map/navigation, task/dispatch, charging/power, account/permission, installation/configuration, operation guidance, bug/regression, or unknown.
+9. Separate facts, assumptions, and missing information. Never present unsupported internal guesses as customer-facing conclusions.
+10. For troubleshooting or escalation-sensitive first-pass output, include an internal "Hypotheses and Inferences" section with evidence and confidence. Keep this section out of the customer reply.
+11. For second-pass output, organize the Feishu answer, produce the final technical judgment, draft the customer response in the customer's language, and create Chinese internal notes, escalation text, and FAQ draft when appropriate.
+12. For first-pass output, generate a precise Feishu knowledge-base query question and an initial customer reply draft.
 
 ## Customer Reply Rules
 
@@ -68,6 +70,10 @@ Recommend internal escalation when any of these apply:
 - Feishu answer is absent, conflicting, outdated, or insufficient for customer-facing guidance.
 
 ## Feishu Knowledge-Base Query Guidance
+
+Primary reference source when accessible:
+
+`https://pudutech.feishu.cn/wiki/ZXWUw8OBniPEzqkYbymc2E6AnJe?from=from_copylink`
 
 Create one to three focused query questions. Each question should include product/model, module, symptom, scenario, exact error code/log phrase if available, recent changes, and expected answer type. Avoid vague questions like "how to fix this robot problem".
 
