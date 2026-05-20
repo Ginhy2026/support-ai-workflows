@@ -11,10 +11,30 @@ https://pudutech.feishu.cn/wiki/ZXWUw8OBniPEzqkYbymc2E6AnJe?from=from_copylink
 ## Access Rules
 
 - If the page content is accessible in the current environment, use it to inform issue classification, possible causes, troubleshooting steps, escalation criteria, and customer reply drafts.
+- If Feishu document search is available, search the knowledge base by product/model, module, symptom, error code, and customer phrases before drafting technical conclusions.
 - If the page requires login or is not accessible, do not claim to have checked it.
 - If inaccessible, ask the user to paste the relevant Feishu knowledge-base answer or search result into the case input.
 - Treat copied Feishu knowledge-base content as internal reference material. Do not paste internal-only wording directly into customer replies.
 - If the knowledge-base content conflicts with customer evidence, explain the mismatch in the internal section and keep the customer reply conservative.
+
+## Search Utility
+
+This repository includes helper scripts that use official Feishu Open APIs and read credentials only from environment variables:
+
+```text
+tools/feishu_read_wiki.py
+tools/feishu_search_docs.py
+```
+
+Use `feishu_search_docs.py` when the user wants the agent to find relevant articles from symptoms:
+
+```powershell
+$env:FEISHU_APP_ID="..."
+$env:FEISHU_APP_SECRET="..."
+python tools\feishu_search_docs.py "CC1 清洁机器人 异常噪音" --type docx --type doc
+```
+
+If the API returns `No permission`, the Feishu app likely needs document search permission such as `search:docs:read` or the corresponding cloud document search scope, then the app must be republished/approved.
 
 ## How To Reference It In Output
 
