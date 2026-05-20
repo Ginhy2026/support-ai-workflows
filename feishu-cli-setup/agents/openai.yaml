@@ -1,0 +1,4 @@
+interface:
+  display_name: "Feishu CLI Setup"
+  short_description: "Check and guide lark-cli login for Feishu document search."
+  default_prompt: "Use $feishu-cli-setup to check lark-cli, Feishu login, search permission, and document search readiness."

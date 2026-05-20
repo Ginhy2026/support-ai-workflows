@@ -24,6 +24,16 @@ Skill folder:
 case-capture/
 ```
 
+### feishu-cli-setup
+
+`feishu-cli-setup` checks and guides local `lark-cli` readiness for Feishu document and wiki search. It verifies CLI installation, Feishu user login, token validity, `search:docs:read`, and a test search.
+
+Skill folder:
+
+```text
+feishu-cli-setup/
+```
+
 ## Install
 
 Copy the `support-triage` folder into your Hermes/Codex skills directory.
@@ -46,6 +56,12 @@ For case capture:
 Use $case-capture to convert this resolved support case into a candidate FAQ or SOP draft.
 ```
 
+For Feishu CLI setup:
+
+```text
+Use $feishu-cli-setup to check lark-cli, Feishu login, search permission, and document search readiness.
+```
+
 Chinese example:
 
 ```text
@@ -64,7 +80,8 @@ If you invoke it without case details, Hermes should return a compact intake for
 2. Run `$support-triage` without Feishu knowledge-base results for first-pass triage.
 3. Copy the generated Feishu knowledge-base query questions into Feishu.
 4. Paste the Feishu answer back into Hermes.
-5. Run `$support-triage` again to produce the formal customer reply, Chinese internal note, escalation ticket, and FAQ draft.
+5. If Feishu CLI search is not ready, run `$feishu-cli-setup` or manually search Feishu with the generated queries.
+6. Run `$support-triage` again to produce the formal customer reply, Chinese internal note, escalation ticket, and FAQ draft.
 
 ## Repository Layout
 
@@ -79,6 +96,14 @@ If you invoke it without case details, Hermes should return a compact intake for
 │       ├── examples.md
 │       ├── input-template.md
 │       └── output-templates.md
+├── feishu-cli-setup/
+│   ├── SKILL.md
+│   ├── agents/
+│   │   └── openai.yaml
+│   └── references/
+│       ├── checklist.md
+│       ├── commands.md
+│       └── troubleshooting.md
 └── support-triage/
     ├── SKILL.md
     ├── README.md

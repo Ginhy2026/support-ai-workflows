@@ -32,7 +32,9 @@ Use `feishu_search_docs.py` when the user wants the agent to find relevant artic
 python tools\feishu_search_docs.py "CC1 清洁机器人 异常噪音" --type docx --type doc
 ```
 
-If search is not authenticated, run:
+If search is not authenticated or search fails during `support-triage`, call `$feishu-cli-setup` to diagnose the local CLI. The setup skill will check Node.js, `lark-cli`, login state, token validity, `search:docs:read`, and a test search.
+
+Manual commands:
 
 ```powershell
 lark-cli auth login --domain search --recommend
@@ -45,7 +47,7 @@ Direct CLI example:
 lark-cli drive +search --query "CC1 异常噪音" --doc-types wiki,docx --page-size 10 --format json
 ```
 
-If the API returns `No permission`, the Feishu app or current user token likely needs `search:docs:read`, then the app must be republished/approved and the user must log in again.
+If the API returns `No permission`, the Feishu app or current user token likely needs `search:docs:read`, then the app must be republished/approved and the user must log in again. If setup cannot be completed, keep the normal fallback: output exact search queries for the user to copy into Feishu knowledge search manually.
 
 ## How To Reference It In Output
 
