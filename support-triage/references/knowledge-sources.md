@@ -26,15 +26,26 @@ tools/feishu_read_wiki.py
 tools/feishu_search_docs.py
 ```
 
-Use `feishu_search_docs.py` when the user wants the agent to find relevant articles from symptoms:
+Use `feishu_search_docs.py` when the user wants the agent to find relevant articles from symptoms. It wraps the official `lark-cli drive +search` command, which uses the Search v2 `doc_wiki/search` API and a user login token.
 
 ```powershell
-$env:FEISHU_APP_ID="..."
-$env:FEISHU_APP_SECRET="..."
 python tools\feishu_search_docs.py "CC1 清洁机器人 异常噪音" --type docx --type doc
 ```
 
-If the API returns `No permission`, the Feishu app likely needs document search permission such as `search:docs:read` or the corresponding cloud document search scope, then the app must be republished/approved.
+If search is not authenticated, run:
+
+```powershell
+lark-cli auth login --domain search --recommend
+lark-cli auth check --scope "search:docs:read"
+```
+
+Direct CLI example:
+
+```powershell
+lark-cli drive +search --query "CC1 异常噪音" --doc-types wiki,docx --page-size 10 --format json
+```
+
+If the API returns `No permission`, the Feishu app or current user token likely needs `search:docs:read`, then the app must be republished/approved and the user must log in again.
 
 ## How To Reference It In Output
 

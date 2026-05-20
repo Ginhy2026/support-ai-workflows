@@ -1,74 +1,100 @@
 #!/usr/bin/env python3
 """
-Search Feishu/Lark cloud documents through the official docs search API.
+Search Feishu/Lark cloud documents through the official lark-cli.
 
-Required environment variables:
-  FEISHU_APP_ID
-  FEISHU_APP_SECRET
+Prerequisites:
+  npm install -g @larksuite/cli
+  lark-cli auth login --domain search --recommend
 
 Usage:
-  python tools/feishu_search_docs.py "CC1 异常噪音" --type docx --type doc
+  python tools/feishu_search_docs.py "CC1 异常噪音" --type wiki --type docx
 """
 
 from __future__ import annotations
 
 import argparse
 import json
-import urllib.error
-import urllib.request
-
-from feishu_read_wiki import get_tenant_access_token
-
-
-SEARCH_URL = "https://open.feishu.cn/open-apis/suite/docs-api/search/object"
+import shutil
+import subprocess
+import sys
 
 
-def search_docs(query: str, count: int = 10, offset: int = 0, docs_types: list[str] | None = None) -> dict:
-    token = get_tenant_access_token()
-    payload: dict = {
-        "search_key": query,
-        "count": count,
-        "offset": offset,
-    }
-    if docs_types:
-        payload["docs_types"] = docs_types
+TYPE_MAP = {
+    "doc": "doc",
+    "docx": "docx",
+    "sheet": "sheet",
+    "wiki": "wiki",
+    "file": "file",
+    "folder": "folder",
+    "slides": "slides",
+}
 
-    req = urllib.request.Request(
-        SEARCH_URL,
-        data=json.dumps(payload).encode("utf-8"),
-        headers={
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json; charset=utf-8",
-        },
-        method="POST",
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            return json.loads(resp.read().decode("utf-8"))
-    except urllib.error.HTTPError as exc:
-        detail = exc.read().decode("utf-8", errors="replace")
-        raise RuntimeError(f"HTTP {exc.code}: {detail}") from exc
+
+def find_lark_cli() -> str:
+    cmd = shutil.which("lark-cli") or shutil.which("lark-cli.cmd")
+    if cmd:
+        return cmd
+    windows_default = r"C:\Users\Ginhy\AppData\Roaming\npm\lark-cli.cmd"
+    if shutil.which(windows_default):
+        return windows_default
+    raise RuntimeError("lark-cli not found. Install it with: npm install -g @larksuite/cli")
+
+
+def search(query: str, count: int, docs_types: list[str]) -> dict:
+    cli = find_lark_cli()
+    mapped_types = [TYPE_MAP[t.lower()] for t in docs_types]
+    args = [
+        cli,
+        "drive",
+        "+search",
+        "--query",
+        query,
+        "--doc-types",
+        ",".join(mapped_types),
+        "--page-size",
+        str(count),
+        "--format",
+        "json",
+    ]
+    proc = subprocess.run(args, text=True, capture_output=True, encoding="utf-8", check=False)
+    if proc.returncode != 0:
+        raise RuntimeError(proc.stderr.strip() or proc.stdout.strip())
+    return json.loads(proc.stdout)
+
+
+def strip_highlight(value: str | None) -> str:
+    if not value:
+        return ""
+    return value.replace("<h>", "").replace("</h>", "")
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Search Feishu cloud documents.")
+    parser = argparse.ArgumentParser(description="Search Feishu/Lark docs and wiki through lark-cli.")
     parser.add_argument("query", help="Search keywords")
-    parser.add_argument("--count", type=int, default=10, help="Number of results")
-    parser.add_argument("--offset", type=int, default=0, help="Search offset")
-    parser.add_argument("--type", action="append", dest="docs_types", help="Document type, e.g. docx, doc, sheet")
+    parser.add_argument("--count", type=int, default=10, help="Number of results, 1-20")
+    parser.add_argument("--type", action="append", dest="docs_types", default=["wiki", "docx"], help="Document type")
     args = parser.parse_args()
 
-    result = search_docs(args.query, args.count, args.offset, args.docs_types)
-    if result.get("code") != 0:
-        raise RuntimeError(json.dumps(result, ensure_ascii=False, indent=2))
-
+    result = search(args.query, args.count, args.docs_types)
     data = result.get("data", {})
     print(f"# Search Results: {args.query}")
-    print(f"- total: {data.get('total')}")
-    print(f"- has_more: {data.get('has_more')}")
+    print(f"- total: {data.get('total', 0)}")
+    print(f"- has_more: {data.get('has_more', False)}")
     print()
-    for item in data.get("docs_entities", []):
-        print(f"- {item.get('title')} | {item.get('docs_type')} | {item.get('docs_token')}")
+
+    for index, item in enumerate(data.get("results", []), start=1):
+        meta = item.get("result_meta", {})
+        title = strip_highlight(item.get("title_highlighted"))
+        summary = strip_highlight(item.get("summary_highlighted"))
+        print(f"## {index}. {title}")
+        print(f"- entity_type: {item.get('entity_type')}")
+        print(f"- doc_type: {meta.get('doc_types')}")
+        print(f"- token: {meta.get('token')}")
+        print(f"- url: {meta.get('url')}")
+        print(f"- updated: {meta.get('update_time_iso')}")
+        if summary:
+            print(f"- summary: {summary}")
+        print()
     return 0
 
 
