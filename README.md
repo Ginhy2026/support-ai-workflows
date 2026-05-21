@@ -34,6 +34,29 @@ Skill folder:
 feishu-cli-setup/
 ```
 
+### feishu-knowledge-capture
+
+`feishu-knowledge-capture` collects support-triage Feishu topic threads and, when enabled, JSWO work-order group discussions into candidate Feishu Wiki knowledge drafts. It writes one candidate FAQ/fault/SOP page per reusable case and appends an entry to a shared index document such as `支持知识碎片候选池`.
+
+First-version scope:
+
+- Read only support-triage related topic threads.
+- Treat one topic thread as one case.
+- Write only candidate drafts under a Feishu Wiki review area such as `候选知识碎片/待审核`.
+- Never publish content as formal knowledge without human review.
+
+Future company-wide scope:
+
+- Recognize work-order group names containing ticket IDs such as `JSWO-202604220005`.
+- Parse group names like `【新问题_进行中】PUDU T300法国JSWO-202604220005`.
+- Use message content, not only group status text, to decide whether a case is closed enough for candidate knowledge.
+
+Skill folder:
+
+```text
+feishu-knowledge-capture/
+```
+
 ## Install
 
 Copy the `support-triage` folder into your Hermes/Codex skills directory.
@@ -60,6 +83,12 @@ For Feishu CLI setup:
 
 ```text
 Use $feishu-cli-setup to check lark-cli, Feishu login, search permission, and document search readiness.
+```
+
+For Feishu knowledge capture:
+
+```text
+Use $feishu-knowledge-capture to collect today's support-triage threads and write candidate knowledge drafts to Feishu Wiki.
 ```
 
 Chinese example:
@@ -184,6 +213,17 @@ If you invoke it without case details, Hermes should return a compact intake for
 │       ├── checklist.md
 │       ├── commands.md
 │       └── troubleshooting.md
+├── feishu-knowledge-capture/
+│   ├── SKILL.md
+│   ├── agents/
+│   │   └── openai.yaml
+│   ├── references/
+│   │   ├── config.example.md
+│   │   ├── lark-workflow.md
+│   │   ├── review-rules.md
+│   │   └── templates.md
+│   └── scripts/
+│       └── parse_work_order_group.py
 ├── skills/
 │   └── knowledge/
 │       ├── web-in.md
