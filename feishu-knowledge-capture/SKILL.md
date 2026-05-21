@@ -18,6 +18,7 @@ The first supported source is the user's own support-triage topic group. JSWO wo
 - For review status, confidence, closure, deduplication, and privacy rules, read `references/review-rules.md`.
 - For personal/team target configuration and teammate usage examples, read `references/config.example.md`.
 - For JSWO group-name parsing, run or inspect `scripts/parse_work_order_group.py`.
+- For deterministic candidate keys, run or inspect `scripts/candidate_key.py`.
 
 ## Configuration Needed
 
@@ -89,20 +90,30 @@ Do not write to another person's private candidate pool unless the configured ta
    - If image or card content cannot be read, record it as missing evidence.
 5. Normalize each case:
    - Source group, message IDs, thread ID, sender names, timestamps, product/module, customer/region, language, work-order ID when present.
-6. Decide case state:
+6. Generate a deterministic candidate key:
+   - Support-triage thread: `thread:<thread_id>`.
+   - JSWO work-order group: `workorder:<JSWO-id>`.
+   - Fallback when both are missing: `hash:<sha1(product|module|title|core_symptom)>`.
+   - Use `scripts/candidate_key.py` for consistent key generation.
+7. Read the shared index before writing:
+   - Search for the candidate key first.
+   - If the key exists and there is no material new information, skip creating a new page and report `duplicate_skipped`.
+   - If the key exists and there is new resolution, append an `更新记录` section to the existing candidate page and update the index row/report instead of creating a new page.
+   - If only a similar title/symptom exists but the key differs, do not auto-merge. Report `possible_duplicate` for human review.
+8. Decide case state:
    - Closed enough for candidate knowledge: has final action, cause, workaround, verified result, customer confirmation, or explicit case closure.
    - Pending: still in troubleshooting, missing root cause, missing final answer, or only has first-pass triage.
-7. Classify output:
+9. Classify output:
    - Fault: abnormal robot behavior, error, failure, navigation issue, hardware/software/cloud fault, or troubleshooting case.
    - FAQ: recurring question, product difference, configuration, policy, usage, or short "how to" answer.
    - SOP: reusable internal handling procedure, escalation playbook, or multi-role workflow.
    - Pending: useful signal but not ready for candidate knowledge.
-8. Generate Markdown using `references/templates.md`.
-9. Write to Feishu:
+10. Generate Markdown or XML using `references/templates.md`.
+11. Write to Feishu:
    - Create one candidate document or Wiki node per eligible case.
-   - Append one row to the shared index document.
+   - Append one row to the shared index document, including the unique key.
    - Never overwrite formal knowledge pages.
-10. Return a daily report with collected message count, candidate documents, pending cases, skipped cases, write links, and review tasks.
+12. Return a daily report with collected message count, candidate documents, pending cases, duplicate skips, possible duplicates, write links, and review tasks.
 
 ## Quality Rules
 

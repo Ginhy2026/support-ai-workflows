@@ -223,6 +223,7 @@ If you invoke it without case details, Hermes should return a compact intake for
 │   │   ├── review-rules.md
 │   │   └── templates.md
 │   └── scripts/
+│       ├── candidate_key.py
 │       └── parse_work_order_group.py
 ├── skills/
 │   └── knowledge/

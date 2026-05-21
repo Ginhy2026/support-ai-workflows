@@ -30,7 +30,19 @@ Weak signals are not enough by themselves:
 
 ## Deduplication
 
-Before writing a new candidate, compare against the shared index and obvious title/work-order matches.
+Before writing a new candidate, read the shared index and compare deterministic keys first. This is mandatory for every run, including manual reruns and scheduled automations.
+
+### Candidate Key
+
+Use exactly one of these keys:
+
+- `thread:<thread_id>` for support-triage topic threads.
+- `workorder:<JSWO-id>` for JSWO work-order groups.
+- `hash:<sha1>` only when no thread ID or work-order ID exists.
+
+For fallback hashes, normalize the concatenation of product, module, title, and core symptom. Use lowercase ASCII where possible, trim whitespace, collapse repeated spaces, and compute SHA-1.
+
+Use `scripts/candidate_key.py` when available instead of hand-building keys.
 
 Duplicate signals:
 
@@ -39,7 +51,14 @@ Duplicate signals:
 - Same product/module and highly similar symptom.
 - Same FAQ question with equivalent answer.
 
-If duplicate content exists, update the index/report with "possible duplicate" instead of creating another candidate page unless the user explicitly asks for a new page.
+### Write Decision
+
+- Exact key exists + no material new information: skip creating a page and report `duplicate_skipped`.
+- Exact key exists + new final cause, solution, verification, or customer confirmation: update the existing candidate page by appending `更新记录`, then update/report the existing index entry.
+- Different key + very similar title/symptom: do not merge automatically. Report `possible_duplicate` with both links/titles for human review.
+- No matching key: create a new candidate page and append a new index row.
+
+Never create a second candidate page for the same exact key unless the user explicitly asks for a new page.
 
 ## Privacy and Safety
 

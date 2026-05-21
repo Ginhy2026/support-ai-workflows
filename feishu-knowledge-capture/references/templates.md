@@ -11,6 +11,7 @@ Use these templates for Feishu Docs or Wiki candidate pages. Keep the status lin
 
 ## 1. 基本信息
 - 类型：故障
+- 唯一键：
 - 工单号：
 - 来源群：
 - 来源 thread/message：
@@ -80,6 +81,7 @@ Use these templates for Feishu Docs or Wiki candidate pages. Keep the status lin
 ## 4. 注意事项
 
 ## 5. 来源与可信度
+- 唯一键：
 - 来源群：
 - 来源 thread/message：
 - 工单号：
@@ -122,6 +124,7 @@ Use these templates for Feishu Docs or Wiki candidate pages. Keep the status lin
 ## 8. 内部注意事项
 
 ## 9. 来源与审核
+- 唯一键：
 - 来源群：
 - 来源 thread/message：
 - 工单号：
@@ -144,7 +147,7 @@ Use this in the daily report, not as a full Wiki page unless the user asks for a
 Append one row per generated candidate document.
 
 ```markdown
-| 日期 | 类型 | 产品/模块 | 工单号 | 标题 | 来源群 | 负责人/同事 | 候选文档链接 | 审核状态 |
-|---|---|---|---|---|---|---|---|---|
-| YYYY-MM-DD | 故障/FAQ/SOP/待补充 |  |  |  |  |  |  | 待审核 |
+| 唯一键 | 日期 | 类型 | 产品/模块 | 工单号 | 来源 thread | 标题 | 来源群 | 负责人/同事 | 候选文档链接 | 最后更新时间 | 审核状态 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| thread:omt_xxx | YYYY-MM-DD | 故障/FAQ/SOP/待补充 |  |  | omt_xxx |  |  |  |  | YYYY-MM-DD HH:mm | 待审核 |
 ```

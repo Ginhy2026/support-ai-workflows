@@ -94,7 +94,15 @@ Do not create documents if the target Wiki or index document is not configured. 
 
 ## Update Shared Index
 
-Append one row per candidate to the shared index document:
+Before writing, fetch the shared index and search by candidate key:
+
+```powershell
+lark-cli.cmd docs +fetch --api-version v2 --doc "<index doc url or token>" --doc-format xml --scope keyword --keyword "thread:omt_xxx" --format json
+```
+
+If the key is found, do not create a new candidate page. Either skip it or update the existing page with an `更新记录` section according to `references/review-rules.md`.
+
+Append one row per new candidate to the shared index document:
 
 ```powershell
 lark-cli docs +update --api-version v2 --doc "<index doc url or token>" --command append --content "@index-row.md"
@@ -102,14 +110,17 @@ lark-cli docs +update --api-version v2 --doc "<index doc url or token>" --comman
 
 The index row must include:
 
+- Unique key
 - Date
 - Type
 - Product/module
 - Work-order ID
+- Source thread
 - Title
 - Source group
 - Owner
 - Candidate document link
+- Last updated time
 - Review status
 
 ## Daily Report
