@@ -1,4 +1,4 @@
 interface:
   display_name: "Feishu Knowledge Capture"
-  short_description: "Capture support cases into Feishu Wiki drafts."
-  default_prompt: "Use $feishu-knowledge-capture to collect support-triage threads or JSWO work-order groups and write candidate knowledge drafts to Feishu Wiki."
+  short_description: "Capture Feishu support cases into Wiki drafts and GitHub archives."
+  default_prompt: "Use $feishu-knowledge-capture to collect support-triage threads, JSWO work-order groups, or a requested Feishu chat scope; write candidate knowledge drafts to Feishu Wiki and archive Markdown snapshots to GitHub."

@@ -12,6 +12,31 @@ Use these local Lark skills when available:
 
 Expected scopes include message search/read, chat read, docs create/update, and Wiki node create/move permissions.
 
+## Invocation Modes
+
+Default automation:
+
+```text
+每天 18:30 自动沉淀今天 support-triage 话题聊天
+```
+
+Manual commands may request a different scope:
+
+```text
+/飞书知识沉淀 获取今天 support-triage 话题并沉淀
+/飞书知识沉淀 获取今天所有 JSWO 工单群并沉淀
+/飞书知识沉淀 获取昨天所有群聊中的技术支持问题并沉淀
+/飞书知识沉淀 获取今天所有私聊中的工单问题并沉淀
+/飞书知识沉淀 获取群聊「PUDU T300法国JSWO-202604220005」并沉淀
+```
+
+Map the command to:
+
+- Source scope: `support-triage`, `jswo-groups`, `all-group-chats`, `all-private-chats`, or `named-chat`.
+- Time window: today by default; support yesterday, this week, and explicit date ranges.
+- Output mode: Feishu write plus GitHub archive by default; `dry-run` reports only.
+- Target: configured candidate Wiki node and shared index document.
+
 ## Resolve Source Chat
 
 When only a group name is known:
@@ -27,6 +52,14 @@ lark-cli im +chat-search --query "JSWO-202604220005" --format json
 ```
 
 Prefer a configured `chat_id` once known.
+
+For all JSWO work-order groups, search visible chats by the configured ticket pattern:
+
+```powershell
+lark-cli im +chat-search --query "JSWO-" --format json
+```
+
+For broad manual scopes, enumerate only chats visible to the current identity and then filter messages by technical-support signals. Do not process unrelated chats just because they are visible.
 
 ## Fetch Messages
 
@@ -47,6 +80,8 @@ Also search for bot/user trigger phrases if configured:
 ```powershell
 lark-cli im +messages-search --query "support-triage" --chat-id oc_xxx --start "2026-05-21T00:00:00+08:00" --end "2026-05-21T18:00:00+08:00" --page-all --format json
 ```
+
+For all-group or all-private manual runs, apply keyword filtering before case extraction. Useful filters include `/support-triage`, `support-triage`, `JSWO-`, product names, `故障`, `报错`, `无法`, `异常`, `排查`, `解决`, `FAQ`, `SOP`, and configured robot/customer support terms.
 
 ## Expand Threads
 
@@ -120,8 +155,34 @@ The index row must include:
 - Source group
 - Owner
 - Candidate document link
+- GitHub archive snapshot path
+- Current version number
 - Last updated time
+- Recent change summary
 - Review status
+
+## GitHub Markdown Archive
+
+After a Feishu candidate is created or updated, save the generated candidate Markdown to the repository archive. Do not archive full raw chat logs.
+
+```powershell
+python feishu-knowledge-capture\scripts\archive_snapshot.py `
+  --root knowledge-archive `
+  --candidate-key "workorder:JSWO-202604220005" `
+  --type "故障" `
+  --source-scope "JSWO工单群" `
+  --title "候选故障知识：<标题>" `
+  --feishu-doc-url "https://www.feishu.cn/wiki/xxx" `
+  --review-status "待审核" `
+  --content-file ".\candidate.md"
+```
+
+Use the returned `latest_snapshot` and `latest_version` values in the shared index row or update report.
+
+For run reports, save a separate Markdown report under:
+
+- `knowledge-archive/support-triage/YYYY-MM-DD/run-report.md` for default automation.
+- `knowledge-archive/manual-runs/YYYY-MM-DD-operator-<name>/run-report.md` for broad manual runs when an operator name is known.
 
 ## Daily Report
 
@@ -131,6 +192,8 @@ Report both writes and non-writes. Include:
 - Messages read
 - Cases recognized
 - Candidate pages created
+- Candidate pages updated
 - Pending cases
 - Skipped duplicates
+- GitHub archive snapshots
 - Permission or configuration failures

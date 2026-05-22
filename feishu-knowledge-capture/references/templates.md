@@ -59,6 +59,11 @@ Use these templates for Feishu Docs or Wiki candidate pages. Keep the status lin
 - 审核状态：待审核
 - 发布建议：适合 / 条件适合 / 暂不适合
 - 发布前需补充：
+
+## 11. 更新记录
+| 版本 | 时间 | 触发来源 | 变更摘要 | 新增证据 | 处理人/机器人 | 来源消息 |
+|---|---|---|---|---|---|---|
+| v001 | YYYY-MM-DD HH:mm | 自动/手动 | 初次创建候选知识 |  |  |  |
 ```
 
 ## FAQ Candidate
@@ -93,6 +98,11 @@ Use these templates for Feishu Docs or Wiki candidate pages. Keep the status lin
 - 审核状态：待审核
 - 发布建议：适合 / 条件适合 / 暂不适合
 - 发布前需补充：
+
+## 7. 更新记录
+| 版本 | 时间 | 触发来源 | 变更摘要 | 新增证据 | 处理人/机器人 | 来源消息 |
+|---|---|---|---|---|---|---|
+| v001 | YYYY-MM-DD HH:mm | 自动/手动 | 初次创建候选 FAQ |  |  |  |
 ```
 
 ## SOP Candidate
@@ -131,6 +141,11 @@ Use these templates for Feishu Docs or Wiki candidate pages. Keep the status lin
 - 负责人/同事：
 - 审核状态：待审核
 - 发布前需补充：
+
+## 10. 更新记录
+| 版本 | 时间 | 触发来源 | 变更摘要 | 新增证据 | 处理人/机器人 | 来源消息 |
+|---|---|---|---|---|---|---|
+| v001 | YYYY-MM-DD HH:mm | 自动/手动 | 初次创建候选 SOP |  |  |  |
 ```
 
 ## Pending Record
@@ -138,8 +153,8 @@ Use these templates for Feishu Docs or Wiki candidate pages. Keep the status lin
 Use this in the daily report, not as a full Wiki page unless the user asks for a pending queue.
 
 ```markdown
-| 标题/线索 | 来源 | 工单号 | 缺失信息 | 建议动作 |
-|---|---|---|---|---|
+| 标题/线索 | 来源 | 工单号 | 当前结论 | 缺失信息 | 建议动作 |
+|---|---|---|---|---|---|
 ```
 
 ## Shared Index Row
@@ -147,7 +162,80 @@ Use this in the daily report, not as a full Wiki page unless the user asks for a
 Append one row per generated candidate document.
 
 ```markdown
-| 唯一键 | 日期 | 类型 | 产品/模块 | 工单号 | 来源 thread | 标题 | 来源群 | 负责人/同事 | 候选文档链接 | 最后更新时间 | 审核状态 |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| thread:omt_xxx | YYYY-MM-DD | 故障/FAQ/SOP/待补充 |  |  | omt_xxx |  |  |  |  | YYYY-MM-DD HH:mm | 待审核 |
+| 唯一键 | 日期 | 类型 | 产品/模块 | 工单号 | 来源 thread | 标题 | 来源群 | 负责人/同事 | 候选文档链接 | GitHub归档 | 版本号 | 最后更新时间 | 最近变更摘要 | 审核状态 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| thread:omt_xxx | YYYY-MM-DD | 故障/FAQ/SOP/待补充 |  |  | omt_xxx |  |  |  |  | knowledge-archive/.../v001.md | v001 | YYYY-MM-DD HH:mm | 初次创建 | 待审核 |
+```
+
+## GitHub Archive Frontmatter
+
+Save one Markdown snapshot per candidate version. Do not include full raw chat logs.
+
+```markdown
+---
+candidate_key: "workorder:JSWO-202604220005"
+type: "故障"
+version: "v001"
+source: "JSWO工单群"
+title: "<标题>"
+feishu_doc_url: "https://..."
+created_at: "2026-05-22T18:30:00+08:00"
+updated_at: "2026-05-22T18:30:00+08:00"
+review_status: "待审核"
+---
+
+# 候选故障知识：<标题>
+
+<candidate markdown body>
+```
+
+## GitHub Archive Layout
+
+```text
+knowledge-archive/
+  support-triage/
+    YYYY-MM-DD/
+      thread-omt_xxx/
+        v001.md
+        metadata.json
+      run-report.md
+  jswo/
+    JSWO-202604220005/
+      v001.md
+      v002.md
+      metadata.json
+  manual-runs/
+    YYYY-MM-DD/
+      hash-xxx/
+        v001.md
+        metadata.json
+      run-report.md
+```
+
+## Run Report Archive
+
+```markdown
+# 知识沉淀运行报告
+
+- 运行时间：
+- 触发方式：自动任务 / 手动调用
+- 来源范围：support-triage / JSWO工单群 / 所有群聊 / 所有私聊 / 指定群
+- 时间范围：
+- 飞书候选目录：
+- 飞书索引文档：
+
+## 结果
+| 指标 | 数量 |
+|---|---:|
+| 读取消息 |  |
+| 识别 case |  |
+| 新建候选 |  |
+| 更新候选 |  |
+| 跳过重复 |  |
+| 待补充 |  |
+| GitHub 快照 |  |
+
+## 明细
+| 唯一键 | 类型 | 标题 | 飞书链接 | GitHub版本 | 处理结果 |
+|---|---|---|---|---|---|
 ```

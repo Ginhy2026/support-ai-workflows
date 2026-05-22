@@ -24,6 +24,9 @@ Optional values:
 FEISHU_KNOWLEDGE_DEFAULT_TIMEZONE=Asia/Shanghai
 FEISHU_KNOWLEDGE_SOURCE_PATTERNS=/support-triage,JSWO-
 FEISHU_KNOWLEDGE_OWNER_FIELD=sender_name
+FEISHU_KNOWLEDGE_ARCHIVE_ROOT=knowledge-archive
+FEISHU_KNOWLEDGE_DEFAULT_AUTOMATION_SCOPE=support-triage
+FEISHU_KNOWLEDGE_MANUAL_SCOPES=support-triage,jswo-groups,all-group-chats,all-private-chats,named-chat
 ```
 
 With the current shared pool, the values are:
@@ -73,6 +76,33 @@ Use these defaults:
 - `source_scope`: visible groups containing `JSWO-` plus configured support-triage topic groups.
 - `target`: team candidate node and shared index when `FEISHU_KNOWLEDGE_MODE=team`.
 
+## Automation and Manual Runs
+
+Default scheduled automation should use:
+
+```text
+source_scope=support-triage
+time_window=today
+output=feishu+github-archive
+```
+
+Manual runs may override the source scope:
+
+```text
+source_scope=jswo-groups
+source_scope=all-group-chats
+source_scope=all-private-chats
+source_scope=named-chat:<chat name>
+```
+
+For `all-group-chats` and `all-private-chats`, the runner must filter by technical-support signals before generating candidates and must redact private conversation by default.
+
+## GitHub Archive
+
+Use GitHub Markdown archive snapshots for version history. The runner should create or update files under `FEISHU_KNOWLEDGE_ARCHIVE_ROOT` and commit them with the skill/repo workflow.
+
+Do not store raw full chat transcripts in the archive. Store only generated candidate Markdown, minimal source identifiers, Feishu document links, review status, and run reports.
+
 ## Permission Requirements
 
 The identity running the bot or automation must have:
@@ -81,5 +111,6 @@ The identity running the bot or automation must have:
 - `im:chat:read` and message read/search scopes as needed.
 - Write permission to the target candidate Wiki node.
 - Write permission to the shared index document.
+- GitHub push or repository write permission when Markdown archive snapshots are enabled.
 
 If the teammate can read their work-order groups but cannot write to the shared pool, ask the pool owner to grant edit permission to the teammate or to the bot.

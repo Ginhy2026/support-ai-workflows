@@ -60,12 +60,32 @@ Duplicate signals:
 
 Never create a second candidate page for the same exact key unless the user explicitly asks for a new page.
 
+## Update and Versioning
+
+When a candidate already exists, update the existing Feishu page only when new material information appears:
+
+- Final cause, verified solution, workaround, rollback path, or customer confirmation.
+- Work-order closure or explicit movement out of active troubleshooting.
+- Evidence that changes the recommended answer, risk, applicable scope, or escalation condition.
+
+Do not update the candidate as a final answer when the new material is only a screenshot, progress reminder, repeated question, unsupported hypothesis, or personal conversation.
+
+For every new or updated candidate, also create a GitHub Markdown snapshot when archive output is enabled:
+
+- New candidate: `v001.md`.
+- Updated candidate: next version such as `v002.md`.
+- The Feishu candidate page keeps only the latest content plus a compact `更新记录`.
+- GitHub is the source for full Markdown version history and diff review.
+
 ## Privacy and Safety
 
 - Redact personal phone numbers, email addresses, private chat handles, and personal names unless internal traceability requires them.
 - Prefer customer/region and work-order ID over private person names.
 - Do not expose internal blame or unsupported defect claims.
 - Keep source message IDs and links in internal sections only.
+- For `all-group-chats`, keep only technical-support, fault, FAQ, SOP, robot/product, or work-order related content. Ignore casual, administrative, meeting, HR, and sales-only chatter.
+- For `all-private-chats`, redact private names, phone numbers, emails, chat handles, personal comments, and unrelated conversation by default. Use source type and stable message IDs for traceability instead of full personal details.
+- Do not write raw full chat transcripts to GitHub. Archive only generated candidate Markdown, source identifiers, Feishu links, review status, and other minimal metadata.
 
 ## Publishing Boundary
 

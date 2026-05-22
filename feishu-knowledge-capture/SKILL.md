@@ -1,15 +1,15 @@
 ---
 name: feishu-knowledge-capture
-description: Capture support-triage Feishu topic threads and JSWO work-order group discussions into candidate Feishu Wiki knowledge drafts. Use when Codex needs to collect resolved support-triage cases, extract FAQ/fault/SOP knowledge from Feishu messages, prepare a shared candidate knowledge pool, update a Feishu Wiki or index document, or plan company-wide support knowledge capture from work-order groups.
+description: Capture support-triage Feishu topic threads, JSWO work-order groups, and manually requested Feishu chat scopes into candidate Feishu Wiki knowledge drafts and GitHub Markdown archives. Use when Codex needs to collect resolved support-triage cases, extract FAQ/fault/SOP knowledge from Feishu messages, run daily knowledge capture, process all visible group/private chats with safeguards, prepare a shared candidate knowledge pool, update a Feishu Wiki or index document, or archive candidate knowledge snapshots for version history.
 ---
 
 # Feishu Knowledge Capture
 
 ## Purpose
 
-Use this skill to turn Feishu support-triage threads and work-order group discussions into candidate knowledge drafts for human review. It is the batch capture layer after `support-triage` and `case-capture`: collect source messages, group them into cases, classify whether they are suitable for knowledge capture, write candidate drafts to Feishu Wiki, and update a shared index.
+Use this skill to turn Feishu support-triage threads, work-order group discussions, and explicitly requested chat scopes into candidate knowledge drafts for human review. It is the batch capture layer after `support-triage` and `case-capture`: collect source messages, group them into cases, classify whether they are suitable for knowledge capture, write candidate drafts to Feishu Wiki, update a shared index, and optionally archive Markdown snapshots to GitHub for version history.
 
-The first supported source is the user's own support-triage topic group. JSWO work-order groups are supported as a configured extension path, but generated knowledge must still be treated as a candidate draft until reviewed.
+The default automated source is the user's configured support-triage topic group. JSWO work-order groups and broad chat scopes are supported for manual or configured runs, but generated knowledge must still be treated as a candidate draft until reviewed.
 
 ## Load References
 
@@ -19,6 +19,7 @@ The first supported source is the user's own support-triage topic group. JSWO wo
 - For personal/team target configuration and teammate usage examples, read `references/config.example.md`.
 - For JSWO group-name parsing, run or inspect `scripts/parse_work_order_group.py`.
 - For deterministic candidate keys, run or inspect `scripts/candidate_key.py`.
+- For GitHub Markdown archive snapshots, run or inspect `scripts/archive_snapshot.py`.
 
 ## Configuration Needed
 
@@ -28,6 +29,7 @@ Before writing to Feishu, obtain or ask the user for these values:
 - Target Feishu Wiki space or parent node for `候选知识碎片/待审核`.
 - Shared index document URL or token, such as `支持知识碎片候选池`.
 - Run window, defaulting to today in Asia/Shanghai for daily automation.
+- Optional GitHub archive root, defaulting to `knowledge-archive/` in the repository.
 
 If any target write location is missing, complete source analysis and output a dry-run report instead of guessing where to publish.
 
@@ -35,9 +37,9 @@ For team use, prefer a local config or environment variables instead of hardcodi
 
 ## Source Selection
 
-### First Version
+### Default Automation
 
-Only process support-triage related topic threads:
+Daily automation should process only configured support-triage related topic threads unless the automation prompt explicitly enables more sources:
 
 - messages containing `/support-triage`
 - messages mentioning Gin or the support-triage bot and asking for triage
@@ -46,7 +48,28 @@ Only process support-triage related topic threads:
 
 Treat one topic thread as one case. Do not turn each individual message into a separate candidate document.
 
-### Company Extension
+### Manual Source Scopes
+
+Manual invocations may request a wider scope. Support these source phrases:
+
+```text
+/飞书知识沉淀 获取今天 support-triage 话题并沉淀
+/飞书知识沉淀 获取今天所有 JSWO 工单群并沉淀
+/飞书知识沉淀 获取昨天所有群聊中的技术支持问题并沉淀
+/飞书知识沉淀 获取今天所有私聊中的工单问题并沉淀
+/飞书知识沉淀 获取群聊「PUDU T300法国JSWO-202604220005」并沉淀
+```
+
+Interpret the command into:
+
+- Source scope: `support-triage`, `jswo-groups`, `all-group-chats`, `all-private-chats`, or `named-chat`.
+- Time window: today by default; also support yesterday, this week, and explicit date ranges.
+- Output mode: default is Feishu candidate write plus GitHub archive; `dry-run` only reports.
+- Target: configured candidate Wiki node and shared index document.
+
+For `all-group-chats` and `all-private-chats`, first filter by technical-support signals such as `/support-triage`, `JSWO-`, robot/product names, error/fault words, troubleshooting language, FAQ wording, or configured keywords. Do not summarize unrelated chatter, administrative messages, or personal conversation.
+
+### JSWO Work-Order Groups
 
 Also support configured JSWO work-order groups when the user enables them. Recognize group names that contain a work-order ID such as `JSWO-202604220005`, for example:
 
@@ -113,7 +136,11 @@ Do not write to another person's private candidate pool unless the configured ta
    - Create one candidate document or Wiki node per eligible case.
    - Append one row to the shared index document, including the unique key.
    - Never overwrite formal knowledge pages.
-12. Return a daily report with collected message count, candidate documents, pending cases, duplicate skips, possible duplicates, write links, and review tasks.
+12. Archive to GitHub when enabled:
+   - Save only the structured candidate Markdown and necessary metadata, not full raw chat logs.
+   - New cases become `v001.md`; updated cases become `v002.md`, `v003.md`, and so on.
+   - Store snapshots below `knowledge-archive/` following `references/templates.md`.
+13. Return a daily report with collected message count, candidate documents, archive snapshots, pending cases, duplicate skips, possible duplicates, write links, and review tasks.
 
 ## Quality Rules
 
@@ -121,9 +148,11 @@ Do not write to another person's private candidate pool unless the configured ta
 - Do not invent final causes, solutions, verification results, or customer confirmations.
 - Keep source traceability: include source chat, message ID, thread ID, date, and owner when available.
 - Redact private customer details, phone numbers, personal names, and sensitive identifiers unless the target is explicitly internal and access-controlled.
+- For all private-chat and broad all-chat scans, redact names, phone numbers, emails, private handles, and personal conversation by default.
 - Prefer reusable patterns over one-off customer details.
 - If source material is unresolved or incomplete, produce a pending record rather than a candidate knowledge draft.
 - When content came from screenshots or cards, state whether the text was fully readable.
+- Do not archive raw chat transcripts to GitHub. Archive only the generated candidate Markdown, source identifiers, Feishu links, and review metadata.
 
 ## Output Report
 
@@ -135,6 +164,7 @@ Always end with a compact Markdown report:
 ## 1. 采集范围
 - 来源群：
 - 时间范围：
+- 来源范围：support-triage / JSWO工单群 / 所有群聊 / 所有私聊 / 指定群
 
 ## 2. 处理结果
 - 读取消息：
@@ -144,10 +174,11 @@ Always end with a compact Markdown report:
 - 生成候选 SOP：
 - 待补充/待闭环：
 - 跳过：
+- GitHub 归档：
 
 ## 3. 已写入候选区
-| 类型 | 标题 | 工单号 | 来源 | 链接 | 审核状态 |
-|---|---|---|---|---|---|
+| 类型 | 标题 | 工单号 | 来源 | 飞书链接 | GitHub 版本 | 审核状态 |
+|---|---|---|---|---|---|---|
 
 ## 4. 待补充
 | 标题/线索 | 缺失信息 | 建议动作 |

@@ -36,7 +36,7 @@ feishu-cli-setup/
 
 ### feishu-knowledge-capture
 
-`feishu-knowledge-capture` collects support-triage Feishu topic threads and, when enabled, JSWO work-order group discussions into candidate Feishu Wiki knowledge drafts. It writes one candidate FAQ/fault/SOP page per reusable case and appends an entry to a shared index document such as `支持知识碎片候选池`.
+`feishu-knowledge-capture` collects support-triage Feishu topic threads and, when enabled, JSWO work-order group discussions or manually requested Feishu chat scopes into candidate Feishu Wiki knowledge drafts. It writes one candidate FAQ/fault/SOP page per reusable case, appends an entry to a shared index document such as `支持知识碎片候选池`, and can archive Markdown snapshots to GitHub for version history.
 
 First-version scope:
 
@@ -50,6 +50,8 @@ Future company-wide scope:
 - Recognize work-order group names containing ticket IDs such as `JSWO-202604220005`.
 - Parse group names like `【新问题_进行中】PUDU T300法国JSWO-202604220005`.
 - Use message content, not only group status text, to decide whether a case is closed enough for candidate knowledge.
+- Support manual scopes such as all JSWO work-order groups, all visible group chats, all private chats, or a named chat with filtering and redaction safeguards.
+- Store candidate Markdown versions under `knowledge-archive/` for GitHub-based diff and recovery.
 
 Skill folder:
 
@@ -89,6 +91,13 @@ For Feishu knowledge capture:
 
 ```text
 Use $feishu-knowledge-capture to collect today's support-triage threads and write candidate knowledge drafts to Feishu Wiki.
+```
+
+Manual Feishu knowledge capture examples:
+
+```text
+Use $feishu-knowledge-capture to collect today's JSWO work-order groups and archive candidate drafts.
+Use $feishu-knowledge-capture to collect yesterday's technical-support discussions from all visible group chats.
 ```
 
 Chinese example:
@@ -223,8 +232,10 @@ If you invoke it without case details, Hermes should return a compact intake for
 │   │   ├── review-rules.md
 │   │   └── templates.md
 │   └── scripts/
+│       ├── archive_snapshot.py
 │       ├── candidate_key.py
 │       └── parse_work_order_group.py
+├── knowledge-archive/          ← generated candidate Markdown versions when archive output is enabled
 ├── skills/
 │   └── knowledge/
 │       ├── web-in.md
