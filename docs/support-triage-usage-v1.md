@@ -198,6 +198,27 @@ support-triage 处理当前客户问题
 
 新产品、新问题没有资料很正常。此时 skill 应先帮助你收集信息、做低风险排查、升级验证；等最终原因和方案明确后，再用 `feishu-knowledge-capture` 沉淀。
 
+两份使用文档建议放在同一个“支持 AI 工作流”文档组里，不建议合并成一个长文档：
+
+- `support-triage` 使用文档：说明如何处理当前客户问题、做资料检索、输出回复草稿和沉淀建议。
+- `feishu-knowledge-capture` 使用文档：说明如何解析 `support-triage` 输出、写入候选池、更新索引和 GitHub 版本归档。
+
+`feishu-knowledge-capture` 可以直接解析 `support-triage` 输出里的沉淀建议，不需要人工再填一份沉淀模板：
+
+```text
+是否建议进入 feishu-knowledge-capture 候选池
+- 判断：不沉淀 / 待闭环后沉淀 / 建议立即候选沉淀
+- 理由：
+- 建议沉淀类型：FAQ / SOP / 排障知识 / Pending
+- 进入候选池前缺失：
+```
+
+映射规则：
+
+- 不沉淀：不创建候选页，只在日报记录跳过原因。
+- 待闭环后沉淀：写入或更新 Pending，成熟度通常为 M0/M1。
+- 建议立即候选沉淀：生成 FAQ、SOP 或排障知识候选，成熟度通常为 M2。
+
 可以手动测试：
 
 ```powershell

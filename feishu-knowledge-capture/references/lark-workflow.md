@@ -29,6 +29,28 @@ For single-case mode:
 - Output mode: dry-run if target Wiki/index is missing; otherwise candidate write plus GitHub archive.
 - Candidate key: work-order ID if present, thread ID if present, otherwise fallback hash.
 
+If the input is a `support-triage` output, parse its knowledge-capture section automatically:
+
+```text
+是否建议进入 feishu-knowledge-capture 候选池
+- 判断：不沉淀 / 待闭环后沉淀 / 建议立即候选沉淀
+- 理由：
+- 建议沉淀类型：FAQ / SOP / 排障知识 / Pending
+- 进入候选池前缺失：
+```
+
+Normalize English labels if present:
+
+- `Not captured` -> `不沉淀`
+- `Capture after closure` -> `待闭环后沉淀`
+- `Candidate now` -> `建议立即候选沉淀`
+
+Then apply `references/review-rules.md`:
+
+- `不沉淀`: skipped report only.
+- `待闭环后沉淀`: Pending, usually `M0` or `M1`.
+- `建议立即候选沉淀`: FAQ/SOP/fault candidate, usually `M2`, unless closure evidence is still missing.
+
 Default automation:
 
 ```text

@@ -96,6 +96,12 @@ Use $feishu-knowledge-capture to collect today's support-triage threads and writ
 Use $feishu-knowledge-capture to turn this support-triage output and final solution into a candidate fault/FAQ/SOP/Pending entry.
 ```
 
+`feishu-knowledge-capture` parses the support-triage decision labels directly:
+
+- `不沉淀` / `Not captured` -> skipped report only.
+- `待闭环后沉淀` / `Capture after closure` -> Pending, usually `M0/M1`.
+- `建议立即候选沉淀` / `Candidate now` -> candidate FAQ/SOP/fault article, usually `M2`.
+
 Manual Feishu knowledge capture examples:
 
 ```text

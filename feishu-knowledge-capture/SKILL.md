@@ -54,9 +54,36 @@ For single-case mode:
 
 - Do not fetch broad chat history unless the user provides a source link or explicitly asks.
 - Normalize the pasted material into one case.
+- If the input is a `support-triage` output, parse its knowledge-capture section automatically instead of asking the user to fill a separate intake template.
 - If final cause, solution, or verification is missing, generate a Pending record rather than a high-confidence FAQ/SOP.
 - If the case is closed enough, generate one or more candidate drafts: FAQ, fault troubleshooting article, or SOP.
 - Use `hash:<sha1(product|module|title|core_symptom)>` as the fallback candidate key when no thread ID or work-order ID exists.
+
+### Support-Triage Handoff Parsing
+
+When the pasted material contains a `support-triage` knowledge-capture decision, extract these fields when present:
+
+```text
+是否建议进入 feishu-knowledge-capture 候选池
+- 判断：不沉淀 / 待闭环后沉淀 / 建议立即候选沉淀
+- 理由：
+- 建议沉淀类型：FAQ / SOP / 排障知识 / Pending
+- 进入候选池前缺失：
+```
+
+Also accept English equivalents:
+
+- `Not captured` -> `不沉淀`.
+- `Capture after closure` -> `待闭环后沉淀`.
+- `Candidate now` -> `建议立即候选沉淀`.
+
+Map the decision to action:
+
+- `不沉淀`: do not create a candidate page; include the case in the run report as skipped.
+- `待闭环后沉淀`: create or update a Pending record with maturity `M0` or `M1`.
+- `建议立即候选沉淀`: create or update a candidate FAQ, SOP, or fault/troubleshooting article with default maturity `M2`.
+
+If the support-triage output says `建议立即候选沉淀` but still lacks final cause, solution, or verification, prefer Pending or a low-confidence fault draft and clearly list missing evidence. Do not turn triage-only hypotheses into final knowledge.
 
 ### Batch Mode
 

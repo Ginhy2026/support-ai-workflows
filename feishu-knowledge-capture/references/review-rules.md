@@ -65,6 +65,26 @@ Fault/troubleshooting knowledge is suitable when the symptom, troubleshooting lo
 
 Pending is required when the case is valuable but not closed enough for a candidate FAQ/SOP/fault article.
 
+## Support-Triage Decision Mapping
+
+When ingesting a `support-triage` output, normalize its knowledge-capture decision before writing anything.
+
+Accepted labels:
+
+- `不沉淀` or `Not captured`
+- `待闭环后沉淀` or `Capture after closure`
+- `建议立即候选沉淀` or `Candidate now`
+
+Action mapping:
+
+| support-triage decision | Feishu capture action | Default maturity |
+|---|---|---|
+| 不沉淀 / Not captured | Do not create a candidate page; report skipped with reason. | none |
+| 待闭环后沉淀 / Capture after closure | Create or update Pending only. | M0 原始线索 or M1 初步判断 |
+| 建议立即候选沉淀 / Candidate now | Create or update FAQ, SOP, or fault/troubleshooting candidate according to the suggested type and evidence. | M2 候选草稿 |
+
+The `support-triage` decision is an input signal, not proof of closure. If final cause, solution, verification, or scope is still missing, keep the output as Pending or low-confidence candidate content and list the missing evidence.
+
 ## Deduplication
 
 Before writing a new candidate, read the shared index and compare deterministic keys first. This is mandatory for every run, including manual reruns and scheduled automations.
