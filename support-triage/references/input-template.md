@@ -36,6 +36,11 @@ When the user enters only `/support-triage`, `$support-triage`, or an equivalent
 
 ## 飞书知识问答返回结果
 > 首轮留空；二轮粘贴飞书知识问答结果。
+
+## 补充参考资料 / SOP
+- 链接：飞书 / 语雀 / GitHub / 网页
+- 正文摘录：
+- 资料类型：官方 SOP / 历史案例 / 内部讨论 / 未验证经验
 ```
 
 Do not add explanation before or after the template unless the user explicitly asks.
@@ -79,6 +84,12 @@ Use this when the user asks for a more complete intake form:
 
 ## 飞书知识问答返回结果
 > 首轮处理时留空；二轮处理时粘贴知识问答结果。
+
+## 补充参考资料 / SOP
+- 链接：
+- 正文摘录：
+- 资料类型：官方 SOP / 历史案例 / 内部讨论 / 未验证经验
+- 希望重点参考的部分：
 ```
 
 ## Minimal Input
@@ -95,6 +106,8 @@ Use this when the user asks for a more complete intake form:
 场景：
 
 飞书知识问答结果：
+
+补充 SOP/资料：
 ```
 
 ## Targeted Troubleshooting Info Template

@@ -1,4 +1,4 @@
-# support-triage Skill 使用文档 v1.1
+# support-triage Skill 使用文档 v1.2
 
 本文档用于帮助海外技术支持同事在 Hermes / 飞书智能体中安装和使用 `support-triage` skill，并说明如何配合 `feishu-cli-setup` 打通飞书知识库检索。
 
@@ -13,6 +13,8 @@
 - 归纳客户问题
 - 生成适合复制到飞书知识问答的问题
 - 在本机已配置 `lark-cli` 时，辅助检索飞书知识库资料
+- 结合补充 SOP、语雀、飞书文档、网页或粘贴正文，提高排查步骤质量
+- 判断资料是否直接适用于当前案例，避免把相近资料当成确认结论
 - 生成客户回复草稿，默认使用客户原语言
 - 生成中文内部说明
 - 生成内部升级工单描述
@@ -34,6 +36,7 @@
 - 客户咨询机器人功能、配置、限制或使用方法
 - 客户反馈机器人异常、报错、噪音、无法执行任务、无法充电、屏幕异常、刮水组件偏移等
 - 你需要把客户原始描述整理成飞书知识问答检索问题
+- 你有额外 SOP、语雀文章、飞书文档或网页资料，希望智能体结合资料生成更可执行的排查建议
 - 你需要给客户写法语/英语/中文回复草稿
 - 你需要判断是否要升级给内部技术团队
 
@@ -63,6 +66,7 @@ $support-triage
 - 图片/日志/错误码
 - 初步判断
 - 飞书知识问答结果
+- 补充参考资料 / SOP
 
 ### 3.2 直接发送 WhatsApp 截图或聊天记录
 
@@ -95,36 +99,43 @@ $support-triage
 
 - 问题类型判断
 - 已知事实
+- 资料检索结果与适用性判断
 - 假设与推断（内部）
-- 缺失关键信息
-- 需要客户补充的信息
+- 缺失信息，区分必须补充和可选补充
+- 可执行排查步骤
 - 建议问飞书知识问答的问题
-- 是否需要内部升级
 - 给客户的初步回复草稿
+- 是否需要内部升级
 
-注意：`假设与推断（内部）` 只用于内部判断，不应直接复制给客户。
+注意：`假设与推断（内部）` 只用于内部判断，不应直接复制给客户。没有成熟可借鉴资料时，skill 应保持简短，不会为了填满模板长篇猜测原因。
 
-### 3.5 第二轮处理：补充飞书知识问答结果
+### 3.5 第二轮处理：补充飞书知识问答结果或 SOP
 
 第一轮输出后，把“建议问飞书知识问答的问题”复制到飞书知识问答。
 
-拿到飞书知识问答结果后，再发给智能体：
+拿到飞书知识问答结果、SOP、语雀文章、飞书文档或网页资料后，再发给智能体：
 
 ```text
-请使用 /support-triage 结合下面的飞书知识问答结果，生成正式客户回复和内部说明。
+请使用 /support-triage 结合下面的飞书知识问答结果和补充 SOP，生成正式客户回复和内部说明。
 
 飞书知识问答结果：
+...
+
+补充 SOP/资料：
 ...
 ```
 
 第二轮会输出：
 
-- 对飞书答案的整理
-- 最终技术判断
+- 对飞书答案和补充 SOP/资料的整理
+- 资料适用性判断：直接相关 / 部分相关 / 仅背景参考 / 不适用
+- 缺失信息：必须补充 / 可选补充
+- 可执行排查步骤
+- 简要技术判断
 - 给客户的正式回复草稿
 - 中文内部说明
 - 内部升级工单描述
-- FAQ 草稿
+- 是否建议交给 `case-capture` 沉淀
 
 ### 3.6 飞书知识库自动检索
 
@@ -135,8 +146,10 @@ $support-triage
 ```text
 support-triage
 → 生成产品/模块/现象/错误码关键词
+→ 扩展客户原文关键词和中文同义词
 → 通过 lark-cli 搜索飞书 Wiki / Docx
-→ 结合搜索结果输出分诊和客户回复草稿
+→ 判断资料适用性
+→ 结合可用资料输出排查步骤和客户回复草稿
 ```
 
 如果 CLI 没有配置好，`support-triage` 不会停止工作，而是会：
@@ -144,6 +157,27 @@ support-triage
 - 提示调用 `$feishu-cli-setup` 检查本机配置
 - 输出建议检索词，方便手动复制到飞书知识问答
 - 避免把未检索到的知识库内容当成已验证依据
+
+### 3.7 补充 SOP / 外部资料
+
+飞书知识库还不完整时，可以把已有 SOP、语雀文章、飞书文档、GitHub Markdown、网页链接或正文一起发给 skill。
+
+推荐输入：
+
+```markdown
+补充参考资料 / SOP：
+- 链接：
+- 正文摘录：
+- 资料类型：官方 SOP / 历史案例 / 内部讨论 / 未验证经验
+- 希望重点参考的部分：
+```
+
+处理规则：
+
+- 能读取链接时，skill 会整理标题、适用机型、症状、排查步骤和注意事项。
+- 读不到链接时，skill 会要求你粘贴正文或关键段落。
+- 资料会被标记为：直接相关 / 部分相关 / 仅背景参考 / 不适用。
+- 没有成熟可借鉴资料时，skill 只输出通用、低风险检查和补充信息请求，不会长篇猜测根因。
 
 可以手动测试：
 
@@ -179,6 +213,7 @@ Bonjour, le robot fait un bruit anormal à la fin de la tâche. Est-ce que vous 
 图片/日志/错误码：客户发了 6 秒视频，暂无日志
 我的初步判断：可能与清洁收尾或刮水组件有关
 飞书知识问答返回结果：
+补充 SOP/资料：
 ```
 
 ### 4.3 二轮处理场景
@@ -194,6 +229,9 @@ Bonjour, le robot fait un bruit anormal à la fin de la tâche. Est-ce que vous 
 
 飞书知识问答返回结果：
 ...
+
+补充 SOP/资料：
+...
 ```
 
 ## 5. 客户回复原则
@@ -204,7 +242,10 @@ Bonjour, le robot fait un bruit anormal à la fin de la tâche. Est-ce que vous 
 - 不要承诺具体处理时限
 - 不要把内部推断直接说给客户
 - 不要把不确定内容说成确定根因
+- 不要暴露内部资料来源、历史客户名称或未验证经验
 - 首轮回复尽量使用“我们会进一步确认下一步建议”
+- 有成熟 SOP 支撑时，客户回复应包含清晰的 Step 1/2/3 排查动作
+- 没有成熟资料时，只做确认、低风险基础检查和补充信息请求
 - 如果涉及安全风险，应建议客户暂停使用并保留现场信息
 
 ## 6. 飞书智能体如何安装
@@ -292,14 +333,14 @@ skill name: feishu-cli-setup
 ````markdown
 ---
 name: support-triage
-description: Triage overseas robot technical support cases from WhatsApp, Feishu email, Feishu messages, or copied customer conversations in French, English, or Chinese. Use when the user needs Hermes to classify a customer robot issue, summarize it, prepare Feishu knowledge-base query questions, draft customer replies, write Chinese internal escalation notes, produce escalation ticket descriptions, or decide whether to turn the case into an FAQ.
+description: Triage overseas robot technical support cases from WhatsApp, Feishu email, Feishu messages, copied customer conversations, Feishu knowledge-base results, SOP links, Yuque articles, web pages, or pasted reference materials in French, English, or Chinese. Use when the user needs Hermes to classify a customer robot issue, search and judge usable technical references, summarize evidence, prepare Feishu knowledge-base query questions, draft customer replies, write Chinese internal escalation notes, produce escalation ticket descriptions, or decide whether to hand the case to case-capture for FAQ/SOP drafting.
 ---
 
 # Support Triage
 
 ## Purpose
 
-Use this skill to turn messy customer support messages into structured Markdown for technical triage, Feishu knowledge-base lookup, customer replies, escalation, and FAQ capture. Do not directly auto-reply to customers; produce drafts and decision support for the human support owner.
+Use this skill to turn messy customer support messages into structured Markdown for technical triage, reference lookup, customer replies, escalation, and knowledge-capture decisions. Do not directly auto-reply to customers; produce drafts and decision support for the human support owner.
 
 ## Load References
 
@@ -323,15 +364,18 @@ Use this skill to turn messy customer support messages into structured Markdown 
 4. Identify whether the request is first-pass or second-pass:
    - First-pass: no Feishu knowledge-base answer is provided.
    - Second-pass: the user includes Feishu knowledge-base answer content or asks to整理/生成正式回复 after Feishu lookup.
-5. Before making technical judgments, use the linked PUDU Feishu knowledge base when the environment has access. If not accessible, say internally that the knowledge base could not be accessed and ask the user to paste the relevant Feishu knowledge-base result. Never claim to have read that link unless its contents are available in the current context.
-6. If a Feishu API/search utility is available, search by product/model, module, symptom, error code, and key customer phrases before drafting technical conclusions. If `lark-cli` is missing, not logged in, lacks `search:docs:read`, or search fails, tell the user to run `$feishu-cli-setup` and include exact suggested search queries for manual Feishu lookup.
-7. Preserve the customer's original language and infer it if not explicitly provided. Customer-facing drafts default to the customer's language. Internal notes default to Chinese.
-8. Extract or infer: customer original text, customer language, customer background, product/model, scenario, images/logs/error codes, user's preliminary judgment, and Feishu answer if present.
-9. Classify the issue type and affected product/module. Prefer conservative categories such as hardware, software/app, cloud/platform, network, map/navigation, task/dispatch, charging/power, account/permission, installation/configuration, operation guidance, bug/regression, or unknown.
-10. Separate facts, assumptions, and missing information. Never present unsupported internal guesses as customer-facing conclusions.
-11. For troubleshooting or escalation-sensitive first-pass output, include an internal "Hypotheses and Inferences" section with evidence and confidence. Keep this section out of the customer reply.
-12. For second-pass output, organize the Feishu answer, produce the final technical judgment, draft the customer response in the customer's language, and create Chinese internal notes, escalation text, and FAQ draft when appropriate.
-13. For first-pass output, generate a precise Feishu knowledge-base query question and an initial customer reply draft.
+5. Before making technical judgments, search or use available reference material. Prefer Feishu knowledge-base results first, then user-supplied SOP/Yuque/Feishu/web links or pasted reference text, then customer evidence. Never claim to have read a link unless its contents are available in the current context.
+6. If a Feishu API/search utility is available, search with multiple query variants based on product/model, module, symptom, error code, customer-language phrases, and Chinese synonyms before drafting technical conclusions. If `lark-cli` is missing, not logged in, lacks `search:docs:read`, or search fails, tell the user to run `$feishu-cli-setup` and include exact suggested search queries for manual Feishu lookup.
+7. Judge every reference source for applicability: Directly relevant, Partially relevant, Background only, or Not applicable. Prefer sources that include applicable model, exact symptom or error code, clear troubleshooting steps, verified historical cases, or official SOP content.
+8. If the user provides an SOP, Yuque, Feishu, GitHub, or web link, attempt to use it when readable in the current environment. If it cannot be read, ask the user to paste the article body or key paragraphs. Do not infer technical content from an unread link title alone.
+9. Preserve the customer's original language and infer it if not explicitly provided. Customer-facing drafts default to the customer's language. Internal notes default to Chinese.
+10. Extract or infer: customer original text, customer language, customer background, product/model, scenario, images/logs/error codes, user's preliminary judgment, Feishu answer, and supplemental references if present.
+11. Classify the issue type and affected product/module. Prefer conservative categories such as hardware, software/app, cloud/platform, network, map/navigation, task/dispatch, charging/power, account/permission, installation/configuration, operation guidance, bug/regression, or unknown.
+12. Separate facts, reference-backed conclusions, assumptions, and missing information. Never present unsupported internal guesses as customer-facing conclusions.
+13. If no mature directly relevant reference is available, do not write long speculative cause analysis. Provide only brief, common, low-risk checks such as confirming connections, cleaning contacts, restarting, checking versions, and collecting complete video/error screenshots.
+14. For troubleshooting or escalation-sensitive first-pass output, include an internal "Hypotheses and Inferences" section only when there is enough evidence. Keep it concise, evidence-labeled, and out of the customer reply.
+15. For second-pass output, organize reference answers, produce a concise technical judgment, list missing required/optional information, provide executable troubleshooting steps, draft the customer response in the customer's language, and create Chinese internal notes or escalation text when appropriate.
+16. For first-pass output, generate precise Feishu knowledge-base query questions and an initial customer reply draft.
 
 ## Customer Reply Rules
 
@@ -341,6 +385,8 @@ Use this skill to turn messy customer support messages into structured Markdown 
 - Use cautious wording for uncertain points: "we recommend checking first", "we need to confirm further", "this may be related to...", "il est possible que...", "we will verify with the technical team".
 - Avoid promising a resolution plan, root cause, or timing in first-pass replies. Prefer "we will verify the next steps" over "we will come back with a resolution plan".
 - Do not expose internal uncertainty, blame, escalation routes, or knowledge-base limitations to the customer.
+- Put the customer reply after missing information and troubleshooting steps in the output, so the draft reflects the evidence and next actions.
+- If an SOP supports the case, include clear Step 1/2/3 actions in the customer draft. If no mature reference supports the case, limit the draft to acknowledgement, low-risk checks, and targeted information requests.
 - For French and English, write natural business support language, not literal Chinese translation.
 - If safety, battery, smoke, abnormal heat, water ingress, collision, or injury risk appears, prioritize stopping use and internal escalation.
 
@@ -351,7 +397,7 @@ Use this skill to turn messy customer support messages into structured Markdown 
 - Keep customer-facing drafts separate from Chinese internal notes.
 - If information is missing, say exactly what is missing and why it matters.
 - If Feishu knowledge-base evidence is weak or not directly relevant, say so in the internal sections and avoid strong customer-facing claims.
-- If suitable for knowledge capture, provide an FAQ draft with question, applicable products, symptoms, cause/diagnosis, solution, escalation criteria, and source notes.
+- By default, only decide whether the case should be handed to `$case-capture` for FAQ/SOP drafting. Do not produce a long FAQ draft inside `support-triage` unless the user explicitly asks.
 
 ## Escalation Criteria
 
@@ -368,7 +414,7 @@ Primary reference source when accessible:
 
 `https://pudutech.feishu.cn/wiki/ZXWUw8OBniPEzqkYbymc2E6AnJe?from=from_copylink`
 
-Create one to three focused query questions. Each question should include product/model, module, symptom, scenario, exact error code/log phrase if available, recent changes, and expected answer type. Avoid vague questions like "how to fix this robot problem".
+Create three to five focused query variants for troubleshooting cases. Cover product/model, module, symptom, scenario, exact error code/log phrase if available, recent changes, customer-language phrases, and Chinese synonyms. Avoid vague questions like "how to fix this robot problem".
 
 Good query pattern:
 

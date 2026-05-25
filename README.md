@@ -6,7 +6,7 @@ Shared Hermes/Codex skills and workflows for AI-assisted technical support.
 
 ### support-triage
 
-`support-triage` helps overseas robot support teams process customer issues from WhatsApp, Feishu email, and Feishu messages. It supports first-pass triage, Feishu knowledge-base query generation, second-pass answer synthesis, customer reply drafts, internal escalation notes, and FAQ drafts.
+`support-triage` helps overseas robot support teams process customer issues from WhatsApp, Feishu email, and Feishu messages. It supports first-pass triage, Feishu knowledge-base search guidance, supplemental SOP/Yuque/Feishu/web reference handling, source applicability judgment, customer reply drafts, internal escalation notes, and handoff decisions for FAQ/SOP capture.
 
 Skill folder:
 
@@ -198,10 +198,10 @@ If you invoke it without case details, Hermes should return a compact intake for
 
 1. Paste the customer message and case background into Hermes.
 2. Run `$support-triage` without Feishu knowledge-base results for first-pass triage.
-3. Copy the generated Feishu knowledge-base query questions into Feishu.
-4. Paste the Feishu answer back into Hermes.
+3. Let the skill generate multiple Feishu search queries by model, module, symptom, error code, customer phrase, and Chinese synonyms.
+4. Paste Feishu answers or supplemental SOP/Yuque/Feishu/web references back into Hermes.
 5. If Feishu CLI search is not ready, run `$feishu-cli-setup` or manually search Feishu with the generated queries.
-6. Run `$support-triage` again to produce the formal customer reply, Chinese internal note, escalation ticket, and FAQ draft.
+6. Run `$support-triage` again to judge source applicability, produce executable troubleshooting steps, draft the customer reply, and decide whether to hand off to `$case-capture`.
 
 ## Repository Layout
 
