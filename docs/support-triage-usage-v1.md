@@ -1,4 +1,4 @@
-# support-triage Skill 使用文档 v1.2
+# support-triage Skill 使用文档 v1.3
 
 本文档用于帮助海外技术支持同事在 Hermes / 飞书智能体中安装和使用 `support-triage` skill，并说明如何配合 `feishu-cli-setup` 打通飞书知识库检索。
 
@@ -18,7 +18,7 @@
 - 生成客户回复草稿，默认使用客户原语言
 - 生成中文内部说明
 - 生成内部升级工单描述
-- 判断是否适合沉淀成 FAQ
+- 判断是否建议进入 `feishu-knowledge-capture` 候选知识池
 
 支持客户语言：
 
@@ -135,7 +135,7 @@ $support-triage
 - 给客户的正式回复草稿
 - 中文内部说明
 - 内部升级工单描述
-- 是否建议交给 `case-capture` 沉淀
+- 是否建议进入 `feishu-knowledge-capture` 候选池
 
 ### 3.6 飞书知识库自动检索
 
@@ -178,6 +178,25 @@ support-triage
 - 读不到链接时，skill 会要求你粘贴正文或关键段落。
 - 资料会被标记为：直接相关 / 部分相关 / 仅背景参考 / 不适用。
 - 没有成熟可借鉴资料时，skill 只输出通用、低风险检查和补充信息请求，不会长篇猜测根因。
+
+### 3.8 知识沉淀闭环
+
+主流程现在是：
+
+```text
+support-triage 处理当前客户问题
+→ 闭环或值得跟踪时
+→ feishu-knowledge-capture 生成候选 FAQ / SOP / 排障知识 / Pending
+→ 人工审核后进入正式知识库
+```
+
+`support-triage` 的沉淀建议只有三种：
+
+- 不沉淀：一次性问题、复用价值低，或资料不足且看不出复用价值。
+- 待闭环后沉淀：新产品、新问题或资料不成熟，但有复用潜力。
+- 建议立即候选沉淀：已有明确现象、处理步骤、结论或高复用价值。
+
+新产品、新问题没有资料很正常。此时 skill 应先帮助你收集信息、做低风险排查、升级验证；等最终原因和方案明确后，再用 `feishu-knowledge-capture` 沉淀。
 
 可以手动测试：
 
@@ -333,14 +352,14 @@ skill name: feishu-cli-setup
 ````markdown
 ---
 name: support-triage
-description: Triage overseas robot technical support cases from WhatsApp, Feishu email, Feishu messages, copied customer conversations, Feishu knowledge-base results, SOP links, Yuque articles, web pages, or pasted reference materials in French, English, or Chinese. Use when the user needs Hermes to classify a customer robot issue, search and judge usable technical references, summarize evidence, prepare Feishu knowledge-base query questions, draft customer replies, write Chinese internal escalation notes, produce escalation ticket descriptions, or decide whether to hand the case to case-capture for FAQ/SOP drafting.
+description: Triage overseas robot technical support cases from WhatsApp, Feishu email, Feishu messages, copied customer conversations, Feishu knowledge-base results, SOP links, Yuque articles, web pages, or pasted reference materials in French, English, or Chinese. Use when the user needs Hermes to classify a customer robot issue, search and judge usable technical references, summarize evidence, prepare Feishu knowledge-base query questions, draft customer replies, write Chinese internal escalation notes, produce escalation ticket descriptions, or decide whether the case should enter the feishu-knowledge-capture candidate pool.
 ---
 
 # Support Triage
 
 ## Purpose
 
-Use this skill to turn messy customer support messages into structured Markdown for technical triage, reference lookup, customer replies, escalation, and knowledge-capture decisions. Do not directly auto-reply to customers; produce drafts and decision support for the human support owner.
+Use this skill to turn messy customer support messages into structured Markdown for technical triage, reference lookup, customer replies, escalation, and knowledge-capture decisions. Do not directly auto-reply to customers; produce drafts and decision support for the human support owner. For knowledge capture, hand off to `feishu-knowledge-capture`; do not recommend `case-capture` in the default flow.
 
 ## Load References
 
@@ -376,6 +395,11 @@ Use this skill to turn messy customer support messages into structured Markdown 
 14. For troubleshooting or escalation-sensitive first-pass output, include an internal "Hypotheses and Inferences" section only when there is enough evidence. Keep it concise, evidence-labeled, and out of the customer reply.
 15. For second-pass output, organize reference answers, produce a concise technical judgment, list missing required/optional information, provide executable troubleshooting steps, draft the customer response in the customer's language, and create Chinese internal notes or escalation text when appropriate.
 16. For first-pass output, generate precise Feishu knowledge-base query questions and an initial customer reply draft.
+17. For knowledge-capture decisions, use only these labels:
+   - Not captured: one-off case, low reuse value, or insufficient evidence and no clear reuse potential.
+   - Capture after closure: new product/new issue or immature material with reuse potential; verify or escalate first, then enter the candidate pool.
+   - Candidate now: clear symptom, reusable steps, final action, verified result, or high reuse value already exists.
+18. For new products or new issues, treat missing mature references as normal. Avoid speculation, recommend verification/escalation where needed, and mark the case as "capture after closure" if it may become reusable knowledge.
 
 ## Customer Reply Rules
 
@@ -397,7 +421,7 @@ Use this skill to turn messy customer support messages into structured Markdown 
 - Keep customer-facing drafts separate from Chinese internal notes.
 - If information is missing, say exactly what is missing and why it matters.
 - If Feishu knowledge-base evidence is weak or not directly relevant, say so in the internal sections and avoid strong customer-facing claims.
-- By default, only decide whether the case should be handed to `$case-capture` for FAQ/SOP drafting. Do not produce a long FAQ draft inside `support-triage` unless the user explicitly asks.
+- By default, only decide whether the case should enter the `feishu-knowledge-capture` candidate pool. Do not produce a long candidate FAQ/SOP inside `support-triage` unless the user explicitly asks.
 
 ## Escalation Criteria
 

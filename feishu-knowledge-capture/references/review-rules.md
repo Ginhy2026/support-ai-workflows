@@ -7,7 +7,7 @@ Treat a case as closed enough for candidate knowledge only when at least one str
 - A final cause, fix, workaround, or recommended handling is explicitly stated.
 - A customer, service owner, or technical owner confirms the result.
 - The work order is closed, solved, verified, or moved out of active troubleshooting.
-- The support-triage second-pass output includes a final technical judgment and a reusable FAQ draft.
+- The support-triage second-pass output includes a final technical judgment, reusable troubleshooting steps, or a clear recommendation to enter the candidate pool.
 
 Weak signals are not enough by themselves:
 
@@ -27,6 +27,43 @@ Weak signals are not enough by themselves:
 - `已验证`: supported by final solution, official documentation, logs, reproduced result, or explicit technical confirmation.
 - `待确认`: plausible and partly supported, but not validated by final result or official source.
 - `仅初步判断`: inferred from symptoms or discussion with weak evidence.
+
+## Maturity Labels
+
+Use maturity labels to describe how reusable the candidate knowledge is. Maturity is about the knowledge item itself, not whether it applies to a future case.
+
+- `M0 原始线索`: raw customer message, screenshot, work-order fragment, or unverified observation.
+- `M1 初步判断`: support-triage output or internal hypothesis, but no closure.
+- `M2 候选草稿`: candidate FAQ/fault/SOP/Pending with a handling path, but not reviewed or fully verified.
+- `M3 已审核候选`: human-reviewed candidate that can be used internally, with scope and boundary notes.
+- `M4 正式知识`: approved official FAQ/SOP/fault article in the formal knowledge base.
+
+Default maturity:
+
+- Pending records are usually `M0` or `M1`.
+- Newly generated candidate drafts are usually `M2`.
+- Do not mark `M3` or `M4` unless a human reviewer explicitly approves it or the source is already formal knowledge.
+
+## Applicability Labels
+
+Use applicability labels to describe whether a source or prior candidate can be used for the current case:
+
+- `A3 直接适用`: product/model, module, symptom/error code, scenario, and steps match.
+- `A2 部分适用`: symptom or module is similar, but product/version/scenario differs.
+- `A1 背景参考`: useful context only; not enough for operational or customer-facing steps.
+- `A0 不适用`: conflicts with the case or key conditions do not match.
+
+When writing a candidate, include known applicability boundaries and non-applicable scenarios. A high-maturity source can still be only `A2` or `A1` for a specific case.
+
+## Candidate Type Quality Gates
+
+FAQ is suitable when one question maps to one high-confidence standard answer with clear scope, non-applicable scenarios, and low risk of misuse.
+
+SOP is suitable when the procedure is complete from trigger to closure, with roles, steps, expected results, exception branches, and escalation conditions.
+
+Fault/troubleshooting knowledge is suitable when the symptom, troubleshooting logic, final cause or cause range, solution, and verification result are clear.
+
+Pending is required when the case is valuable but not closed enough for a candidate FAQ/SOP/fault article.
 
 ## Deduplication
 
@@ -76,6 +113,7 @@ When a candidate already exists, update the existing Feishu page only when new m
 - Final cause, verified solution, workaround, rollback path, or customer confirmation.
 - Work-order closure or explicit movement out of active troubleshooting.
 - Evidence that changes the recommended answer, risk, applicable scope, or escalation condition.
+- Maturity change, such as Pending becoming candidate draft, candidate draft being reviewed, or reviewed content becoming formal knowledge.
 
 Do not update the candidate as a final answer when the new material is only a screenshot, progress reminder, repeated question, unsupported hypothesis, or personal conversation.
 

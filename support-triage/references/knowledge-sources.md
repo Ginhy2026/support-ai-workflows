@@ -39,6 +39,31 @@ Rate every search result or supplemental source before using it:
 
 Prefer references with explicit applicable model, exact symptom or error code, repeatable troubleshooting steps, verified historical cases, or official SOP status.
 
+## Maturity And Applicability
+
+Keep source maturity separate from case applicability:
+
+### Source maturity
+
+- `M0 原始线索`: raw customer message, screenshot, chat fragment, or unverified observation.
+- `M1 初步判断`: triage analysis or discussion hypothesis without closure.
+- `M2 候选草稿`: candidate FAQ/SOP/fault article with a handling path, but not reviewed or fully verified.
+- `M3 已审核候选`: human-reviewed candidate suitable for internal reference, with scope or boundary notes.
+- `M4 正式知识`: approved formal knowledge-base article, standard SOP, or official technical note.
+
+### Case applicability
+
+- `A3 直接适用`: model, module, symptom/error code, scenario, and steps match the current case.
+- `A2 部分适用`: symptom or module is similar, but model/version/scenario differs.
+- `A1 背景参考`: useful for mechanism/context only; not enough for customer-facing steps.
+- `A0 不适用`: conflicts with the current case or key conditions do not match.
+
+Use mature and applicable sources differently:
+
+- `M3/M4 + A3`: may support clear troubleshooting steps and higher-confidence judgment.
+- `M2 + A3` or `M3/M4 + A2`: may guide the response, but keep wording conservative and list mismatches.
+- `M0/M1` or `A1/A0`: do not use as a standard answer; use only for low-risk checks, missing information, or escalation direction.
+
 ## No Mature Reference Behavior
 
 If no directly relevant or mature reference is available:
@@ -47,6 +72,7 @@ If no directly relevant or mature reference is available:
 - Keep possible causes short and low-confidence, or omit them if they add no value.
 - Provide only common, low-risk checks: confirm connections, clean accessible contacts, restart, confirm versions, retry the task, collect complete video, screenshot error codes, and gather logs/SN.
 - Generate high-quality Feishu search questions and ask the user to paste any matching result for second-pass processing.
+- If the case may recur, recommend `待闭环后沉淀` for `feishu-knowledge-capture` so the final cause, solution, and verification can mature into reusable knowledge.
 
 ## Search Utility
 

@@ -1,4 +1,4 @@
 interface:
-  display_name: "Case Capture"
-  short_description: "Turn support cases into candidate FAQ and SOP drafts."
-  default_prompt: "Use $case-capture to convert this support case, knowledge answer, discussion, and solution into a structured FAQ or SOP draft."
+  display_name: "Case Capture (Legacy)"
+  short_description: "Legacy Markdown-only FAQ/SOP draft helper."
+  default_prompt: "Use $case-capture only when a legacy local Markdown-only FAQ/SOP draft is needed; prefer $feishu-knowledge-capture for the main knowledge-capture workflow."

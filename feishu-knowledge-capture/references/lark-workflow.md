@@ -14,6 +14,21 @@ Expected scopes include message search/read, chat read, docs create/update, and 
 
 ## Invocation Modes
 
+Single-case manual capture:
+
+```text
+使用 feishu-knowledge-capture，把下面这个 support-triage 输出和最终方案沉淀成候选知识。
+使用 feishu-knowledge-capture，把这个未闭环的新产品问题写入 Pending 候选池。
+Use $feishu-knowledge-capture to turn this support-triage output and final solution into a candidate fault article.
+```
+
+For single-case mode:
+
+- Source scope: `single-case`.
+- Time window: not required unless source messages need to be fetched.
+- Output mode: dry-run if target Wiki/index is missing; otherwise candidate write plus GitHub archive.
+- Candidate key: work-order ID if present, thread ID if present, otherwise fallback hash.
+
 Default automation:
 
 ```text

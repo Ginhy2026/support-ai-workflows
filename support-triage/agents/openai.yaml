@@ -1,4 +1,4 @@
 interface:
   display_name: "Support Triage"
   short_description: "Triage robot support cases with reference-aware troubleshooting drafts."
-  default_prompt: "Use $support-triage to triage this customer robot issue, search or judge usable references, and prepare Markdown outputs for Feishu, WhatsApp, email, and case capture."
+  default_prompt: "Use $support-triage to triage this customer robot issue, search or judge usable references, prepare Markdown outputs for Feishu/WhatsApp/email, and decide whether it should enter the feishu-knowledge-capture candidate pool."

@@ -1,15 +1,15 @@
 ---
 name: feishu-knowledge-capture
-description: Capture support-triage Feishu topic threads, JSWO work-order groups, and manually requested Feishu chat scopes into candidate Feishu Wiki knowledge drafts and GitHub Markdown archives. Use when Codex needs to collect resolved support-triage cases, extract FAQ/fault/SOP knowledge from Feishu messages, run daily knowledge capture, process all visible group/private chats with safeguards, prepare a shared candidate knowledge pool, update a Feishu Wiki or index document, or archive candidate knowledge snapshots for version history.
+description: Capture single support cases, support-triage outputs, Feishu topic threads, JSWO work-order groups, and manually requested Feishu chat scopes into candidate Feishu Wiki knowledge drafts and GitHub Markdown archives. Use when Codex needs to convert one resolved or pending support case into candidate FAQ/fault/SOP/Pending knowledge, collect support-triage cases in batch, extract reusable knowledge from Feishu messages, run daily knowledge capture, prepare a shared candidate knowledge pool, update a Feishu Wiki or index document, or archive candidate knowledge snapshots for version history.
 ---
 
 # Feishu Knowledge Capture
 
 ## Purpose
 
-Use this skill to turn Feishu support-triage threads, work-order group discussions, and explicitly requested chat scopes into candidate knowledge drafts for human review. It is the batch capture layer after `support-triage` and `case-capture`: collect source messages, group them into cases, classify whether they are suitable for knowledge capture, write candidate drafts to Feishu Wiki, update a shared index, and optionally archive Markdown snapshots to GitHub for version history.
+Use this skill to turn one support case or many Feishu support discussions into candidate knowledge drafts for human review. It is the unified knowledge-capture layer after `support-triage`: collect source material, group it into cases, classify whether it is suitable for knowledge capture, write candidate drafts to Feishu Wiki, update a shared index, and optionally archive Markdown snapshots to GitHub for version history.
 
-The default automated source is the user's configured support-triage topic group. JSWO work-order groups and broad chat scopes are supported for manual or configured runs, but generated knowledge must still be treated as a candidate draft until reviewed.
+The default automated source is the user's configured support-triage topic group. Single-case manual capture, JSWO work-order groups, and broad chat scopes are supported for manual or configured runs, but generated knowledge must still be treated as a candidate draft until reviewed.
 
 ## Load References
 
@@ -35,6 +35,32 @@ Before writing to Feishu, obtain or ask the user for these values:
 If any target write location is missing, complete source analysis and output a dry-run report instead of guessing where to publish.
 
 For team use, prefer a local config or environment variables instead of hardcoding internal Feishu URLs in a public repository. If a teammate asks `/飞书知识沉淀 获取今天我所有工单群内容并沉淀`, load the configured team target and write to the shared candidate pool.
+
+## Capture Modes
+
+### Single-Case Mode
+
+Use single-case mode when the user pastes one customer case, one `support-triage` output, one internal discussion, one final solution, or one work-order summary. This mode replaces the default recommendation to use `case-capture`.
+
+Accept inputs such as:
+
+```text
+Use $feishu-knowledge-capture to turn this support-triage output and final solution into a candidate knowledge draft.
+使用 feishu-knowledge-capture，把下面这个已闭环案例沉淀成候选排障知识。
+使用 feishu-knowledge-capture，把这个还没闭环的新产品问题放入 Pending 候选池。
+```
+
+For single-case mode:
+
+- Do not fetch broad chat history unless the user provides a source link or explicitly asks.
+- Normalize the pasted material into one case.
+- If final cause, solution, or verification is missing, generate a Pending record rather than a high-confidence FAQ/SOP.
+- If the case is closed enough, generate one or more candidate drafts: FAQ, fault troubleshooting article, or SOP.
+- Use `hash:<sha1(product|module|title|core_symptom)>` as the fallback candidate key when no thread ID or work-order ID exists.
+
+### Batch Mode
+
+Use batch mode for configured support-triage topic groups, JSWO work-order groups, named chats, or broader Feishu scopes.
 
 ## Source Selection
 
@@ -169,6 +195,7 @@ After the manual run looks correct, daily automation may process the leader's vi
    - FAQ: recurring question, product difference, configuration, policy, usage, or short "how to" answer.
    - SOP: reusable internal handling procedure, escalation playbook, or multi-role workflow.
    - Pending: useful signal but not ready for candidate knowledge.
+   - For single-case mode, this classification replaces the old separate `case-capture` flow.
 10. Generate Markdown or XML using `references/templates.md`.
 11. Write to Feishu:
    - Create one candidate document or Wiki node per eligible case.
@@ -189,6 +216,7 @@ After the manual run looks correct, daily automation may process the leader's vi
 - For all private-chat and broad all-chat scans, redact names, phone numbers, emails, private handles, and personal conversation by default.
 - Prefer reusable patterns over one-off customer details.
 - If source material is unresolved or incomplete, produce a pending record rather than a candidate knowledge draft.
+- New products and new issues often start with immature material. This is normal; capture them as Pending or low-maturity candidates until final cause, solution, and verification become available.
 - When content came from screenshots or cards, state whether the text was fully readable.
 - Do not archive raw chat transcripts to GitHub. Archive only the generated candidate Markdown, source identifiers, Feishu links, and review metadata.
 - Separate role ownership from invocation: `触发人` is audit metadata, while `技术支持负责人`, `部门 Leader`, and `产品/中台服务代表` describe the work-order roles.
@@ -211,13 +239,14 @@ Always end with a compact Markdown report:
 - 生成候选故障：
 - 生成候选 FAQ：
 - 生成候选 SOP：
+- 生成 Pending：
 - 待补充/待闭环：
 - 跳过：
 - GitHub 归档：
 
 ## 3. 已写入候选区
-| 类型 | 标题 | 工单号 | 来源 | 飞书链接 | GitHub 版本 | 审核状态 |
-|---|---|---|---|---|---|---|
+| 类型 | 标题 | 成熟度 | 工单号 | 来源 | 飞书链接 | GitHub 版本 | 审核状态 |
+|---|---|---|---|---|---|---|---|
 
 ## 4. 待补充
 | 标题/线索 | 缺失信息 | 建议动作 |

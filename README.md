@@ -6,7 +6,7 @@ Shared Hermes/Codex skills and workflows for AI-assisted technical support.
 
 ### support-triage
 
-`support-triage` helps overseas robot support teams process customer issues from WhatsApp, Feishu email, and Feishu messages. It supports first-pass triage, Feishu knowledge-base search guidance, supplemental SOP/Yuque/Feishu/web reference handling, source applicability judgment, customer reply drafts, internal escalation notes, and handoff decisions for FAQ/SOP capture.
+`support-triage` helps overseas robot support teams process customer issues from WhatsApp, Feishu email, and Feishu messages. It supports first-pass triage, Feishu knowledge-base search guidance, supplemental SOP/Yuque/Feishu/web reference handling, source applicability judgment, customer reply drafts, internal escalation notes, and candidate-pool decisions for `feishu-knowledge-capture`.
 
 Skill folder:
 
@@ -14,9 +14,9 @@ Skill folder:
 support-triage/
 ```
 
-### case-capture
+### case-capture (legacy / optional)
 
-`case-capture` converts customer issues, Feishu knowledge-base answers, internal discussions, troubleshooting notes, and final solutions into candidate FAQ or SOP drafts. It labels information confidence and whether the content is suitable for a formal knowledge base.
+`case-capture` is retained for compatibility as a local Markdown-only draft helper. The recommended workflow now uses `feishu-knowledge-capture` for both single-case capture and batch Feishu knowledge capture.
 
 Skill folder:
 
@@ -36,12 +36,13 @@ feishu-cli-setup/
 
 ### feishu-knowledge-capture
 
-`feishu-knowledge-capture` collects support-triage Feishu topic threads and, when enabled, JSWO work-order group discussions or manually requested Feishu chat scopes into candidate Feishu Wiki knowledge drafts. It writes one candidate FAQ/fault/SOP page per reusable case, appends an entry to a shared index document such as `支持知识碎片候选池`, and can archive Markdown snapshots to GitHub for version history.
+`feishu-knowledge-capture` turns single support cases, support-triage outputs, JSWO work-order groups, and manually requested Feishu chat scopes into candidate Feishu Wiki knowledge drafts. It writes candidate FAQ/fault/SOP/Pending entries, appends an entry to a shared index document such as `支持知识碎片候选池`, labels maturity (`M0`-`M4`), and can archive Markdown snapshots to GitHub for version history.
 
-First-version scope:
+Core scope:
 
-- Read only support-triage related topic threads.
-- Treat one topic thread as one case.
+- Capture one pasted case or one support-triage output.
+- Batch-read support-triage related topic threads.
+- Treat one topic thread or one work order as one case.
 - Write only candidate drafts under a Feishu Wiki review area such as `候选知识碎片/待审核`.
 - Never publish content as formal knowledge without human review.
 
@@ -76,10 +77,10 @@ Then invoke it with:
 Use $support-triage to triage this customer robot issue.
 ```
 
-For case capture:
+Legacy local Markdown-only case capture:
 
 ```text
-Use $case-capture to convert this resolved support case into a candidate FAQ or SOP draft.
+Use $case-capture only when a legacy local Markdown-only FAQ/SOP draft is needed.
 ```
 
 For Feishu CLI setup:
@@ -92,6 +93,7 @@ For Feishu knowledge capture:
 
 ```text
 Use $feishu-knowledge-capture to collect today's support-triage threads and write candidate knowledge drafts to Feishu Wiki.
+Use $feishu-knowledge-capture to turn this support-triage output and final solution into a candidate fault/FAQ/SOP/Pending entry.
 ```
 
 Manual Feishu knowledge capture examples:
@@ -186,7 +188,7 @@ To create a new skill (e.g., a Feishu knowledge capture skill):
 
 ---
 
-### case-capture
+### Empty support-triage invocation
 
 If you invoke it without case details, Hermes should return a compact intake form first:
 
@@ -201,7 +203,8 @@ If you invoke it without case details, Hermes should return a compact intake for
 3. Let the skill generate multiple Feishu search queries by model, module, symptom, error code, customer phrase, and Chinese synonyms.
 4. Paste Feishu answers or supplemental SOP/Yuque/Feishu/web references back into Hermes.
 5. If Feishu CLI search is not ready, run `$feishu-cli-setup` or manually search Feishu with the generated queries.
-6. Run `$support-triage` again to judge source applicability, produce executable troubleshooting steps, draft the customer reply, and decide whether to hand off to `$case-capture`.
+6. Run `$support-triage` again to judge source applicability, produce executable troubleshooting steps, draft the customer reply, and decide whether to enter the `feishu-knowledge-capture` candidate pool.
+7. When the case is closed or worth tracking, run `$feishu-knowledge-capture` in single-case or batch mode to create/update a candidate FAQ/fault/SOP/Pending entry.
 
 ## Repository Layout
 

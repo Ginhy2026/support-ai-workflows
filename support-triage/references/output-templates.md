@@ -54,9 +54,11 @@ Use when no Feishu knowledge-base result is provided.
 - 理由：
 - 建议升级对象/方向：
 
-## 10. 是否建议交给 case-capture 沉淀
-- 判断：
-- 建议沉淀方向：
+## 10. 是否建议进入 feishu-knowledge-capture 候选池
+- 判断：不沉淀 / 待闭环后沉淀 / 建议立即候选沉淀
+- 理由：
+- 建议沉淀类型：FAQ / SOP / 排障知识 / Pending
+- 进入候选池前缺失：
 ```
 
 ## Screenshot Or Chat First-Pass Output
@@ -129,9 +131,11 @@ Use when the user provides a WhatsApp/Feishu screenshot, video screenshot, or sh
 - 判断：
 - 理由：
 
-## 11. 是否建议交给 case-capture 沉淀
-- 判断：
-- 建议沉淀方向：
+## 11. 是否建议进入 feishu-knowledge-capture 候选池
+- 判断：不沉淀 / 待闭环后沉淀 / 建议立即候选沉淀
+- 理由：
+- 建议沉淀类型：FAQ / SOP / 排障知识 / Pending
+- 进入候选池前缺失：
 ```
 
 ## Second-Pass Output
@@ -204,10 +208,12 @@ Use when Feishu knowledge-base result, SOP content, Yuque article, Feishu doc, w
 
 **紧急程度和影响：**
 
-## 9. 是否建议交给 case-capture 沉淀
-- 判断：
-- 建议沉淀方向：
-- 备注：如需要正式 FAQ/SOP 草稿，请调用 `$case-capture`。
+## 9. 是否建议进入 feishu-knowledge-capture 候选池
+- 判断：不沉淀 / 待闭环后沉淀 / 建议立即候选沉淀
+- 理由：
+- 建议沉淀类型：FAQ / SOP / 排障知识 / Pending
+- 进入候选池前缺失：
+- 备注：如需要生成候选知识草稿或写入候选池，请调用 `$feishu-knowledge-capture`。
 ```
 
 ## Customer Reply Tone Snippets

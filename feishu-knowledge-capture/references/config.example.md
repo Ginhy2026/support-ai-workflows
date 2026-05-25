@@ -26,7 +26,7 @@ FEISHU_KNOWLEDGE_SOURCE_PATTERNS=/support-triage,JSWO-
 FEISHU_KNOWLEDGE_OWNER_FIELD=sender_name
 FEISHU_KNOWLEDGE_ARCHIVE_ROOT=knowledge-archive
 FEISHU_KNOWLEDGE_DEFAULT_AUTOMATION_SCOPE=support-triage
-FEISHU_KNOWLEDGE_MANUAL_SCOPES=support-triage,jswo-groups,all-group-chats,all-private-chats,named-chat
+FEISHU_KNOWLEDGE_MANUAL_SCOPES=single-case,support-triage,jswo-groups,all-group-chats,all-private-chats,named-chat
 FEISHU_KNOWLEDGE_ROLE_MAP_FILE=<local untracked role map path>
 FEISHU_KNOWLEDGE_DEFAULT_LEADER=<leader name or open_id>
 ```
@@ -91,6 +91,7 @@ output=feishu+github-archive
 Manual runs may override the source scope:
 
 ```text
+source_scope=single-case
 source_scope=jswo-groups
 source_scope=all-group-chats
 source_scope=all-private-chats

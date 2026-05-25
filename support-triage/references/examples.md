@@ -74,9 +74,11 @@ If the issue persists, could you please send us the robot SN, software version, 
 - 判断：先收集信息；若高频复现或运营影响明显，建议升级。
 - 理由：涉及回充和定位，可能需要地图/日志确认。
 
-## 10. 是否建议交给 case-capture 沉淀
-- 判断：暂不建议，缺少确认资料和最终解决方案。
-- 建议沉淀方向：闭环后可沉淀“自动回充失败并提示 positioning failed 的排查信息收集”。
+## 10. 是否建议进入 feishu-knowledge-capture 候选池
+- 判断：待闭环后沉淀
+- 理由：目前缺少成熟资料和最终解决方案，但回充失败场景可能复用。
+- 建议沉淀类型：Pending
+- 进入候选池前缺失：最终原因、已验证处理方案、适用机型/版本边界。
 ```
 
 ## Example 2: Second Pass With SOP Reference
@@ -159,7 +161,9 @@ Cordialement,
 ## 8. 内部升级工单描述
 暂不立即升级；如客户按 SOP 完成检查后仍无法确认故障点，或更换水箱/基座后仍异常，再升级。
 
-## 9. 是否建议交给 case-capture 沉淀
-- 判断：建议在案例闭环后交给 `$case-capture`。
-- 建议沉淀方向：CC1 移动水站蓝灯不变绿/1003 的标准排查 SOP。
+## 9. 是否建议进入 feishu-knowledge-capture 候选池
+- 判断：建议立即候选沉淀
+- 理由：现象、SOP 排查路径和适用产品较清楚，适合进入候选池等待人工审核。
+- 建议沉淀类型：排障知识 + SOP
+- 进入候选池前缺失：最终故障件确认、现场验证结果、适用版本/水站配置边界。
 ```

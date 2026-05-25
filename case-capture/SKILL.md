@@ -1,13 +1,15 @@
 ---
 name: case-capture
-description: Convert resolved or partially resolved robot support cases into structured candidate FAQ or SOP drafts. Use when the user provides customer issues, Feishu knowledge-base answers, internal discussion records, troubleshooting notes, final solutions, customer replies, or escalation outcomes and wants a Markdown draft for Feishu Docs, Yuque, GitHub, or a formal knowledge base. This skill must not directly publish or treat content as verified knowledge; it generates candidate drafts with confidence labels and knowledge-base suitability.
+description: Legacy optional helper for converting resolved or partially resolved robot support cases into structured candidate FAQ or SOP drafts. Prefer feishu-knowledge-capture for the main workflow because it supports single-case capture, batch Feishu capture, candidate pools, deduplication, maturity labels, and GitHub archives. Use this legacy skill only when the user explicitly asks for case-capture or needs a local Markdown-only draft.
 ---
 
 # Case Capture
 
 ## Purpose
 
-Use this skill to transform support case material into a structured candidate FAQ or SOP draft. The output is for human review before entering any official knowledge base.
+Use this legacy optional skill to transform support case material into a structured candidate FAQ or SOP draft. The output is for human review before entering any official knowledge base.
+
+For the normal support workflow, prefer `support-triage` for current-case handling and `feishu-knowledge-capture` for single-case or batch knowledge capture. Do not treat `case-capture` as the default handoff path.
 
 ## Load References
 
