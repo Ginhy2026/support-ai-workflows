@@ -52,6 +52,7 @@ Future company-wide scope:
 - Use message content, not only group status text, to decide whether a case is closed enough for candidate knowledge.
 - Support manual scopes such as all JSWO work-order groups, all visible group chats, all private chats, or a named chat with filtering and redaction safeguards.
 - Store candidate Markdown versions under `knowledge-archive/` for GitHub-based diff and recovery.
+- Dedupe multi-user runs in the same work-order group by `workorder:<JSWO-id>` and record roles separately: technical support owner, department leader, product/service representative, trigger person, contributors, and last updater.
 
 Skill folder:
 
@@ -98,6 +99,7 @@ Manual Feishu knowledge capture examples:
 ```text
 Use $feishu-knowledge-capture to collect today's JSWO work-order groups and archive candidate drafts.
 Use $feishu-knowledge-capture to collect yesterday's technical-support discussions from all visible group chats.
+Use $feishu-knowledge-capture to run a leader pilot on one JSWO group and record support owner, leader, and service representative roles.
 ```
 
 Chinese example:

@@ -37,6 +37,16 @@ Map the command to:
 - Output mode: Feishu write plus GitHub archive by default; `dry-run` reports only.
 - Target: configured candidate Wiki node and shared index document.
 
+Leader pilot commands:
+
+```text
+@Leader的飞书智能体 /skill install https://github.com/Ginhy2026/support-ai-workflows/tree/main/feishu-knowledge-capture
+@Leader的飞书智能体 /skill update https://github.com/Ginhy2026/support-ai-workflows/tree/main/feishu-knowledge-capture
+@Leader的飞书智能体 使用 feishu-knowledge-capture，候选目录写入：https://www.feishu.cn/wiki/QiPGwE9Y4iukxfkMh8YcXPKNnBd ，统一索引文档写入：https://www.feishu.cn/wiki/SarowXaTji5farkayOBcbYfqn2d ，GitHub归档写入 Ginhy2026/support-ai-workflows 的 knowledge-archive。
+@Leader的飞书智能体 /飞书知识沉淀 获取群聊「PUDU T300法国JSWO-202604220005」并沉淀
+@Leader的飞书智能体 /飞书知识沉淀 获取今天所有 JSWO 工单群并沉淀
+```
+
 ## Resolve Source Chat
 
 When only a group name is known:
@@ -113,6 +123,26 @@ python feishu-knowledge-capture\scripts\parse_work_order_group.py "【新问题_
 
 Use the parsed status/product/customer/work-order fields as metadata only. Closure still depends on message content.
 
+## Resolve Work-Order Roles
+
+Record role fields separately from the trigger person:
+
+- `support_owner`: technical support owner.
+- `leader`: support department leader.
+- `service_representative`: product or middle-platform service representative.
+- `triggered_by`: current invoking user.
+- `contributors`: people who provided key evidence or solutions.
+- `last_updated_by`: current writer identity for updates.
+
+Resolve roles in this order:
+
+1. Configured local role map or explicit command arguments.
+2. Work-order source metadata, if available.
+3. Group membership and message behavior.
+4. `待确认`.
+
+Do not set the trigger person as support owner unless supported by the role map or message evidence.
+
 ## Create Candidate Document
 
 Create the document body from `references/templates.md`.
@@ -137,6 +167,8 @@ lark-cli.cmd docs +fetch --api-version v2 --doc "<index doc url or token>" --doc
 
 If the key is found, do not create a new candidate page. Either skip it or update the existing page with an `更新记录` section according to `references/review-rules.md`.
 
+For JSWO groups, use `workorder:<JSWO-id>` as the dedupe key. Multiple users running the same work order must update or skip the existing candidate rather than creating duplicate pages.
+
 Append one row per new candidate to the shared index document:
 
 ```powershell
@@ -154,6 +186,12 @@ The index row must include:
 - Title
 - Source group
 - Owner
+- Support owner
+- Department leader
+- Product/service representative
+- Trigger person
+- Contributors
+- Last updater
 - Candidate document link
 - GitHub archive snapshot path
 - Current version number
@@ -174,6 +212,11 @@ python feishu-knowledge-capture\scripts\archive_snapshot.py `
   --title "候选故障知识：<标题>" `
   --feishu-doc-url "https://www.feishu.cn/wiki/xxx" `
   --review-status "待审核" `
+  --support-owner "A" `
+  --leader "B" `
+  --service-representative "C" `
+  --triggered-by "B" `
+  --contributors "A,C" `
   --content-file ".\candidate.md"
 ```
 

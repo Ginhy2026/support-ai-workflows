@@ -68,6 +68,12 @@ def main() -> None:
     parser.add_argument("--title", required=True)
     parser.add_argument("--feishu-doc-url", default="")
     parser.add_argument("--review-status", default="待审核")
+    parser.add_argument("--support-owner", default="待确认")
+    parser.add_argument("--leader", default="待确认")
+    parser.add_argument("--service-representative", default="待确认")
+    parser.add_argument("--triggered-by", default="")
+    parser.add_argument("--contributors", default="")
+    parser.add_argument("--last-updated-by", default="")
     parser.add_argument("--date", default="")
     parser.add_argument("--content-file", required=True)
     args = parser.parse_args()
@@ -95,6 +101,12 @@ def main() -> None:
             "created_at": created_at,
             "updated_at": updated_at,
             "review_status": args.review_status,
+            "support_owner": args.support_owner,
+            "leader": args.leader,
+            "service_representative": args.service_representative,
+            "triggered_by": args.triggered_by,
+            "contributors": args.contributors,
+            "last_updated_by": args.last_updated_by,
         }
     )
     body = Path(args.content_file).read_text(encoding="utf-8").strip()
@@ -109,6 +121,12 @@ def main() -> None:
         "title": args.title,
         "feishu_doc_url": args.feishu_doc_url,
         "review_status": args.review_status,
+        "support_owner": args.support_owner,
+        "leader": args.leader,
+        "service_representative": args.service_representative,
+        "triggered_by": args.triggered_by,
+        "contributors": args.contributors,
+        "last_updated_by": args.last_updated_by,
         "created_at": created_at,
         "updated_at": updated_at,
         "latest_version": version,

@@ -60,6 +60,15 @@ Duplicate signals:
 
 Never create a second candidate page for the same exact key unless the user explicitly asks for a new page.
 
+### Multi-User Runs
+
+When several teammates run the skill on the same JSWO work-order group, the work order remains the deduplication unit:
+
+- Same `workorder:<JSWO-id>` means same candidate, regardless of whether A, B, C, a leader, or a service representative triggered the run.
+- Trigger person changes are not material knowledge updates by themselves.
+- If a later trigger contributes final cause, solution, verification, product confirmation, or closure evidence, update the existing page and create the next GitHub archive version.
+- If no material new information exists, skip writing and report `duplicate_skipped`.
+
 ## Update and Versioning
 
 When a candidate already exists, update the existing Feishu page only when new material information appears:
@@ -76,6 +85,19 @@ For every new or updated candidate, also create a GitHub Markdown snapshot when 
 - Updated candidate: next version such as `v002.md`.
 - The Feishu candidate page keeps only the latest content plus a compact `更新记录`.
 - GitHub is the source for full Markdown version history and diff review.
+
+## Role Attribution
+
+Use role fields for traceability, but do not invent responsibility.
+
+- `技术支持负责人`: person driving troubleshooting or customer response.
+- `部门 Leader`: configured support leader or clearly identified leader in the group.
+- `产品/中台服务代表`: product or middle-platform representative for the involved product/service.
+- `触发人`: person who invoked the skill in this run.
+- `贡献人`: people who added final cause, solution, verification, customer confirmation, or other key evidence.
+- `最后更新人`: person or bot identity that updated the candidate.
+
+Prefer explicit role maps or source-system metadata. Message behavior is a fallback signal. If evidence is insufficient, write `待确认`.
 
 ## Privacy and Safety
 

@@ -15,7 +15,12 @@ Use these templates for Feishu Docs or Wiki candidate pages. Keep the status lin
 - 工单号：
 - 来源群：
 - 来源 thread/message：
-- 负责人/同事：
+- 技术支持负责人：
+- 部门 Leader：
+- 产品/中台服务代表：
+- 触发人：
+- 贡献人：
+- 最后更新人：
 - 产品/机型：
 - 模块：
 - 客户/地区：
@@ -90,7 +95,12 @@ Use these templates for Feishu Docs or Wiki candidate pages. Keep the status lin
 - 来源群：
 - 来源 thread/message：
 - 工单号：
-- 负责人/同事：
+- 技术支持负责人：
+- 部门 Leader：
+- 产品/中台服务代表：
+- 触发人：
+- 贡献人：
+- 最后更新人：
 - 截图/卡片文本是否完整可读：
 - 可信度：已验证 / 待确认 / 仅初步判断
 
@@ -138,7 +148,12 @@ Use these templates for Feishu Docs or Wiki candidate pages. Keep the status lin
 - 来源群：
 - 来源 thread/message：
 - 工单号：
-- 负责人/同事：
+- 技术支持负责人：
+- 部门 Leader：
+- 产品/中台服务代表：
+- 触发人：
+- 贡献人：
+- 最后更新人：
 - 审核状态：待审核
 - 发布前需补充：
 
@@ -162,9 +177,9 @@ Use this in the daily report, not as a full Wiki page unless the user asks for a
 Append one row per generated candidate document.
 
 ```markdown
-| 唯一键 | 日期 | 类型 | 产品/模块 | 工单号 | 来源 thread | 标题 | 来源群 | 负责人/同事 | 候选文档链接 | GitHub归档 | 版本号 | 最后更新时间 | 最近变更摘要 | 审核状态 |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| thread:omt_xxx | YYYY-MM-DD | 故障/FAQ/SOP/待补充 |  |  | omt_xxx |  |  |  |  | knowledge-archive/.../v001.md | v001 | YYYY-MM-DD HH:mm | 初次创建 | 待审核 |
+| 唯一键 | 日期 | 类型 | 产品/模块 | 工单号 | 来源 thread | 标题 | 来源群 | 技术支持负责人 | 部门 Leader | 产品/中台服务代表 | 触发人 | 贡献人 | 最后更新人 | 候选文档链接 | GitHub归档 | 版本号 | 最后更新时间 | 最近变更摘要 | 审核状态 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| thread:omt_xxx | YYYY-MM-DD | 故障/FAQ/SOP/待补充 |  |  | omt_xxx |  |  | 待确认 | 待确认 | 待确认 |  |  |  |  | knowledge-archive/.../v001.md | v001 | YYYY-MM-DD HH:mm | 初次创建 | 待审核 |
 ```
 
 ## GitHub Archive Frontmatter
@@ -182,6 +197,12 @@ feishu_doc_url: "https://..."
 created_at: "2026-05-22T18:30:00+08:00"
 updated_at: "2026-05-22T18:30:00+08:00"
 review_status: "待审核"
+support_owner: "待确认"
+leader: "待确认"
+service_representative: "待确认"
+triggered_by: ""
+contributors: ""
+last_updated_by: ""
 ---
 
 # 候选故障知识：<标题>

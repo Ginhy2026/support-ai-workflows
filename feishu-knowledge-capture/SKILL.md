@@ -30,6 +30,7 @@ Before writing to Feishu, obtain or ask the user for these values:
 - Shared index document URL or token, such as `支持知识碎片候选池`.
 - Run window, defaulting to today in Asia/Shanghai for daily automation.
 - Optional GitHub archive root, defaulting to `knowledge-archive/` in the repository.
+- Optional role mapping for support owners, department leaders, and product/service representatives.
 
 If any target write location is missing, complete source analysis and output a dry-run report instead of guessing where to publish.
 
@@ -99,6 +100,43 @@ Interpret these as:
 
 Do not write to another person's private candidate pool unless the configured target explicitly points there and the current identity has permission.
 
+## Multi-User Work-Order Groups
+
+Multiple teammates may run this skill in the same JSWO work-order group. Treat the work order, not the invoking person, as the deduplication unit:
+
+- Use `workorder:<JSWO-id>` as the candidate key for JSWO groups.
+- If A, B, and C run the skill on the same work order, create only one candidate page.
+- If a later run adds a final cause, verified solution, product confirmation, or closure evidence, update the existing candidate and create the next GitHub archive version.
+- If a later run has no material new information, skip writing and report `duplicate_skipped`.
+- Record the trigger person and last updater for audit, but do not treat the trigger person as the work-order owner by default.
+
+## Role Attribution
+
+Record work-order responsibility by role:
+
+- `技术支持负责人`: person mainly troubleshooting, replying to the customer, or driving the case.
+- `部门 Leader`: technical support department leader in the group.
+- `产品/中台服务代表`: product or middle-platform service representative for the involved product/service.
+- `触发人`: person who invoked this skill for the current run.
+- `贡献人`: people who provided final cause, solution, verification, customer confirmation, or other key evidence.
+- `最后更新人`: person or bot identity that last updated the candidate.
+
+Prefer explicit configuration or a local role mapping. If not available, infer roles from group membership and message behavior. If a role cannot be determined reliably, write `待确认` instead of guessing.
+
+## Leader Pilot
+
+For a department leader pilot, start with manual use before daily automation:
+
+```text
+@Leader的飞书智能体 /skill install https://github.com/Ginhy2026/support-ai-workflows/tree/main/feishu-knowledge-capture
+@Leader的飞书智能体 /skill update https://github.com/Ginhy2026/support-ai-workflows/tree/main/feishu-knowledge-capture
+@Leader的飞书智能体 使用 feishu-knowledge-capture，候选目录写入：https://www.feishu.cn/wiki/QiPGwE9Y4iukxfkMh8YcXPKNnBd ，统一索引文档写入：https://www.feishu.cn/wiki/SarowXaTji5farkayOBcbYfqn2d ，GitHub归档写入 Ginhy2026/support-ai-workflows 的 knowledge-archive。
+@Leader的飞书智能体 /飞书知识沉淀 获取群聊「PUDU T300法国JSWO-202604220005」并沉淀
+@Leader的飞书智能体 /飞书知识沉淀 获取今天所有 JSWO 工单群并沉淀
+```
+
+After the manual run looks correct, daily automation may process the leader's visible JSWO groups and support-triage topics at 18:30.
+
 ## Workflow
 
 1. Resolve source chats:
@@ -112,7 +150,7 @@ Do not write to another person's private candidate pool unless the configured ta
    - Collect root message, replies, visible text from screenshots/cards when available, bot answer, human follow-up, and closure evidence.
    - If image or card content cannot be read, record it as missing evidence.
 5. Normalize each case:
-   - Source group, message IDs, thread ID, sender names, timestamps, product/module, customer/region, language, work-order ID when present.
+   - Source group, message IDs, thread ID, sender names, timestamps, product/module, customer/region, language, work-order ID, trigger person, support owner, department leader, product/service representative, contributors, and last updater when present.
 6. Generate a deterministic candidate key:
    - Support-triage thread: `thread:<thread_id>`.
    - JSWO work-order group: `workorder:<JSWO-id>`.
@@ -153,6 +191,7 @@ Do not write to another person's private candidate pool unless the configured ta
 - If source material is unresolved or incomplete, produce a pending record rather than a candidate knowledge draft.
 - When content came from screenshots or cards, state whether the text was fully readable.
 - Do not archive raw chat transcripts to GitHub. Archive only the generated candidate Markdown, source identifiers, Feishu links, and review metadata.
+- Separate role ownership from invocation: `触发人` is audit metadata, while `技术支持负责人`, `部门 Leader`, and `产品/中台服务代表` describe the work-order roles.
 
 ## Output Report
 

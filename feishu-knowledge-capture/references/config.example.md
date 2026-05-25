@@ -27,6 +27,8 @@ FEISHU_KNOWLEDGE_OWNER_FIELD=sender_name
 FEISHU_KNOWLEDGE_ARCHIVE_ROOT=knowledge-archive
 FEISHU_KNOWLEDGE_DEFAULT_AUTOMATION_SCOPE=support-triage
 FEISHU_KNOWLEDGE_MANUAL_SCOPES=support-triage,jswo-groups,all-group-chats,all-private-chats,named-chat
+FEISHU_KNOWLEDGE_ROLE_MAP_FILE=<local untracked role map path>
+FEISHU_KNOWLEDGE_DEFAULT_LEADER=<leader name or open_id>
 ```
 
 With the current shared pool, the values are:
@@ -96,6 +98,34 @@ source_scope=named-chat:<chat name>
 ```
 
 For `all-group-chats` and `all-private-chats`, the runner must filter by technical-support signals before generating candidates and must redact private conversation by default.
+
+## Role Attribution
+
+Use role attribution to separate work-order responsibility from the person who invokes the skill.
+
+Recommended local role map shape:
+
+```json
+{
+  "leaders": ["open_id_or_name_b"],
+  "service_representatives": {
+    "PUDU T300": ["open_id_or_name_c"],
+    "KettyBot": ["open_id_or_name_d"]
+  },
+  "support_owners": {
+    "JSWO-202604220005": "open_id_or_name_a"
+  }
+}
+```
+
+Resolution priority:
+
+1. Explicit role map or configured values.
+2. Work-order metadata from the source system, if available.
+3. Group membership and message behavior.
+4. `待确认` when the role cannot be determined reliably.
+
+Track the invoking user separately as `触发人`; do not treat the invoking user as the work-order owner unless the role map or evidence supports it.
 
 ## GitHub Archive
 
