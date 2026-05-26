@@ -14,6 +14,21 @@ Expected scopes include message search/read, chat read, docs create/update, and 
 
 ## Invocation Modes
 
+Maintenance / cleanup:
+
+```text
+使用 feishu-knowledge-capture，清理候选池里重复的 T300 网络域 FAQ
+使用 feishu-knowledge-capture，修正这个候选答案，并把重复文档标记废弃
+使用 feishu-knowledge-capture，检查支持知识碎片候选池里是否有重复候选
+```
+
+For maintenance mode:
+
+- Source scope: existing Feishu candidate Wiki node and shared index document.
+- Time window: not required unless the user asks to inspect recent writes only.
+- Output mode: update existing Feishu pages/index plus GitHub archive when enabled.
+- Candidate key: use the existing key from the index/page; never invent a new key for cleanup.
+
 Single-case manual capture:
 
 ```text
@@ -203,6 +218,8 @@ lark-cli.cmd docs +fetch --api-version v2 --doc "<index doc url or token>" --doc
 ```
 
 If the key is found, do not create a new candidate page. Either skip it or update the existing page with an `更新记录` section according to `references/review-rules.md`.
+
+For cleanup, if multiple pages exist for the same exact key, choose the canonical page first, mark duplicates obsolete, then update the index row to the canonical title/link/status. Prefer block-level replacement for one index row instead of overwriting the whole index document.
 
 For JSWO groups, use `workorder:<JSWO-id>` as the dedupe key. Multiple users running the same work order must update or skip the existing candidate rather than creating duplicate pages.
 

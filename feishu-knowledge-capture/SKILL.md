@@ -38,6 +38,29 @@ For team use, prefer a local config or environment variables instead of hardcodi
 
 ## Capture Modes
 
+### Maintenance Mode
+
+Use maintenance mode when the user asks to clean the candidate pool, fix a wrong answer, merge duplicates, mark obsolete drafts, or repair the shared index. This mode maintains existing candidate knowledge; it does not collect new source chats by default.
+
+Accept inputs such as:
+
+```text
+清理候选池里重复的 T300 网络域 FAQ
+修正这个候选答案，并把重复文档标记废弃
+检查支持知识碎片候选池里是否有重复候选
+把同一 thread/workorder 的重复候选合并到一个主文档
+```
+
+For maintenance mode:
+
+- Read the shared index and candidate pages before writing.
+- Choose one canonical page per exact key (`thread:<id>` or `workorder:<JSWO-id>`).
+- Correct the canonical page when the existing answer conflicts with newer evidence or human review.
+- Mark duplicate or empty pages as obsolete with a link to the canonical page; do not delete them unless the user explicitly requests deletion.
+- Update the shared index row to point to the canonical page and record the correction/update time.
+- If GitHub archive is enabled, create the next archive version for the corrected canonical candidate.
+- Return a cleanup report listing canonical pages, obsolete pages, corrected facts, and any remaining possible duplicates.
+
 ### Single-Case Mode
 
 Use single-case mode when the user pastes one customer case, one `support-triage` output, one internal discussion, one final solution, or one work-order summary. This mode replaces the default recommendation to use `case-capture`.
@@ -191,6 +214,8 @@ For a department leader pilot, start with manual use before daily automation:
 After the manual run looks correct, daily automation may process the leader's visible JSWO groups and support-triage topics at 18:30.
 
 ## Workflow
+
+For maintenance mode, skip source chat collection and start from the shared index/candidate pages. Follow `references/lark-workflow.md` and `references/review-rules.md` for canonical selection, correction, duplicate marking, and index repair.
 
 1. Resolve source chats:
    - Use Feishu chat search when only names are known.

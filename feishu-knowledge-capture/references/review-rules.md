@@ -144,6 +144,18 @@ For every new or updated candidate, also create a GitHub Markdown snapshot when 
 - The Feishu candidate page keeps only the latest content plus a compact `更新记录`.
 - GitHub is the source for full Markdown version history and diff review.
 
+## Maintenance and Correction
+
+Use maintenance rules when the user asks to clean an existing candidate pool, fix a wrong answer, merge duplicate candidates, or repair index rows.
+
+- Exact same key (`thread:<id>` or `workorder:<JSWO-id>`): keep one canonical candidate page and mark all other pages as obsolete duplicates.
+- Same title/question but different key: do not merge automatically. Report `possible_duplicate` unless a human reviewer confirms they are the same knowledge item.
+- Wrong or misleading answer: correct the canonical page, add a compact update record, and update the shared index row title/status if needed.
+- Empty or partial page for an existing key: mark obsolete and link to the canonical page.
+- Obsolete pages should be overwritten or prefixed with a clear notice such as `已废弃：重复候选，请以主文档为准`; do not delete pages unless explicitly requested.
+- The index should point only to the canonical page for an exact key. If older rows remain, mark them obsolete or replace them with the canonical row.
+- Corrections based on human review are material updates and should generate the next GitHub archive version when archive output is enabled.
+
 ## Role Attribution
 
 Use role fields for traceability, but do not invent responsibility.
