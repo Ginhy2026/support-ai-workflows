@@ -1,6 +1,47 @@
-# support-triage Skill 使用文档 v1.3
+# support-triage Skill 使用文档 v1.4
 
 本文档用于帮助海外技术支持同事在 Hermes / 飞书智能体中安装和使用 `support-triage` skill，并说明如何配合 `feishu-cli-setup` 打通飞书知识库检索。
+
+## 0. 安装和更新
+
+如果是第一次让某个飞书智能体使用 `support-triage`，先在该智能体对话里发送安装命令：
+
+```text
+@你的飞书智能体 /skill install https://github.com/Ginhy2026/support-ai-workflows/tree/main/support-triage
+```
+
+如果已经安装过，只需要更新到 GitHub 最新版本：
+
+```text
+@你的飞书智能体 /skill update https://github.com/Ginhy2026/support-ai-workflows/tree/main/support-triage
+```
+
+安装完成后可以用最小命令验证：
+
+```text
+@你的飞书智能体 /support-triage
+```
+
+正常情况下，智能体会返回一个用于补充客户问题、产品型号、截图/日志、已查资料和期望输出的输入模板。
+
+如果你还希望把 `support-triage` 的闭环案例自动沉淀到候选知识池，还需要安装或更新 `feishu-knowledge-capture`：
+
+```text
+@你的飞书智能体 /skill install https://github.com/Ginhy2026/support-ai-workflows/tree/main/feishu-knowledge-capture
+```
+
+或：
+
+```text
+@你的飞书智能体 /skill update https://github.com/Ginhy2026/support-ai-workflows/tree/main/feishu-knowledge-capture
+```
+
+两者关系：
+
+- `support-triage`：负责分析客户问题、生成排查建议、客户回复、内部说明，并判断是否值得沉淀。
+- `feishu-knowledge-capture`：负责把适合沉淀的 `support-triage` 输出写入候选知识池、统一索引和 GitHub 版本归档。
+
+只做单次客户问题分析时，安装 `support-triage` 就够了；要自动沉淀知识时，两个 skill 都需要安装。
 
 ## 1. 这个 skill 是做什么的
 
