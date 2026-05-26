@@ -167,6 +167,20 @@ lark-cli im +messages-resources-download --message-id om_xxx --type image --outp
 
 If OCR or image reading is unavailable, mark `截图/卡片文本是否完整可读：否` and put the case in pending when the missing text blocks diagnosis.
 
+## Reference Documents and Media
+
+Before generating a candidate, inspect any Feishu, Yuque, GitHub, web, SOP, or official manual links found in the source case.
+
+For each reference:
+
+- Resolve the title and readable content when the current identity has permission.
+- Record the URL, maturity (`M0`-`M4`), applicability (`A0`-`A3`), read status, and citation reason in the candidate `参考资料` section.
+- If the content is not readable, do not infer technical details from the title. Mark `是否已读取：否` and preserve the link.
+- If readable, extract only the key conclusion, steps, warnings, scope, and version boundaries needed for the current case.
+- If the reference contains key images or tables, attempt to fetch or insert only the relevant media. If this is not possible, keep a note such as `图片未复制，仅可从原文查看：<section>`.
+
+When a reference is `M4 正式知识` and `A3 直接适用`, default to an index/case-application record instead of creating a duplicate long-form candidate page. Create a supplemental candidate only when the current case adds a new boundary, exception, customer wording, or local workaround.
+
 ## Parse JSWO Work-Order Group Names
 
 Run:

@@ -155,6 +155,37 @@ When the source contains a human-curated final answer, troubleshooting manual, n
 - If the final answer is customer-facing but the candidate is internal, keep both: a reusable internal SOP section and a customer reply template section.
 - When the manual is incomplete, keep the known steps and mark missing evidence explicitly instead of inventing the rest of the procedure.
 
+## Reference Documents and Media
+
+When a case cites Feishu, Yuque, GitHub, web pages, SOPs, official manuals, or other reference documents, preserve traceability in the candidate output.
+
+- Always keep the original reference link in a `参考资料` section, even when key content is quoted or summarized elsewhere.
+- Record the reference title, URL, maturity (`M0`-`M4`), applicability (`A0`-`A3`), whether the link was readable, and why it was used.
+- If the link cannot be read, do not infer technical content from the title. Mark it as `未读取` and ask for pasted content or key paragraphs when needed.
+- If the reference is readable, extract only the key conclusion, steps, warnings, scope, and version boundaries needed for the current case. Do not copy an entire mature article into a candidate.
+- If the reference contains critical images, screenshots, tables, wiring diagrams, measurement diagrams, error screenshots, or port tables, attach the relevant media when the runtime can download or insert it.
+- If media cannot be downloaded or inserted because of permission, tool, or format limits, keep the reference link and state where the image/table appears, such as `图片未复制，仅可从原文查看：第 3 节接线图`.
+- Do not move all images by default. Only copy media that directly supports diagnosis, troubleshooting steps, customer reply, or review evidence.
+
+### Mature Reference Decision Table
+
+| Reference maturity and applicability | Default action |
+|---|---|
+| `M4 正式知识` + `A3 直接适用` | Do not create a duplicate long-form candidate. Create/update only an index or case-application record that links to the formal knowledge and explains why it applies. |
+| `M4 正式知识` + new boundary, exception, customer wording, or local workaround | Create a supplemental candidate focused only on the new value, and cite the formal knowledge as the authority. |
+| `M3 已审核候选` + `A3 直接适用` | Prefer updating/reusing the existing candidate or recording reuse. Do not duplicate content into a new page. |
+| `M2` or lower | Candidate capture is allowed, but mark reference maturity, applicability, missing evidence, and review status. |
+
+Content priority:
+
+1. Human-curated final manual or final customer reply.
+2. Mature formal reference document.
+3. `support-triage` output.
+4. Similar historical case.
+5. Model-generated summary.
+
+If a mature document fully covers the issue, the candidate should summarize the current case fit: why the document applies, applicable conditions, differences, follow-up actions, and the link to the source. Do not duplicate the formal article body.
+
 ## Maintenance and Correction
 
 Use maintenance rules when the user asks to clean an existing candidate pool, fix a wrong answer, merge duplicate candidates, or repair index rows.
