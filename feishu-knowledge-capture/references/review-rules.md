@@ -144,6 +144,17 @@ For every new or updated candidate, also create a GitHub Markdown snapshot when 
 - The Feishu candidate page keeps only the latest content plus a compact `更新记录`.
 - GitHub is the source for full Markdown version history and diff review.
 
+## Human-Curated Final Answers
+
+When the source contains a human-curated final answer, troubleshooting manual, numbered SOP, customer-ready reply, or reviewer correction, treat it as the primary source of truth for the candidate body.
+
+- Preserve explicit numbered steps, measurement values, thresholds, pass/fail criteria, warnings, and customer reply wording unless they conflict with safety or privacy rules.
+- Do not replace a concrete manual with a generic summary such as "replace module" or "check connection" when the source provides step-by-step diagnostics.
+- If support-triage output, knowledge-base search results, and a human final answer disagree, prefer the human final answer and record the discrepancy in `更新记录` or `内部注意事项`.
+- If a value is operationally important, such as resistance, voltage, port, error code, or firmware version, copy it exactly and include units and tolerance where provided.
+- If the final answer is customer-facing but the candidate is internal, keep both: a reusable internal SOP section and a customer reply template section.
+- When the manual is incomplete, keep the known steps and mark missing evidence explicitly instead of inventing the rest of the procedure.
+
 ## Maintenance and Correction
 
 Use maintenance rules when the user asks to clean an existing candidate pool, fix a wrong answer, merge duplicate candidates, or repair index rows.

@@ -66,6 +66,8 @@ Then apply `references/review-rules.md`:
 - `待闭环后沉淀`: Pending, usually `M0` or `M1`.
 - `建议立即候选沉淀`: FAQ/SOP/fault candidate, usually `M2`, unless closure evidence is still missing.
 
+If the same input also contains a human-written final answer or numbered troubleshooting manual, use that final answer as the main candidate body. The support-triage output is metadata and supporting context, not the structure to blindly follow.
+
 Default automation:
 
 ```text

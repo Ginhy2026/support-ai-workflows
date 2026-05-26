@@ -1,0 +1,18 @@
+{
+  "candidate_key": "thread:omt_19719cf65b4f9be8",
+  "type": "故障/SOP",
+  "source_scope": "support-triage",
+  "title": "候选故障知识：移动水站报错 1003 - 排查手册",
+  "feishu_doc_url": "https://pudutech.feishu.cn/wiki/VakTw06Q6iun4akQG4ycYuhPnhM",
+  "review_status": "待审核",
+  "support_owner": "覃弘毅",
+  "leader": "待确认",
+  "service_representative": "待确认",
+  "triggered_by": "覃弘毅",
+  "contributors": "覃弘毅",
+  "last_updated_by": "Codex",
+  "created_at": "2026-05-26T17:01:39+08:00",
+  "updated_at": "2026-05-26T17:01:39+08:00",
+  "latest_version": "v001",
+  "latest_snapshot": "knowledge-archive/support-triage/2026-05-26/omt_19719cf65b4f9be8/v001.md"
+}
