@@ -38,6 +38,14 @@ The configured candidate target must be the writable review area, usually the `�
 
 The shared index update target must be a document URL or the underlying docx token accepted by `docs +fetch`/`docs +update`, not merely the Wiki node token that wraps that document. If both are available, keep both labels explicit: `index_doc_token` for Docs API writes and `index_wiki_node_token` for navigation.
 
+When the candidate node and index document are configured, Feishu write preflight is mandatory before any archive-only fallback:
+
+- Resolve or fetch the configured candidate node and verify that the current identity can access it, that its title is the review/candidate area, and that it is not the root/landing page.
+- Fetch the shared index document through the Docs API using the document URL or `index_doc_token`, then search each candidate key before writing.
+- If preflight succeeds, continue to Feishu candidate writes and index updates.
+- If preflight fails, stop the Feishu write path and report the exact target, command, and error in a `dry-run` report. Local archive snapshots may be produced only as clearly labelled fallback evidence.
+- Do not use vague reasons such as "permission not confirmed", "dedupe not confirmed", or "target status unclear" to silently skip Feishu writes. Those are tasks for the agent to verify with read-only preflight commands.
+
 For team use, prefer a local config or environment variables instead of hardcoding internal Feishu URLs in a public repository. If a teammate asks `/飞书知识沉淀 获取今天我所有工单群内容并沉淀`, load the configured team target and write to the shared candidate pool.
 
 ## Capture Modes
@@ -241,33 +249,38 @@ For maintenance mode, skip source chat collection and start from the shared inde
    - JSWO work-order group: `workorder:<JSWO-id>`.
    - Fallback when both are missing: `hash:<sha1(product|module|title|core_symptom)>`.
    - Use `scripts/candidate_key.py` for consistent key generation.
-7. Read the shared index before writing:
+7. Preflight Feishu write targets:
+   - Resolve the configured candidate Wiki node and reject root/landing-page targets before creating any document.
+   - Fetch the shared index document through `docs +fetch` with the document URL or `index_doc_token`.
+   - Search candidate keys in the index to prepare dedupe decisions.
+   - If any configured target cannot be read or verified, return `dry-run` with the failed command/error. Do not silently create only local files.
+8. Read the shared index before writing:
    - Search for the candidate key first.
    - If the key exists and there is no material new information, skip creating a new page and report `duplicate_skipped`.
    - If the key exists and there is new resolution, append an `更新记录` section to the existing candidate page and update the index row/report instead of creating a new page.
    - If only a similar title/symptom exists but the key differs, do not auto-merge. Report `possible_duplicate` for human review.
-8. Decide case state:
+9. Decide case state:
    - Closed enough for candidate knowledge: has final action, cause, workaround, verified result, customer confirmation, or explicit case closure.
    - Pending: still in troubleshooting, missing root cause, missing final answer, or only has first-pass triage.
-9. Classify output:
+10. Classify output:
    - Fault: abnormal robot behavior, error, failure, navigation issue, hardware/software/cloud fault, or troubleshooting case.
    - FAQ: recurring question, product difference, configuration, policy, usage, or short "how to" answer.
    - SOP: reusable internal handling procedure, escalation playbook, or multi-role workflow.
    - Pending: useful signal but not ready for candidate knowledge.
    - For single-case mode, this classification replaces the old separate `case-capture` flow.
-10. Generate Markdown or XML using `references/templates.md`.
-11. Write to Feishu:
+11. Generate Markdown or XML using `references/templates.md`.
+12. Write to Feishu:
    - Create one candidate document or Wiki node per eligible case.
    - Append one row to the shared index document, including the unique key.
    - Never overwrite formal knowledge pages.
-12. Archive to GitHub when enabled:
+13. Archive to GitHub when enabled:
    - Archive is secondary evidence, not the primary write target.
    - Only claim `completed` when Feishu candidate pages and the shared index were created or updated.
-   - If Feishu writes were skipped because permission, target validation, or deduplication checks could not be completed, label the run `dry-run/archive-only` and list the blocker.
+   - If Feishu writes were skipped because preflight failed for permission, target validation, or deduplication checks, label the run `dry-run/archive-only` and list the failed command, target, and error.
    - Save only the structured candidate Markdown and necessary metadata, not full raw chat logs.
    - New cases become `v001.md`; updated cases become `v002.md`, `v003.md`, and so on.
    - Store snapshots below `knowledge-archive/` following `references/templates.md`.
-13. Return a daily report with collected message count, candidate documents, archive snapshots, pending cases, duplicate skips, possible duplicates, write links, and review tasks.
+14. Return a daily report with collected message count, candidate documents, archive snapshots, pending cases, duplicate skips, possible duplicates, write links, and review tasks.
 
 ## Quality Rules
 
@@ -283,6 +296,7 @@ For maintenance mode, skip source chat collection and start from the shared inde
 - When content came from screenshots or cards, state whether the text was fully readable.
 - Do not archive raw chat transcripts to GitHub. Archive only the generated candidate Markdown, source identifiers, Feishu links, and review metadata.
 - Do not report "沉淀完成" or "已归档至知识库" when only local Markdown files were created. Say "本地归档完成，飞书写入未执行" and include the missing permission/config/dedup step.
+- If configured Feishu targets exist, the agent must try read-only target/index preflight before deciding that permission or dedupe is unavailable. A skipped write without attempted preflight is a skill execution error, not a successful archive-only run.
 - Separate role ownership from invocation: `触发人` is audit metadata, while `技术支持负责人`, `部门 Leader`, and `产品/中台服务代表` describe the work-order roles.
 
 ## Output Report
@@ -308,6 +322,7 @@ Always end with a compact Markdown report:
 - 跳过：
 - GitHub 归档：
 - 飞书写入状态：completed / partial / dry-run / archive-only
+- Feishu preflight status：preflight_ok / preflight_failed / preflight_not_attempted
 - Candidate 目标：
 - Index doc token：
 

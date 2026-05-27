@@ -238,6 +238,39 @@ The target Wiki parent must be the review/candidate child node, such as `候选�
 
 Before writing, fetch or resolve the target node title when practical. Reject targets whose title is only `候选知识碎片`, `知识碎片`, `候选池`, or other pool/root names unless the user explicitly requested maintenance of that landing page.
 
+## Preflight Feishu Write Targets
+
+When both a candidate node and shared index document are configured, the runner must verify them with read-only commands before deciding to skip Feishu writes.
+
+Preflight checks:
+
+- Resolve the candidate Wiki node token or URL and confirm the current identity can read it.
+- Confirm the candidate node title/path is the review area, for example `待审核`, not the root `候选知识碎片` landing page.
+- Fetch the shared index with the document URL or docx token accepted by `docs +fetch`.
+- Search each generated candidate key in the shared index before creating or updating pages.
+
+Example target probe:
+
+```powershell
+lark-cli.cmd wiki spaces get_node --params "{\"token\":\"<candidate_node_token>\"}" --format json
+```
+
+If the installed CLI exposes a different Wiki read shortcut, use the local shortcut, but the report must still include the command/tool name, target token, and resulting title or error.
+
+Example index probe and dedupe search:
+
+```powershell
+lark-cli.cmd docs +fetch --api-version v2 --doc "<index doc url or docx token>" --doc-format xml --scope keyword --keyword "workorder:JSWO-202604220005" --format json
+```
+
+Preflight outcomes:
+
+- `preflight_ok`: continue to `docs +create`, `wiki +node-create`, and index `docs +update`.
+- `preflight_failed`: stop Feishu writes, optionally archive generated Markdown as fallback evidence, and return `dry-run` with the failed command, target, and error.
+- `preflight_not_attempted`: treat as a skill execution error when targets were configured. Do not report the run as completed or as normal archive-only output.
+
+Do not write "permission not confirmed", "dedupe not confirmed", or "target status unclear" unless the corresponding read-only preflight command was actually attempted and failed.
+
 ## Update Shared Index
 
 Before writing, fetch the shared index and search by candidate key:
@@ -292,7 +325,7 @@ The index row must include:
 
 After a Feishu candidate is created or updated, save the generated candidate Markdown to the repository archive. Do not archive full raw chat logs.
 
-Archive-only output is allowed only as an explicit dry-run or safety fallback. It must not be reported as a completed Feishu knowledge capture. If Feishu writes were skipped, the final report must say `dry-run/archive-only`, list that no `docs +create`, `wiki +node-create`, or `docs +update` write happened, and identify the blocker such as missing permission, unverified target, or unresolved dedupe check.
+Archive-only output is allowed only as an explicit dry-run or safety fallback. It must not be reported as a completed Feishu knowledge capture. If Feishu writes were skipped, the final report must say `dry-run/archive-only`, list that no `docs +create`, `wiki +node-create`, or `docs +update` write happened, and identify the blocker such as missing configuration or a failed preflight command. When targets are configured, "unverified target" or "unresolved dedupe check" is acceptable only if the attempted preflight command and error are included.
 
 ```powershell
 python feishu-knowledge-capture\scripts\archive_snapshot.py `
@@ -331,6 +364,7 @@ Report both writes and non-writes. Include:
 - Skipped duplicates
 - GitHub archive snapshots
 - Feishu write status: `completed`, `partial`, `dry-run`, or `archive-only`
+- Feishu preflight status: `preflight_ok`, `preflight_failed`, or `preflight_not_attempted`
 - Candidate target token/title and index doc token used
 - Explicit note when local Markdown was generated but Feishu writes were not executed
 - Permission or configuration failures

@@ -17,6 +17,7 @@ FEISHU_KNOWLEDGE_CANDIDATE_NODE_URL=<待审核 wiki url>
 FEISHU_KNOWLEDGE_INDEX_DOC_TOKEN=<支持知识碎片候选池 docx token>
 FEISHU_KNOWLEDGE_INDEX_DOC_URL=<支持知识碎片候选池 url>
 FEISHU_KNOWLEDGE_INDEX_WIKI_NODE_TOKEN=<optional index wiki node token for navigation>
+FEISHU_KNOWLEDGE_PREFLIGHT_REQUIRED=true
 ```
 
 Do not set `FEISHU_KNOWLEDGE_CANDIDATE_NODE_TOKEN` to the root `候选知识碎片` landing page. The root page is only an entrance and should never receive generated case content. If a teammate only has the root URL, run dry-run and ask for the `待审核` child node and index document.
@@ -30,6 +31,7 @@ FEISHU_KNOWLEDGE_OWNER_FIELD=sender_name
 FEISHU_KNOWLEDGE_ARCHIVE_ROOT=knowledge-archive
 FEISHU_KNOWLEDGE_DEFAULT_AUTOMATION_SCOPE=support-triage
 FEISHU_KNOWLEDGE_MANUAL_SCOPES=single-case,support-triage,jswo-groups,all-group-chats,all-private-chats,named-chat
+FEISHU_KNOWLEDGE_ALLOW_ARCHIVE_ONLY=false
 FEISHU_KNOWLEDGE_ROLE_MAP_FILE=<local untracked role map path>
 FEISHU_KNOWLEDGE_DEFAULT_LEADER=<leader name or open_id>
 ```
@@ -42,6 +44,7 @@ FEISHU_KNOWLEDGE_CANDIDATE_NODE_URL=https://www.feishu.cn/wiki/QiPGwE9Y4iukxfkMh
 FEISHU_KNOWLEDGE_INDEX_DOC_TOKEN=Xaf8dtkaboAsQ3xHzBtc1WD6n3e
 FEISHU_KNOWLEDGE_INDEX_DOC_URL=https://www.feishu.cn/wiki/SarowXaTji5farkayOBcbYfqn2d
 FEISHU_KNOWLEDGE_INDEX_WIKI_NODE_TOKEN=SarowXaTji5farkayOBcbYfqn2d
+FEISHU_KNOWLEDGE_PREFLIGHT_REQUIRED=true
 ```
 
 `SarowXaTji5farkayOBcbYfqn2d` is the Wiki node token for the index page. The underlying docx token for Docs API writes is `Xaf8dtkaboAsQ3xHzBtc1WD6n3e`. Do not report `Sarow...` as `FEISHU_KNOWLEDGE_INDEX_DOC_TOKEN`.
@@ -93,6 +96,7 @@ Use these defaults:
 - `source_scope`: visible groups containing `JSWO-` plus configured support-triage topic groups.
 - `target`: team candidate node and shared index when `FEISHU_KNOWLEDGE_MODE=team`.
 - `output`: case-level candidate/Pending records. Do not produce a single `工单总结报告` as the knowledge artifact.
+- `preflight`: automatically verify the team candidate node and shared index document before writing. If this fails, report the failed command/error instead of silently creating only local files.
 
 ## Automation and Manual Runs
 
@@ -152,6 +156,8 @@ Do not store raw full chat transcripts in the archive. Store only generated cand
 
 Archive snapshots are secondary. If a run only creates local Markdown files and skips Feishu `docs +create`, `wiki +node-create`, or index `docs +update`, report it as `dry-run/archive-only`, not as completed knowledge capture.
 
+When `FEISHU_KNOWLEDGE_PREFLIGHT_REQUIRED=true`, archive-only fallback is allowed only after the runner has attempted the candidate-node and index-document preflight and reported the exact failure. A run that never attempts preflight should be treated as a failed skill execution, not a normal dry-run.
+
 ## Permission Requirements
 
 The identity running the bot or automation must have:
@@ -163,3 +169,5 @@ The identity running the bot or automation must have:
 - GitHub push or repository write permission when Markdown archive snapshots are enabled.
 
 If the teammate can read their work-order groups but cannot write to the shared pool, ask the pool owner to grant edit permission to the teammate or to the bot.
+
+The runner should confirm these permissions itself with read-only preflight commands whenever the targets are configured. Having administrator permission on the documents should make the preflight pass; if it does not, the final report must show which token, document, command, or API scope failed.

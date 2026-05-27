@@ -46,6 +46,7 @@ Core scope:
 - Write only candidate drafts under a Feishu Wiki review area such as `候选知识碎片/待审核`.
 - Treat broad commands such as "沉淀所有工单群" as case discovery requests, not report-generation requests.
 - Never write generated candidate/report content to the `候选知识碎片` root landing page.
+- When Feishu targets are configured, run read-only preflight against the candidate node and shared index before deciding to write or fall back to archive-only output.
 - Treat local Markdown archive files as secondary snapshots; archive-only runs must be reported as dry-run, not completed Feishu capture.
 - Never publish content as formal knowledge without human review.
 
