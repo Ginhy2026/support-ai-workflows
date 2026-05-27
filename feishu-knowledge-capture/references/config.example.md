@@ -23,11 +23,11 @@ Optional values:
 
 ```text
 FEISHU_KNOWLEDGE_DEFAULT_TIMEZONE=Asia/Shanghai
-FEISHU_KNOWLEDGE_SOURCE_PATTERNS=/support-triage,JSWO-
+FEISHU_KNOWLEDGE_SOURCE_PATTERNS=/supportman,/support-triage,SupportMan,supportman,JSWO-
 FEISHU_KNOWLEDGE_OWNER_FIELD=sender_name
 FEISHU_KNOWLEDGE_ARCHIVE_ROOT=knowledge-archive
-FEISHU_KNOWLEDGE_DEFAULT_AUTOMATION_SCOPE=support-triage
-FEISHU_KNOWLEDGE_MANUAL_SCOPES=single-case,support-triage,jswo-groups,all-group-chats,all-private-chats,named-chat
+FEISHU_KNOWLEDGE_DEFAULT_AUTOMATION_SCOPE=supportman
+FEISHU_KNOWLEDGE_MANUAL_SCOPES=single-case,supportman,jswo-groups,all-group-chats,all-private-chats,named-chat
 FEISHU_KNOWLEDGE_ROLE_MAP_FILE=<local untracked role map path>
 FEISHU_KNOWLEDGE_DEFAULT_LEADER=<leader name or open_id>
 ```
@@ -75,7 +75,7 @@ Create status views filtered by `审核状态`: `待审核`, `需补充`, `已�
 
 ## Source Discovery
 
-For support-triage topic groups, resolve the source chat by configured chat name or chat ID.
+For SupportMan/supportman topic groups, resolve the source chat by configured chat name or chat ID. Legacy `support-triage` groups should be treated as the same source family during migration.
 
 For work-order groups, search visible chats by ticket pattern and parse names with `scripts/parse_work_order_group.py`.
 
@@ -96,7 +96,7 @@ Use these defaults:
 
 - `owner`: Pierre or the invoking Feishu user.
 - `time_window`: today from 00:00 to now in Asia/Shanghai.
-- `source_scope`: visible groups containing `JSWO-` plus configured support-triage topic groups.
+- `source_scope`: visible groups containing `JSWO-` plus configured SupportMan/supportman topic groups.
 - `target`: team candidate node and shared candidate Base when `FEISHU_KNOWLEDGE_MODE=team`.
 
 ## Automation and Manual Runs
@@ -104,7 +104,7 @@ Use these defaults:
 Default scheduled automation should use:
 
 ```text
-source_scope=support-triage
+source_scope=supportman
 time_window=today
 output=feishu+github-archive
 ```

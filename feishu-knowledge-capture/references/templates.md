@@ -225,6 +225,8 @@ Use this in the daily report, not as a full Wiki page unless the user asks for a
 
 Create or update one Feishu Base record per generated candidate document. The Base table is the canonical candidate pool index.
 
+`唯一键` is required. Do not emit or write a row when this value is blank, `-`, or only a human-readable source/date. Generate a deterministic `thread:`, `workorder:`, `node:`, or `hash:` key first, and use the exact same value in the candidate page, GitHub archive frontmatter, Base record, and run report.
+
 ```markdown
 | 唯一键 | 日期 | 类型 | 产品/模块 | 工单号 | 来源 thread | 标题 | 来源群/来源渠道 | 负责人/同事 | 候选文档链接 | 成熟度 | 审核状态 | 审核人 | 发布目标 | 公共文档链接 | 最后更新时间 | GitHub归档路径 | 备注/风险提示 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -290,7 +292,7 @@ last_updated_by: ""
 
 ```text
 knowledge-archive/
-  support-triage/
+  supportman/
     YYYY-MM-DD/
       thread-omt_xxx/
         v001.md
@@ -316,7 +318,7 @@ knowledge-archive/
 
 - 运行时间：
 - 触发方式：自动任务 / 手动调用
-- 来源范围：support-triage / JSWO工单群 / 所有群聊 / 所有私聊 / 指定群
+- 来源范围：supportman / JSWO工单群 / 所有群聊 / 所有私聊 / 指定群
 - 时间范围：
 - 飞书候选目录：
 - 飞书候选 Base：
@@ -333,6 +335,6 @@ knowledge-archive/
 | GitHub 快照 |  |
 
 ## 明细
-| 唯一键 | 类型 | 标题 | 审核状态 | 飞书链接 | GitHub归档路径 | 处理结果 |
-|---|---|---|---|---|---|---|
+| 唯一键 | 类型 | 标题 | 审核状态 | 飞书链接 | GitHub归档路径 | 处理结果 | 写入验证 |
+|---|---|---|---|---|---|---|---|
 ```

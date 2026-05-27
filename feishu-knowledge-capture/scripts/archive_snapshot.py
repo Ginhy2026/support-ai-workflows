@@ -22,7 +22,7 @@ def archive_dir(root: Path, source_scope: str, candidate_key: str, date: str) ->
     if candidate_key.startswith("workorder:"):
         return root / "jswo" / slug(candidate_key.split(":", 1)[1])
     if candidate_key.startswith("thread:"):
-        return root / "support-triage" / date / slug(candidate_key.split(":", 1)[1])
+        return root / "supportman" / date / slug(candidate_key.split(":", 1)[1])
     return root / "manual-runs" / date / slug(candidate_key.replace(":", "-"))
 
 

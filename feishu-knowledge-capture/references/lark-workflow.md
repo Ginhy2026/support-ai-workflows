@@ -29,13 +29,14 @@ For maintenance mode:
 - Time window: not required unless the user asks to inspect recent writes only.
 - Output mode: update existing Feishu pages/Base records plus GitHub archive when enabled.
 - Candidate key: use the existing key from the Base record/page; never invent a new key for cleanup.
+- Blank-key records are repair targets. Derive the missing key from thread/work-order evidence when possible, otherwise use the fallback hash, then update the same row and canonical candidate page instead of creating another row.
 
 Single-case manual capture:
 
 ```text
-使用 feishu-knowledge-capture，把下面这个 support-triage 输出和最终方案沉淀成候选知识。
+使用 feishu-knowledge-capture，把下面这个 supportman 输出和最终方案沉淀成候选知识。
 使用 feishu-knowledge-capture，把这个未闭环的新产品问题写入 Pending 候选池。
-Use $feishu-knowledge-capture to turn this support-triage output and final solution into a candidate fault article.
+Use $feishu-knowledge-capture to turn this supportman output and final solution into a candidate fault article.
 ```
 
 For single-case mode:
@@ -45,7 +46,7 @@ For single-case mode:
 - Output mode: dry-run if target Wiki/Base table is missing; otherwise candidate write plus GitHub archive.
 - Candidate key: work-order ID if present, thread ID if present, otherwise fallback hash.
 
-If the input is a `support-triage` output, parse its knowledge-capture section automatically:
+If the input is a `supportman` output, parse its knowledge-capture section automatically:
 
 ```text
 是否建议进入 feishu-knowledge-capture 候选池
@@ -67,18 +68,18 @@ Then apply `references/review-rules.md`:
 - `待闭环后沉淀`: Pending, usually `M0` or `M1`.
 - `建议立即候选沉淀`: FAQ/SOP/fault candidate, usually `M2`, unless closure evidence is still missing.
 
-If the same input also contains a human-written final answer or numbered troubleshooting manual, use that final answer as the main candidate body. The support-triage output is metadata and supporting context, not the structure to blindly follow.
+If the same input also contains a human-written final answer or numbered troubleshooting manual, use that final answer as the main candidate body. The supportman output is metadata and supporting context, not the structure to blindly follow.
 
 Default automation:
 
 ```text
-每天 18:30 自动沉淀今天 support-triage 话题聊天
+每天 18:30 自动沉淀今天 supportman 话题聊天
 ```
 
 Manual commands may request a different scope:
 
 ```text
-/飞书知识沉淀 获取今天 support-triage 话题并沉淀
+/飞书知识沉淀 获取今天 supportman 话题并沉淀
 /飞书知识沉淀 获取今天所有 JSWO 工单群并沉淀
 /飞书知识沉淀 获取昨天所有群聊中的技术支持问题并沉淀
 /飞书知识沉淀 获取今天所有私聊中的工单问题并沉淀
@@ -87,7 +88,7 @@ Manual commands may request a different scope:
 
 Map the command to:
 
-- Source scope: `support-triage`, `jswo-groups`, `all-group-chats`, `all-private-chats`, or `named-chat`.
+- Source scope: `supportman`, `jswo-groups`, `all-group-chats`, `all-private-chats`, or `named-chat`.
 - Time window: today by default; support yesterday, this week, and explicit date ranges.
 - Output mode: Feishu write plus GitHub archive by default; `dry-run` reports only.
 - Target: configured candidate Wiki node and shared candidate Base table.
@@ -135,19 +136,23 @@ For a daily run:
 lark-cli im +chat-messages-list --chat-id oc_xxx --start "2026-05-21T00:00:00+08:00" --end "2026-05-21T18:00:00+08:00" --sort asc --page-size 50 --format json
 ```
 
-For support-triage filtering across a chat:
+For SupportMan/supportman filtering across a chat, include the legacy `/support-triage` keyword during migration:
 
 ```powershell
-lark-cli im +messages-search --query "/support-triage" --chat-id oc_xxx --start "2026-05-21T00:00:00+08:00" --end "2026-05-21T18:00:00+08:00" --page-all --format json
+lark-cli im +messages-search --query "/supportman" --chat-id oc_xxx --start "2026-05-21T00:00:00+08:00" --end "2026-05-21T18:00:00+08:00" --page-all --format json
 ```
 
 Also search for bot/user trigger phrases if configured:
 
 ```powershell
-lark-cli im +messages-search --query "support-triage" --chat-id oc_xxx --start "2026-05-21T00:00:00+08:00" --end "2026-05-21T18:00:00+08:00" --page-all --format json
+lark-cli im +messages-search --query "/support-triage" --chat-id oc_xxx --start "2026-05-21T00:00:00+08:00" --end "2026-05-21T18:00:00+08:00" --page-all --format json
 ```
 
-For all-group or all-private manual runs, apply keyword filtering before case extraction. Useful filters include `/support-triage`, `support-triage`, `JSWO-`, product names, `故障`, `报错`, `无法`, `异常`, `排查`, `解决`, `FAQ`, `SOP`, and configured robot/customer support terms.
+```powershell
+lark-cli im +messages-search --query "supportman" --chat-id oc_xxx --start "2026-05-21T00:00:00+08:00" --end "2026-05-21T18:00:00+08:00" --page-all --format json
+```
+
+For all-group or all-private manual runs, apply keyword filtering before case extraction. Useful filters include `/supportman`, `/support-triage`, `SupportMan`, `supportman`, `JSWO-`, product names, `星火计划`, `售前`, `故障`, `报错`, `无法`, `异常`, `排查`, `解决`, `FAQ`, `SOP`, and configured robot/customer support terms.
 
 ## Expand Threads
 
@@ -157,7 +162,7 @@ If a result has `thread_id`, fetch the thread:
 lark-cli im +threads-messages-list --thread omt_xxx --sort asc --page-size 50 --format json
 ```
 
-Keep the root message, replies, support-triage response, and human follow-up together as one case.
+Keep the root message, replies, supportman response, and human follow-up together as one case.
 
 ## Image, Card, and File Evidence
 
@@ -237,6 +242,8 @@ If the Wiki workflow requires a node under a parent, create or move the document
 
 Do not create documents if the target Wiki or candidate Base table is not configured. Output a dry-run report instead.
 
+For updates, do not create a replacement page when an existing Base record already has `候选文档链接`. Read that page first, replace or append the candidate content according to `references/review-rules.md`, and preserve a compact `更新记录`. A console report or GitHub archive update without a Feishu candidate page update is not a successful Feishu write.
+
 ## Update Shared Candidate Base
 
 Before writing, fetch the shared candidate Base and search by candidate key in the `唯一键` field:
@@ -246,6 +253,16 @@ lark-cli.cmd base +record-search --base-token "<base token>" --table-id "<table 
 ```
 
 Compare returned `唯一键` values exactly. If the key is found, do not create a new candidate page. Either skip it or update the existing page with an `更新记录` section according to `references/review-rules.md`.
+
+Before creating a new record, also search/read nearby records by title/source when the key was not found. If a matching row has blank `唯一键`, repair that existing row: set `唯一键`, keep or correct `候选文档链接`, update `来源 thread`, and write the latest GitHub archive path. This prevents second-run data from sitting outside the deterministic dedupe system.
+
+Every record payload must include a non-empty `唯一键`. Validate the JSON payload before calling `+record-upsert`; if `唯一键` is null, empty, `-`, or a human-readable source/date string, stop and return `missing_candidate_key`.
+
+```powershell
+python feishu-knowledge-capture\scripts\validate_candidate_record.py .\candidate-base-record.json
+```
+
+Use `--allow-legacy` only while repairing older records that already have non-prefixed keys such as historical title slugs. Do not use legacy keys for new records; prefer migrating them to `thread:`, `workorder:`, `node:`, or `hash:` when the evidence is clear.
 
 For cleanup, if multiple pages exist for the same exact key, choose the canonical page first, mark duplicates obsolete, then update the canonical Base record to the canonical title/link/status and mark duplicate records as `已废弃/重复`.
 
@@ -286,6 +303,14 @@ The Base record must include:
 
 When setting up a new Base, create status views filtered by `审核状态`: `待审核`, `需补充`, `已通过待发布` (filter value `已通过`), `已发布`, and `已废弃/重复`.
 
+After each write, verify both surfaces:
+
+```powershell
+lark-cli.cmd base +record-get --base-token "<base token>" --table-id "<table id>" --record-id "<record id>" --format json
+```
+
+Confirm that `唯一键`, `候选文档链接`, `GitHub归档路径`, and `最后更新时间` match the intended payload. Then open/read the candidate document link enough to confirm the latest source/evidence/update record is present. If either verification fails, report `write_incomplete` with the failing surface; do not say the candidate was updated.
+
 ## GitHub Markdown Archive
 
 After a Feishu candidate is created or updated, save the generated candidate Markdown to the repository archive. Do not archive full raw chat logs.
@@ -311,7 +336,7 @@ Use the returned `latest_snapshot` value in the `GitHub归档路径` Base field 
 
 For run reports, save a separate Markdown report under:
 
-- `knowledge-archive/support-triage/YYYY-MM-DD/run-report.md` for default automation.
+- `knowledge-archive/supportman/YYYY-MM-DD/run-report.md` for default automation.
 - `knowledge-archive/manual-runs/YYYY-MM-DD-operator-<name>/run-report.md` for broad manual runs when an operator name is known.
 
 ## Daily Report
