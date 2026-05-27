@@ -65,6 +65,8 @@ Fault/troubleshooting knowledge is suitable when the symptom, troubleshooting lo
 
 Pending is required when the case is valuable but not closed enough for a candidate FAQ/SOP/fault article.
 
+If unread images, cards, or files may contain the final diagnosis, solution, solve version, thresholds, wiring, or error evidence, the case is not closed enough for a confident candidate. Keep it Pending or low-confidence until that media is read, and explicitly list the unread evidence.
+
 ## Support-Triage Decision Mapping
 
 When ingesting a `support-triage` output, normalize its knowledge-capture decision before writing anything.
@@ -87,7 +89,7 @@ The `support-triage` decision is an input signal, not proof of closure. If final
 
 ## Deduplication
 
-Before writing a new candidate, read the shared index and compare deterministic keys first. This is mandatory for every run, including manual reruns and scheduled automations.
+Before writing a new candidate, read the shared candidate Base table and compare deterministic keys first. This is mandatory for every run, including manual reruns and scheduled automations.
 
 ### Candidate Key
 
@@ -111,9 +113,9 @@ Duplicate signals:
 ### Write Decision
 
 - Exact key exists + no material new information: skip creating a page and report `duplicate_skipped`.
-- Exact key exists + new final cause, solution, verification, or customer confirmation: update the existing candidate page by appending `更新记录`, then update/report the existing index entry.
+- Exact key exists + new final cause, solution, verification, or customer confirmation: update the existing candidate page by appending `更新记录`, then update/report the existing Base record.
 - Different key + very similar title/symptom: do not merge automatically. Report `possible_duplicate` with both links/titles for human review.
-- No matching key: create a new candidate page and append a new index row.
+- No matching key: create a new candidate page and create a new Base record.
 
 Never create a second candidate page for the same exact key unless the user explicitly asks for a new page.
 
@@ -152,6 +154,7 @@ When the source contains a human-curated final answer, troubleshooting manual, n
 - Do not replace a concrete manual with a generic summary such as "replace module" or "check connection" when the source provides step-by-step diagnostics.
 - If support-triage output, knowledge-base search results, and a human final answer disagree, prefer the human final answer and record the discrepancy in `更新记录` or `内部注意事项`.
 - If a value is operationally important, such as resistance, voltage, port, error code, or firmware version, copy it exactly and include units and tolerance where provided.
+- Treat readable screenshots and cards containing labels such as `根因分析`, `解决方案`, `解决版本`, or `已解决` as human-curated final-answer evidence. Preserve their exact root-cause text, solve version, thresholds, and configuration values unless later evidence contradicts them.
 - If the final answer is customer-facing but the candidate is internal, keep both: a reusable internal SOP section and a customer reply template section.
 - When the manual is incomplete, keep the known steps and mark missing evidence explicitly instead of inventing the rest of the procedure.
 
@@ -161,6 +164,7 @@ When a case cites Feishu, Yuque, GitHub, web pages, SOPs, official manuals, or o
 
 - Always keep the original reference link in a `参考资料` section, even when key content is quoted or summarized elsewhere.
 - Record the reference title, URL, maturity (`M0`-`M4`), applicability (`A0`-`A3`), whether the link was readable, and why it was used.
+- A document card shared next to a solution message is evidence. If the message wording indicates that the document contains the operation method or final answer, the candidate must include the card title/link and read status; missing access should lower confidence, not erase the reference.
 - If the link cannot be read, do not infer technical content from the title. Mark it as `未读取` and ask for pasted content or key paragraphs when needed.
 - If the reference is readable, extract only the key conclusion, steps, warnings, scope, and version boundaries needed for the current case. Do not copy an entire mature article into a candidate.
 - If the reference contains critical images, screenshots, tables, wiring diagrams, measurement diagrams, error screenshots, or port tables, attach the relevant media when the runtime can download or insert it.
@@ -188,14 +192,14 @@ If a mature document fully covers the issue, the candidate should summarize the 
 
 ## Maintenance and Correction
 
-Use maintenance rules when the user asks to clean an existing candidate pool, fix a wrong answer, merge duplicate candidates, or repair index rows.
+Use maintenance rules when the user asks to clean an existing candidate pool, fix a wrong answer, merge duplicate candidates, or repair Base records.
 
 - Exact same key (`thread:<id>` or `workorder:<JSWO-id>`): keep one canonical candidate page and mark all other pages as obsolete duplicates.
 - Same title/question but different key: do not merge automatically. Report `possible_duplicate` unless a human reviewer confirms they are the same knowledge item.
-- Wrong or misleading answer: correct the canonical page, add a compact update record, and update the shared index row title/status if needed.
+- Wrong or misleading answer: correct the canonical page, add a compact update record, and update the shared Base record title/status if needed.
 - Empty or partial page for an existing key: mark obsolete and link to the canonical page.
 - Obsolete pages should be overwritten or prefixed with a clear notice such as `已废弃：重复候选，请以主文档为准`; do not delete pages unless explicitly requested.
-- The index should point only to the canonical page for an exact key. If older rows remain, mark them obsolete or replace them with the canonical row.
+- The Base table should point only to the canonical page for an exact key. If older records remain, mark them obsolete with `审核状态=已废弃/重复` or replace them with the canonical record.
 - Corrections based on human review are material updates and should generate the next GitHub archive version when archive output is enabled.
 
 ## Role Attribution

@@ -14,8 +14,9 @@ Required target values:
 FEISHU_KNOWLEDGE_MODE=team
 FEISHU_KNOWLEDGE_CANDIDATE_NODE_TOKEN=<待审核 wiki node token>
 FEISHU_KNOWLEDGE_CANDIDATE_NODE_URL=<待审核 wiki url>
-FEISHU_KNOWLEDGE_INDEX_DOC_TOKEN=<支持知识碎片候选池 docx token>
-FEISHU_KNOWLEDGE_INDEX_DOC_URL=<支持知识碎片候选池 url>
+FEISHU_KNOWLEDGE_BASE_TOKEN=<支持知识碎片候选池 base token>
+FEISHU_KNOWLEDGE_BASE_TABLE_ID=tblHMj8buOaGsmNY
+FEISHU_KNOWLEDGE_BASE_URL=<支持知识碎片候选池 base url>
 ```
 
 Optional values:
@@ -36,8 +37,9 @@ With the current shared pool, the values are:
 ```text
 FEISHU_KNOWLEDGE_CANDIDATE_NODE_TOKEN=QiPGwE9Y4iukxfkMh8YcXPKNnBd
 FEISHU_KNOWLEDGE_CANDIDATE_NODE_URL=https://www.feishu.cn/wiki/QiPGwE9Y4iukxfkMh8YcXPKNnBd
-FEISHU_KNOWLEDGE_INDEX_DOC_TOKEN=Xaf8dtkaboAsQ3xHzBtc1WD6n3e
-FEISHU_KNOWLEDGE_INDEX_DOC_URL=https://www.feishu.cn/wiki/SarowXaTji5farkayOBcbYfqn2d
+FEISHU_KNOWLEDGE_BASE_TOKEN=YfRTb0oJUazkCAsL2jYcOCcRndh
+FEISHU_KNOWLEDGE_BASE_URL=https://www.feishu.cn/base/YfRTb0oJUazkCAsL2jYcOCcRndh
+FEISHU_KNOWLEDGE_BASE_TABLE_ID=<候选记录 table id>
 ```
 
 Only use these shared-pool values when the user explicitly wants all teammates to write into the same candidate pool and the current Feishu identity has write permission.
@@ -49,8 +51,27 @@ Use personal mode when each teammate keeps a private candidate pool.
 ```text
 FEISHU_KNOWLEDGE_MODE=personal
 FEISHU_KNOWLEDGE_CANDIDATE_NODE_TOKEN=<their own 待审核 node token>
-FEISHU_KNOWLEDGE_INDEX_DOC_TOKEN=<their own index docx token>
+FEISHU_KNOWLEDGE_BASE_TOKEN=<their own candidate Base token>
+FEISHU_KNOWLEDGE_BASE_TABLE_ID=<their own candidate table id>
 ```
+
+## Candidate Base Schema
+
+The shared pool uses one Feishu Base table with these fields:
+
+```text
+唯一键, 日期, 类型, 产品/模块, 工单号, 来源 thread, 标题, 来源群/来源渠道, 负责人/同事,
+候选文档链接, 成熟度, 审核状态, 审核人, 发布目标, 公共文档链接, 最后更新时间,
+GitHub归档路径, 备注/风险提示
+```
+
+`类型` is a single-select field with: `故障`, `FAQ`, `SOP`, `故障+FAQ`, `故障/SOP`, `待确认`.
+
+`成熟度` is a single-select field with: `M0 原始线索`, `M1 初步判断`, `M2 候选草稿`, `M3 已审核候选`, `M4 正式知识`, `待确认`.
+
+`审核状态` is a single-select field with: `待审核`, `需补充`, `已通过`, `已发布`, `不沉淀`, `已废弃/重复`, `待确认`.
+
+Create status views filtered by `审核状态`: `待审核`, `需补充`, `已通过待发布` (filter value `已通过`), `已发布`, and `已废弃/重复`.
 
 ## Source Discovery
 
@@ -76,7 +97,7 @@ Use these defaults:
 - `owner`: Pierre or the invoking Feishu user.
 - `time_window`: today from 00:00 to now in Asia/Shanghai.
 - `source_scope`: visible groups containing `JSWO-` plus configured support-triage topic groups.
-- `target`: team candidate node and shared index when `FEISHU_KNOWLEDGE_MODE=team`.
+- `target`: team candidate node and shared candidate Base when `FEISHU_KNOWLEDGE_MODE=team`.
 
 ## Automation and Manual Runs
 
@@ -130,7 +151,7 @@ Track the invoking user separately as `触发人`; do not treat the invoking use
 
 ## GitHub Archive
 
-Use GitHub Markdown archive snapshots for version history. The runner should create or update files under `FEISHU_KNOWLEDGE_ARCHIVE_ROOT` and commit them with the skill/repo workflow.
+Use GitHub Markdown archive snapshots for version history. The runner should create or update files under `FEISHU_KNOWLEDGE_ARCHIVE_ROOT`, write the snapshot path back to the `GitHub归档路径` Base field, and commit the archive with the skill/repo workflow.
 
 Do not store raw full chat transcripts in the archive. Store only generated candidate Markdown, minimal source identifiers, Feishu document links, review status, and run reports.
 
@@ -141,7 +162,7 @@ The identity running the bot or automation must have:
 - Read access to the source work-order groups.
 - `im:chat:read` and message read/search scopes as needed.
 - Write permission to the target candidate Wiki node.
-- Write permission to the shared index document.
+- Write permission to the shared candidate Base table.
 - GitHub push or repository write permission when Markdown archive snapshots are enabled.
 
 If the teammate can read their work-order groups but cannot write to the shared pool, ask the pool owner to grant edit permission to the teammate or to the bot.
