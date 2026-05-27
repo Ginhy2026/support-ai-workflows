@@ -7,7 +7,7 @@ description: Check and guide Feishu/Lark CLI setup for document and wiki search.
 
 ## Purpose
 
-Use this skill to help a teammate prepare local `lark-cli` access for Feishu document and wiki search. It is a setup and diagnostics companion for `support-triage`; it does not perform customer support triage itself.
+Use this skill to help a teammate prepare local `lark-cli` access for Feishu document and wiki search. It is a setup and diagnostics companion for `supportman`; it does not perform customer support analysis itself.
 
 ## Load References
 
@@ -76,9 +76,9 @@ python tools\feishu_search_docs.py "CT4" --type wiki --type docx --count 5
 Continue the report with:
 
 ```markdown
-## 4. support-triage 使用建议
-- 如果检查通过：`support-triage` 可以优先使用飞书 CLI 搜索知识库。
-- 如果检查未通过：`support-triage` 仍可输出建议检索词，由用户手动复制到飞书知识问答。
+## 4. supportman 使用建议
+- 如果检查通过：`supportman` 可以优先使用飞书 CLI 搜索知识库。
+- 如果检查未通过：`supportman` 仍可输出建议检索词，由用户手动复制到飞书知识问答。
 ```
 
 ## Success Criteria

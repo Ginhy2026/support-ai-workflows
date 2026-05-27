@@ -5,10 +5,11 @@
 Use when no Feishu knowledge-base result is provided.
 
 ```markdown
-# 技术支持分诊 - 首轮
+# 技术支持工作助手 - 首轮
 
-## 1. 问题类型判断
-- 类型：
+## 1. 工作项类型判断
+- 类型：售前/咨询类 / 星火计划/项目类 / 排障类 / 工作跟进类 / 升级敏感类
+- 来源渠道：WhatsApp / 飞书截图 / 飞书消息 / 飞书邮件 / 复制文本 / 其他
 - 紧急程度：
 - 是否涉及安全风险：
 
@@ -49,35 +50,46 @@ Use when no Feishu knowledge-base result is provided.
 > 使用客户原语言；基于上面的缺失信息和排查步骤。
 
 
-## 9. 是否需要内部升级
+## 9. 下一步动作
+### 对客户
+-
+
+### 对内部
+-
+
+### 对知识沉淀
+-
+
+## 10. 是否需要内部升级
 - 判断：
 - 理由：
 - 建议升级对象/方向：
 
-## 10. 是否建议进入 feishu-knowledge-capture 候选池
+## 11. 是否具备后续知识沉淀价值
 - 判断：不沉淀 / 待闭环后沉淀 / 建议立即候选沉淀
 - 理由：
 - 建议沉淀类型：FAQ / SOP / 排障知识 / Pending
-- 进入候选池前缺失：
+- 后续沉淀前缺失：
 ```
 
 ## Screenshot Or Chat First-Pass Output
 
-Use when the user provides a WhatsApp/Feishu screenshot, video screenshot, or short pasted chat instead of a filled form.
+Use when the user provides a WhatsApp screenshot, Feishu screenshot, Feishu card, video screenshot, email screenshot, or short pasted chat instead of a filled form.
 
 ```markdown
-# 技术支持分诊 - 截图/聊天首轮
+# 技术支持工作助手 - 截图/聊天首轮
 
 ## 1. 从截图/聊天中提取到的信息
 - 客户语言：
 - 客户/项目：
+- 来源渠道：WhatsApp / 飞书截图 / 飞书消息 / 飞书邮件 / 复制文本 / 其他
 - 产品/机型：
 - 可见现象：
 - 客户诉求：
 - 已知历史：
 
-## 2. 问题形态判断
-- 形态：咨询类 / 排障类 / 升级敏感类
+## 2. 工作项形态判断
+- 形态：售前/咨询类 / 星火计划/项目类 / 排障类 / 工作跟进类 / 升级敏感类
 - 理由：
 - 是否需要完整输入模板：是 / 否
 
@@ -127,15 +139,25 @@ Use when the user provides a WhatsApp/Feishu screenshot, video screenshot, or sh
 > 首轮不要承诺 root cause、resolution plan 或具体时限。
 
 
-## 10. 是否需要内部升级
+## 10. 下一步动作
+### 对客户
+-
+
+### 对内部
+-
+
+### 对知识沉淀
+-
+
+## 11. 是否需要内部升级
 - 判断：
 - 理由：
 
-## 11. 是否建议进入 feishu-knowledge-capture 候选池
+## 12. 是否具备后续知识沉淀价值
 - 判断：不沉淀 / 待闭环后沉淀 / 建议立即候选沉淀
 - 理由：
 - 建议沉淀类型：FAQ / SOP / 排障知识 / Pending
-- 进入候选池前缺失：
+- 后续沉淀前缺失：
 ```
 
 ## Second-Pass Output
@@ -143,7 +165,7 @@ Use when the user provides a WhatsApp/Feishu screenshot, video screenshot, or sh
 Use when Feishu knowledge-base result, SOP content, Yuque article, Feishu doc, web page, or other supplemental reference is provided.
 
 ```markdown
-# 技术支持分诊 - 二轮
+# 技术支持工作助手 - 二轮
 
 ## 1. 资料整理
 - 飞书知识库结果：
@@ -187,7 +209,17 @@ Use when Feishu knowledge-base result, SOP content, Yuque article, Feishu doc, w
 - 建议处理：
 - 风险/注意事项：
 
-## 8. 内部升级工单描述
+## 8. 下一步动作
+### 对客户
+-
+
+### 对内部
+-
+
+### 对知识沉淀
+-
+
+## 9. 内部升级工单描述
 > 如不需要升级，写“暂不需要升级”，并说明原因。
 
 **标题：**
@@ -208,12 +240,12 @@ Use when Feishu knowledge-base result, SOP content, Yuque article, Feishu doc, w
 
 **紧急程度和影响：**
 
-## 9. 是否建议进入 feishu-knowledge-capture 候选池
+## 10. 是否具备后续知识沉淀价值
 - 判断：不沉淀 / 待闭环后沉淀 / 建议立即候选沉淀
 - 理由：
 - 建议沉淀类型：FAQ / SOP / 排障知识 / Pending
-- 进入候选池前缺失：
-- 备注：如需要生成候选知识草稿或写入候选池，请调用 `$feishu-knowledge-capture`。
+- 后续沉淀前缺失：
+- 备注：如用户明确要生成候选知识草稿或写入候选池，可单独调用独立的 `$feishu-knowledge-capture`。
 ```
 
 ## Customer Reply Tone Snippets

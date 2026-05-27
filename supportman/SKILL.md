@@ -1,13 +1,13 @@
 ---
-name: support-triage
-description: Triage overseas robot technical support cases from WhatsApp, Feishu email, Feishu messages, copied customer conversations, Feishu knowledge-base results, SOP links, Yuque articles, web pages, or pasted reference materials in French, English, or Chinese. Use when the user needs Hermes to classify a customer robot issue, search and judge usable technical references, summarize evidence, prepare Feishu knowledge-base query questions, draft customer replies, write Chinese internal escalation notes, produce escalation ticket descriptions, or decide whether the case should enter the feishu-knowledge-capture candidate pool.
+name: supportman
+description: "SupportMan is the second version of support-triage: a daily technical-support work assistant for overseas robot support, pre-sales questions, Spark-plan/星火计划 requests, WhatsApp screenshots, Feishu screenshots, Feishu email/messages, copied customer conversations, Feishu knowledge-base results, SOP links, Yuque articles, web pages, or pasted reference materials in French, English, or Chinese. Use when the user needs Hermes to classify a support or pre-sales request, extract useful facts from screenshots, search and judge technical references, prepare Feishu knowledge-base query questions, draft customer-facing replies, write Chinese internal notes or escalation tickets, track daily support follow-up, or decide whether useful content may be worth later knowledge capture."
 ---
 
-# Support Triage
+# SupportMan
 
 ## Purpose
 
-Use this skill to turn messy customer support messages into structured Markdown for technical triage, reference lookup, customer replies, escalation, and knowledge-capture decisions. Do not directly auto-reply to customers; produce drafts and decision support for the human support owner. For knowledge capture, hand off to `feishu-knowledge-capture`; do not recommend `case-capture` in the default flow.
+Use this skill as the v2 of `support-triage` and as a personal technical-support daily work entry. Turn messy customer, teammate, pre-sales, Spark-plan/星火计划, WhatsApp, Feishu, email, screenshot, and reference material into structured Markdown for triage, consultation handling, reference lookup, customer replies, internal follow-up, escalation, and knowledge-capture-worthiness decisions. Do not directly auto-reply to customers; produce drafts and decision support for the human support owner. `feishu-knowledge-capture` is a separate independent skill; mention it only as an optional next step when the user explicitly wants to create candidate knowledge from a closed or valuable case.
 
 ## Load References
 
@@ -19,14 +19,16 @@ Use this skill to turn messy customer support messages into structured Markdown 
 
 ## Workflow
 
-1. If the user invokes `/support-triage`, `$support-triage`, or "use support-triage" with no customer case content, output only the compact intake template from `references/input-template.md`. Do not triage, ask follow-up questions, or explain the workflow unless the user asks.
-2. If the user provides only a WhatsApp/Feishu screenshot, video screenshot, pasted chat, or partial customer message, first read the visible text and observable media clues, then classify the case as one of:
-   - Consultation: feature, usage, configuration, policy, compatibility, or "how to" question without a concrete malfunction.
+1. If the user invokes `/supportman`, `$supportman`, or "use supportman" with no customer case content, output only the compact intake template from `references/input-template.md`. Do not triage, ask follow-up questions, or explain the workflow unless the user asks.
+2. If the user provides only a WhatsApp screenshot, Feishu screenshot, Feishu card, video screenshot, pasted chat, copied email, or partial customer/teammate message, first read the visible text and observable media clues, then classify the work item as one of:
+   - Pre-sales / consultation: feature, usage, configuration, compatibility, policy, quotation-support, scenario design, Spark-plan/星火计划 feasibility, or "how to" question without a concrete malfunction.
    - Troubleshooting: abnormal behavior, error, noise, failure, repeated issue, performance degradation, physical damage, or customer asking for cause/temporary workaround.
-   - Escalation-sensitive: safety risk, repeated failures on the same robot, key account impact, severe business interruption, or multiple unresolved symptoms.
+   - Work follow-up: open customer case, internal teammate request, pending evidence, pending Feishu search, pending customer reply, or task that needs next actions but not technical diagnosis yet.
+   - Escalation-sensitive: safety risk, repeated failures on the same robot, key account impact, severe business interruption, cross-team blocker, or multiple unresolved symptoms.
 3. Use adaptive intake instead of asking for every field:
-   - For consultation, do not ask for SN, failure time, location, video, or logs unless needed to identify product/version. Generate Feishu knowledge-base query questions directly from the visible question and known product context.
+   - For pre-sales / consultation, do not ask for SN, failure time, location, video, or logs unless needed to identify product/version or scenario constraints. Generate Feishu knowledge-base query questions directly from the visible question and known product context. If it relates to Spark-plan/星火计划, separate business goal, scenario, robot/product assumptions, technical feasibility, and open risks.
    - For troubleshooting, output an initial judgment plus a targeted customer information request. Ask only for fields needed for the likely module: fault time, frequency, complete symptom video, close-up screenshot/error code, robot SN/version, recent changes, and basic checks already tried such as restart, cleaning, repositioning, or reattempting the task.
+   - For work follow-up, summarize current state, owner, blocker, next action, and whether a customer reply, internal confirmation, Feishu search, or knowledge-capture handoff is needed.
    - For escalation-sensitive cases, recommend internal escalation while still drafting a customer-facing request for evidence.
 4. Identify whether the request is first-pass or second-pass:
    - First-pass: no Feishu knowledge-base answer is provided.
@@ -43,11 +45,12 @@ Use this skill to turn messy customer support messages into structured Markdown 
 14. For troubleshooting or escalation-sensitive first-pass output, include an internal "Hypotheses and Inferences" section only when there is enough evidence. Keep it concise, evidence-labeled, and out of the customer reply.
 15. For second-pass output, organize reference answers, produce a concise technical judgment, list missing required/optional information, provide executable troubleshooting steps, draft the customer response in the customer's language, and create Chinese internal notes or escalation text when appropriate.
 16. For first-pass output, generate precise Feishu knowledge-base query questions and an initial customer reply draft.
-17. For knowledge-capture decisions, use only these labels:
+17. For daily work outputs, include a concise "Next Actions" section whenever the user is handling an ongoing case, pre-sales request, Spark-plan item, or internal teammate request. Separate customer-facing next action from internal next action.
+18. For knowledge-capture decisions, use only these labels:
    - Not captured: one-off case, low reuse value, or insufficient evidence and no clear reuse potential.
    - Capture after closure: new product/new issue or immature material with reuse potential; verify or escalate first, then enter the candidate pool.
    - Candidate now: clear symptom, reusable steps, final action, verified result, or high reuse value already exists.
-18. For new products or new issues, treat missing mature references as normal. Avoid speculation, recommend verification/escalation where needed, and mark the case as "capture after closure" if it may become reusable knowledge.
+19. For new products, Spark-plan/星火计划 requests, pre-sales scenario questions, or new issues, treat missing mature references as normal. Avoid speculation, recommend verification/escalation where needed, and mark the item as "capture after closure" if it may become reusable knowledge.
 
 ## Customer Reply Rules
 
@@ -69,7 +72,7 @@ Use this skill to turn messy customer support messages into structured Markdown 
 - Keep customer-facing drafts separate from Chinese internal notes.
 - If information is missing, say exactly what is missing and why it matters.
 - If Feishu knowledge-base evidence is weak or not directly relevant, say so in the internal sections and avoid strong customer-facing claims.
-- By default, only decide whether the case should enter the `feishu-knowledge-capture` candidate pool. Do not produce a long candidate FAQ/SOP inside `support-triage` unless the user explicitly asks.
+- By default, only decide whether the case has knowledge-capture value. Do not produce a long candidate FAQ/SOP inside `supportman` unless the user explicitly asks. If the user wants candidate knowledge creation, they can call the separate `feishu-knowledge-capture` skill.
 
 ## Escalation Criteria
 

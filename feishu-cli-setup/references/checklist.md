@@ -1,6 +1,6 @@
 # Feishu CLI Readiness Checklist
 
-Use this checklist to diagnose whether `support-triage` can automatically search Feishu documents and wiki pages.
+Use this checklist to diagnose whether `supportman` can automatically search Feishu documents and wiki pages.
 
 ## Required State
 
