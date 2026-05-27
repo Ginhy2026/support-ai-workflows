@@ -1,4 +1,4 @@
 interface:
-  display_name: "Support Triage"
-  short_description: "Triage robot support cases with reference-aware troubleshooting drafts."
-  default_prompt: "Use $support-triage to triage this customer robot issue, search or judge usable references, prepare Markdown outputs for Feishu/WhatsApp/email, and decide whether it should enter the feishu-knowledge-capture candidate pool."
+  display_name: "SupportMan"
+  short_description: "Handle daily support, pre-sales, screenshots, and capture handoffs."
+  default_prompt: "Use $supportman as my daily technical-support work assistant: read WhatsApp/Feishu screenshots or pasted messages, classify the request, search or judge usable references, draft customer/internal replies, list next actions, and decide whether valuable material may be worth later knowledge capture."

@@ -72,7 +72,7 @@ If no directly relevant or mature reference is available:
 - Keep possible causes short and low-confidence, or omit them if they add no value.
 - Provide only common, low-risk checks: confirm connections, clean accessible contacts, restart, confirm versions, retry the task, collect complete video, screenshot error codes, and gather logs/SN.
 - Generate high-quality Feishu search questions and ask the user to paste any matching result for second-pass processing.
-- If the case may recur, recommend `待闭环后沉淀` for `feishu-knowledge-capture` so the final cause, solution, and verification can mature into reusable knowledge.
+- If the case may recur, recommend `待闭环后沉淀` and explain what final cause, solution, and verification would be needed before later knowledge capture.
 
 ## Search Utility
 
@@ -97,7 +97,7 @@ For troubleshooting cases, run or propose several query variants instead of only
 python tools\feishu_search_docs.py "CC1 清洁机器人 异常噪音" --type docx --type doc
 ```
 
-If search is not authenticated or search fails during `support-triage`, call `$feishu-cli-setup` to diagnose the local CLI. The setup skill will check Node.js, `lark-cli`, login state, token validity, `search:docs:read`, and a test search.
+If search is not authenticated or search fails during `supportman`, call `$feishu-cli-setup` to diagnose the local CLI. The setup skill will check Node.js, `lark-cli`, login state, token validity, `search:docs:read`, and a test search.
 
 Manual commands:
 

@@ -1,11 +1,15 @@
-# support-triage Hermes Skill
+# SupportMan Hermes Skill
 
-`support-triage` 用于处理海外客户通过 WhatsApp、飞书邮箱、飞书消息发来的机器人技术问题。它不会直接自动回复客户，而是帮助 Hermes 完成分诊、资料检索与适用性判断、客户回复草稿、内部升级说明和是否进入 `feishu-knowledge-capture` 候选知识池的判断。
+`SupportMan` (`supportman`) 是 `support-triage` 的第二个版本，也是个人技术支持日常工作入口，用于处理海外支持、售前咨询、星火计划/项目线索、WhatsApp 截图、飞书截图、飞书邮件/消息和补充 SOP 资料。
+
+它不会直接自动回复客户，而是帮助 Hermes 输出可复制的 Markdown：工作项分类、资料检索问题、适用性判断、客户回复草稿、中文内部说明、下一步动作、升级建议，以及是否具备后续知识沉淀价值。
+
+`SupportMan` 和 `feishu-knowledge-capture` 是两个独立 skill。`SupportMan` 只做当前工作处理和沉淀价值判断；需要真正创建候选知识时，再单独调用 `feishu-knowledge-capture`。
 
 ## 文件结构
 
 ```text
-support-triage/
+supportman/
 ├── SKILL.md
 ├── README.md
 ├── agents/
@@ -13,56 +17,50 @@ support-triage/
 └── references/
     ├── main-prompt.md
     ├── input-template.md
+    ├── knowledge-sources.md
     ├── output-templates.md
     └── examples.md
 ```
 
 ## 核心能力
 
-- 首轮分诊：在没有飞书知识问答结果时，整理客户问题、判断类型、生成检索问题和初步客户回复。
-- 资料优先：默认优先搜索飞书知识库，也支持补充 SOP、语雀、飞书文档、网页或粘贴正文。
-- 适用性判断：区分资料是直接相关、部分相关、仅背景参考还是不适用。
-- 二轮整理：在补充飞书知识问答或 SOP 后，整理资料、形成简要技术判断、生成可执行排查步骤、正式客户回复和中文内部说明。
-- 升级判断：识别是否需要内部升级，并生成升级工单描述。
-- 沉淀判断：判断是否适合进入 `feishu-knowledge-capture` 候选池，类型包括 FAQ、SOP、排障知识或 Pending。
-- 多语言回复：客户回复默认使用客户原语言，支持中文、英语、法语。
+- 截图/聊天处理：读取 WhatsApp、飞书截图、飞书卡片、邮件截图或粘贴聊天中的可见事实。
+- 日常分流：区分售前/咨询、星火计划/项目、排障、工作跟进、升级敏感。
+- 资料检索：生成飞书知识问答问题，并判断飞书知识库、SOP、语雀、网页或粘贴正文是否适用于当前案子。
+- 回复草稿：默认使用客户原语言，客户回复和中文内部说明分开输出。
+- 下一步动作：拆成对客户、对内部、对知识沉淀三类。
+- 沉淀价值判断：只判断是否值得后续沉淀，不在本 skill 里生成长篇正式知识。
 
-## 如何在 Hermes 中使用
+## 使用方式
 
-1. 将整个 `support-triage` 文件夹放到 Hermes 可识别的 skills 目录。
-2. 在 Hermes 中用类似下面的方式触发：
+空调用获取输入模板：
 
 ```text
-Use $support-triage to triage this robot support case.
+/supportman
 ```
 
-或中文：
+处理截图或聊天：
 
 ```text
-请使用 $support-triage 处理下面这个客户问题。
+请使用 /supportman 分析这个 WhatsApp 截图。
 ```
 
-如果只输入下面这种空调用，skill 会先输出精简输入模板，方便你补充客户原文、语言、客户背景、产品/机型、场景、图片/日志/错误码等信息：
+处理售前或星火计划：
 
 ```text
-/support-triage
+请使用 /supportman 整理这个星火计划项目咨询，输出技术可行性、缺失信息、内部确认对象和沉淀建议。
 ```
 
-3. 首轮处理时，粘贴客户原文、语言、产品/机型、场景、图片/日志/错误码说明和你的初步判断。飞书知识问答结果留空。
-4. 将首轮输出中的“建议问飞书知识问答的问题”复制到飞书知识问答，或让已配置 CLI 的环境自动检索。
-5. 把飞书知识问答返回结果、补充 SOP、语雀文章、飞书文档、网页或正文补充给 Hermes，再次使用 `$support-triage` 进行二轮处理。
-6. 复制二轮输出中的排查步骤、客户回复草稿、中文内部说明或升级工单描述到对应渠道；需要沉淀时再调用 `$feishu-knowledge-capture`。
+二轮处理：
 
-## 推荐输入格式
+```text
+请使用 /supportman 结合下面的飞书知识问答结果和 SOP，生成正式回复和内部说明。
+```
 
-使用 `references/input-template.md` 中的模板。信息不完整也可以使用，skill 会明确列出缺失信息。
+## 维护入口
 
-## 输出格式
-
-所有输出固定为 Markdown。首轮和二轮模板见 `references/output-templates.md`。
-
-## 维护建议
-
-- 如果公司内部有新的标准排查路径，优先更新 `references/output-templates.md` 或 `references/examples.md`。
-- 如果客户回复口吻需要调整，更新 `references/main-prompt.md` 的客户回复边界和 `references/output-templates.md` 的语气片段。
-- 如果 Hermes 的 skill 元数据规范变化，更新 `agents/openai.yaml`。
+- 使用文档：`docs/supportman-usage-v1.md`
+- 核心 workflow：`SKILL.md`
+- 输入模板：`references/input-template.md`
+- 输出模板：`references/output-templates.md`
+- 飞书知识源规则：`references/knowledge-sources.md`

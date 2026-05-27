@@ -9,7 +9,7 @@ description: Legacy optional helper for converting resolved or partially resolve
 
 Use this legacy optional skill to transform support case material into a structured candidate FAQ or SOP draft. The output is for human review before entering any official knowledge base.
 
-For the normal support workflow, prefer `support-triage` for current-case handling and `feishu-knowledge-capture` for single-case or batch knowledge capture. Do not treat `case-capture` as the default handoff path.
+For the normal support workflow, prefer `supportman` for current-case handling and `feishu-knowledge-capture` for single-case or batch knowledge capture. Do not treat `case-capture` as the default handoff path.
 
 ## Load References
 

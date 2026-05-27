@@ -2,7 +2,7 @@
 
 ## Empty Invocation Behavior
 
-When the user enters only `/support-triage`, `$support-triage`, or an equivalent invocation without case details, output only this compact template:
+When the user enters only `/supportman`, `$supportman`, or an equivalent invocation without case details, output only this compact template:
 
 ```markdown
 # 客户问题输入
@@ -12,6 +12,10 @@ When the user enters only `/support-triage`, `$support-triage`, or an equivalent
 
 ## 客户语言
 法语 / 英语 / 中文 / 未知：
+
+## 工作来源和目标
+- 来源：WhatsApp / 飞书截图 / 飞书消息 / 飞书邮件 / 售前咨询 / 星火计划 / 内部同事请求 / 其他
+- 目标：客户回复 / 售前答疑 / 技术确认 / 资料检索 / 升级 / 跟进 / 知识沉淀
 
 ## 客户背景
 - 国家/地区：
@@ -58,6 +62,11 @@ Use this when the user asks for a more complete intake form:
 ## 客户语言
 法语 / 英语 / 中文 / 未知
 
+## 工作来源和目标
+- 来源：WhatsApp / 飞书截图 / 飞书消息 / 飞书邮件 / 售前咨询 / 星火计划 / 内部同事请求 / 其他
+- 目标：客户回复 / 售前答疑 / 技术确认 / 资料检索 / 升级 / 跟进 / 知识沉淀
+- 期望输出：客户回复草稿 / 内部说明 / 检索问题 / 升级工单 / 下一步动作 / 沉淀判断
+
 ## 客户背景
 - 国家/地区：
 - 客户类型：
@@ -101,6 +110,8 @@ Use this when the user asks for a more complete intake form:
 
 客户语言：
 
+来源/目标：
+
 产品/机型：
 
 场景：
@@ -127,13 +138,15 @@ Use this when the visible case is a troubleshooting issue but the first screensh
 
 ## Lightweight Consultation Info Template
 
-Use this when the case is only a feature or usage consultation:
+Use this when the case is only a feature, usage, pre-sales, or Spark-plan/星火计划 consultation:
 
 ```markdown
 为了更准确查询资料，请补充：
 
 1. 产品/机型：
 2. 使用场景：
-3. 想确认的功能或限制：
-4. 如果和版本有关，请补充软件版本：
+3. 想确认的功能、限制或项目目标：
+4. 相关客户/项目背景：
+5. 如果和版本有关，请补充软件版本：
+6. 如果是星火计划/项目推进，请补充希望验证的价值指标或试点目标：
 ```
