@@ -16,6 +16,7 @@ FEISHU_KNOWLEDGE_CANDIDATE_NODE_TOKEN=<待审核 wiki node token>
 FEISHU_KNOWLEDGE_CANDIDATE_NODE_URL=<待审核 wiki url>
 FEISHU_KNOWLEDGE_INDEX_DOC_TOKEN=<支持知识碎片候选池 docx token>
 FEISHU_KNOWLEDGE_INDEX_DOC_URL=<支持知识碎片候选池 url>
+FEISHU_KNOWLEDGE_INDEX_WIKI_NODE_TOKEN=<optional index wiki node token for navigation>
 ```
 
 Do not set `FEISHU_KNOWLEDGE_CANDIDATE_NODE_TOKEN` to the root `候选知识碎片` landing page. The root page is only an entrance and should never receive generated case content. If a teammate only has the root URL, run dry-run and ask for the `待审核` child node and index document.
@@ -40,7 +41,10 @@ FEISHU_KNOWLEDGE_CANDIDATE_NODE_TOKEN=QiPGwE9Y4iukxfkMh8YcXPKNnBd
 FEISHU_KNOWLEDGE_CANDIDATE_NODE_URL=https://www.feishu.cn/wiki/QiPGwE9Y4iukxfkMh8YcXPKNnBd
 FEISHU_KNOWLEDGE_INDEX_DOC_TOKEN=Xaf8dtkaboAsQ3xHzBtc1WD6n3e
 FEISHU_KNOWLEDGE_INDEX_DOC_URL=https://www.feishu.cn/wiki/SarowXaTji5farkayOBcbYfqn2d
+FEISHU_KNOWLEDGE_INDEX_WIKI_NODE_TOKEN=SarowXaTji5farkayOBcbYfqn2d
 ```
+
+`SarowXaTji5farkayOBcbYfqn2d` is the Wiki node token for the index page. The underlying docx token for Docs API writes is `Xaf8dtkaboAsQ3xHzBtc1WD6n3e`. Do not report `Sarow...` as `FEISHU_KNOWLEDGE_INDEX_DOC_TOKEN`.
 
 Known non-target in this pool:
 
@@ -145,6 +149,8 @@ Track the invoking user separately as `触发人`; do not treat the invoking use
 Use GitHub Markdown archive snapshots for version history. The runner should create or update files under `FEISHU_KNOWLEDGE_ARCHIVE_ROOT` and commit them with the skill/repo workflow.
 
 Do not store raw full chat transcripts in the archive. Store only generated candidate Markdown, minimal source identifiers, Feishu document links, review status, and run reports.
+
+Archive snapshots are secondary. If a run only creates local Markdown files and skips Feishu `docs +create`, `wiki +node-create`, or index `docs +update`, report it as `dry-run/archive-only`, not as completed knowledge capture.
 
 ## Permission Requirements
 

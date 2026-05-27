@@ -246,6 +246,12 @@ Before writing, fetch the shared index and search by candidate key:
 lark-cli.cmd docs +fetch --api-version v2 --doc "<index doc url or token>" --doc-format xml --scope keyword --keyword "thread:omt_xxx" --format json
 ```
 
+Use the index document URL or docx token for `docs +fetch`/`docs +update`. Do not pass a Wiki node token as `index_doc_token` unless `docs +fetch` has already proven that the CLI resolves it correctly. In config and reports, distinguish:
+
+- `index_doc_token`: underlying docx token for Docs API writes.
+- `index_wiki_node_token`: Wiki node token for navigation/copy links.
+- `index_wiki_url`: human-facing Wiki URL.
+
 If the key is found, do not create a new candidate page. Either skip it or update the existing page with an `更新记录` section according to `references/review-rules.md`.
 
 For cleanup, if multiple pages exist for the same exact key, choose the canonical page first, mark duplicates obsolete, then update the index row to the canonical title/link/status. Prefer block-level replacement for one index row instead of overwriting the whole index document.
@@ -286,6 +292,8 @@ The index row must include:
 
 After a Feishu candidate is created or updated, save the generated candidate Markdown to the repository archive. Do not archive full raw chat logs.
 
+Archive-only output is allowed only as an explicit dry-run or safety fallback. It must not be reported as a completed Feishu knowledge capture. If Feishu writes were skipped, the final report must say `dry-run/archive-only`, list that no `docs +create`, `wiki +node-create`, or `docs +update` write happened, and identify the blocker such as missing permission, unverified target, or unresolved dedupe check.
+
 ```powershell
 python feishu-knowledge-capture\scripts\archive_snapshot.py `
   --root knowledge-archive `
@@ -322,4 +330,7 @@ Report both writes and non-writes. Include:
 - Pending cases
 - Skipped duplicates
 - GitHub archive snapshots
+- Feishu write status: `completed`, `partial`, `dry-run`, or `archive-only`
+- Candidate target token/title and index doc token used
+- Explicit note when local Markdown was generated but Feishu writes were not executed
 - Permission or configuration failures

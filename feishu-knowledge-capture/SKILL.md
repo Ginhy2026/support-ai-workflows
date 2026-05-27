@@ -36,6 +36,8 @@ If any target write location is missing, complete source analysis and output a d
 
 The configured candidate target must be the writable review area, usually the `待审核` child node under `候选知识碎片`. Never overwrite or append generated candidate/report content to the `候选知识碎片` root/landing page itself. If only a root/landing-page URL is provided, stop and output a dry-run report that asks for the `待审核` candidate node and shared index document.
 
+The shared index update target must be a document URL or the underlying docx token accepted by `docs +fetch`/`docs +update`, not merely the Wiki node token that wraps that document. If both are available, keep both labels explicit: `index_doc_token` for Docs API writes and `index_wiki_node_token` for navigation.
+
 For team use, prefer a local config or environment variables instead of hardcoding internal Feishu URLs in a public repository. If a teammate asks `/飞书知识沉淀 获取今天我所有工单群内容并沉淀`, load the configured team target and write to the shared candidate pool.
 
 ## Capture Modes
@@ -259,6 +261,9 @@ For maintenance mode, skip source chat collection and start from the shared inde
    - Append one row to the shared index document, including the unique key.
    - Never overwrite formal knowledge pages.
 12. Archive to GitHub when enabled:
+   - Archive is secondary evidence, not the primary write target.
+   - Only claim `completed` when Feishu candidate pages and the shared index were created or updated.
+   - If Feishu writes were skipped because permission, target validation, or deduplication checks could not be completed, label the run `dry-run/archive-only` and list the blocker.
    - Save only the structured candidate Markdown and necessary metadata, not full raw chat logs.
    - New cases become `v001.md`; updated cases become `v002.md`, `v003.md`, and so on.
    - Store snapshots below `knowledge-archive/` following `references/templates.md`.
@@ -277,6 +282,7 @@ For maintenance mode, skip source chat collection and start from the shared inde
 - New products and new issues often start with immature material. This is normal; capture them as Pending or low-maturity candidates until final cause, solution, and verification become available.
 - When content came from screenshots or cards, state whether the text was fully readable.
 - Do not archive raw chat transcripts to GitHub. Archive only the generated candidate Markdown, source identifiers, Feishu links, and review metadata.
+- Do not report "沉淀完成" or "已归档至知识库" when only local Markdown files were created. Say "本地归档完成，飞书写入未执行" and include the missing permission/config/dedup step.
 - Separate role ownership from invocation: `触发人` is audit metadata, while `技术支持负责人`, `部门 Leader`, and `产品/中台服务代表` describe the work-order roles.
 
 ## Output Report
@@ -301,6 +307,9 @@ Always end with a compact Markdown report:
 - 待补充/待闭环：
 - 跳过：
 - GitHub 归档：
+- 飞书写入状态：completed / partial / dry-run / archive-only
+- Candidate 目标：
+- Index doc token：
 
 ## 3. 已写入候选区
 | 类型 | 标题 | 成熟度 | 工单号 | 来源 | 飞书链接 | GitHub 版本 | 审核状态 |
