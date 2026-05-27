@@ -44,6 +44,8 @@ Core scope:
 - Batch-read support-triage related topic threads.
 - Treat one topic thread or one work order as one case.
 - Write only candidate drafts under a Feishu Wiki review area such as `候选知识碎片/待审核`.
+- Treat broad commands such as "沉淀所有工单群" as case discovery requests, not report-generation requests.
+- Never write generated candidate/report content to the `候选知识碎片` root landing page.
 - Never publish content as formal knowledge without human review.
 
 Future company-wide scope:
@@ -52,6 +54,7 @@ Future company-wide scope:
 - Parse group names like `【新问题_进行中】PUDU T300法国JSWO-202604220005`.
 - Use message content, not only group status text, to decide whether a case is closed enough for candidate knowledge.
 - Support manual scopes such as all JSWO work-order groups, all visible group chats, all private chats, or a named chat with filtering and redaction safeguards.
+- Split wide scopes by work order, thread, or coherent issue before writing candidate FAQ/fault/SOP/Pending drafts.
 - Store candidate Markdown versions under `knowledge-archive/` for GitHub-based diff and recovery.
 - Dedupe multi-user runs in the same work-order group by `workorder:<JSWO-id>` and record roles separately: technical support owner, department leader, product/service representative, trigger person, contributors, and last updater.
 

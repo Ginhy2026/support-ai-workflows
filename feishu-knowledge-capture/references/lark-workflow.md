@@ -91,6 +91,8 @@ Map the command to:
 - Output mode: Feishu write plus GitHub archive by default; `dry-run` reports only.
 - Target: configured candidate Wiki node and shared index document.
 
+Scope-only commands such as `沉淀今天所有工单群` are not report-generation commands. They must run the case-capture pipeline: discover source chats, group messages into cases, decide closure/maturity, and write per-case candidate FAQ/fault/SOP/Pending records. A work-order summary may appear only in the final run report, not as the candidate page body.
+
 Leader pilot commands:
 
 ```text
@@ -156,6 +158,13 @@ lark-cli im +threads-messages-list --thread omt_xxx --sort asc --page-size 50 --
 ```
 
 Keep the root message, replies, support-triage response, and human follow-up together as one case.
+
+For wide work-order scopes, split by stable case boundaries before generating any candidate:
+
+- Prefer explicit work-order IDs such as `JSWO-`, `DLSGD-`, or `DBWO-`.
+- If no work-order ID exists, use Feishu thread/topic boundaries.
+- If neither exists, group by one product/module plus one coherent symptom.
+- Do not merge unrelated work orders into a single `工单总结报告` candidate page.
 
 ## Image, Card, and File Evidence
 
@@ -224,6 +233,10 @@ For long or multi-line content, always write the XML or Markdown to a relative f
 If the Wiki workflow requires a node under a parent, create or move the document into the target Wiki candidate parent with `lark-cli wiki +node-create` or the available Wiki shortcut for the configured space.
 
 Do not create documents if the target Wiki or index document is not configured. Output a dry-run report instead.
+
+The target Wiki parent must be the review/candidate child node, such as `候选知识碎片/待审核`. Do not write generated content to the root/landing page of the candidate pool, such as `候选知识碎片`. If the provided target looks like a landing page, root directory, or documentation page, stop before any `docs +update`/`wiki +node-create` write and ask for the `待审核` node plus the shared index document.
+
+Before writing, fetch or resolve the target node title when practical. Reject targets whose title is only `候选知识碎片`, `知识碎片`, `候选池`, or other pool/root names unless the user explicitly requested maintenance of that landing page.
 
 ## Update Shared Index
 

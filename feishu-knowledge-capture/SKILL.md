@@ -34,6 +34,8 @@ Before writing to Feishu, obtain or ask the user for these values:
 
 If any target write location is missing, complete source analysis and output a dry-run report instead of guessing where to publish.
 
+The configured candidate target must be the writable review area, usually the `待审核` child node under `候选知识碎片`. Never overwrite or append generated candidate/report content to the `候选知识碎片` root/landing page itself. If only a root/landing-page URL is provided, stop and output a dry-run report that asks for the `待审核` candidate node and shared index document.
+
 For team use, prefer a local config or environment variables instead of hardcoding internal Feishu URLs in a public repository. If a teammate asks `/飞书知识沉淀 获取今天我所有工单群内容并沉淀`, load the configured team target and write to the shared candidate pool.
 
 ## Capture Modes
@@ -146,6 +148,8 @@ Interpret the command into:
 
 For `all-group-chats` and `all-private-chats`, first filter by technical-support signals such as `/support-triage`, `JSWO-`, robot/product names, error/fault words, troubleshooting language, FAQ wording, or configured keywords. Do not summarize unrelated chatter, administrative messages, or personal conversation.
 
+When the user only scopes the run, for example "沉淀今天所有工单群" or "获取所有包含工单的群聊并沉淀", do not create a broad work-order summary report as the candidate content. Treat the command as a request to discover cases, group messages by work order or thread, classify each case, and write only case-level candidate FAQ/fault/SOP/Pending records. A compact run report is allowed at the end, but it is not a candidate knowledge page.
+
 ### JSWO Work-Order Groups
 
 Also support configured JSWO work-order groups when the user enables them. Recognize group names that contain a work-order ID such as `JSWO-202604220005`, for example:
@@ -229,6 +233,7 @@ For maintenance mode, skip source chat collection and start from the shared inde
    - If image or card content cannot be read, record it as missing evidence.
 5. Normalize each case:
    - Source group, message IDs, thread ID, sender names, timestamps, product/module, customer/region, language, work-order ID, trigger person, support owner, department leader, product/service representative, contributors, and last updater when present.
+   - For wide work-order scopes, split source material into one case per work-order ID, topic thread, or coherent issue. Never collapse many unrelated work orders into one candidate page.
 6. Generate a deterministic candidate key:
    - Support-triage thread: `thread:<thread_id>`.
    - JSWO work-order group: `workorder:<JSWO-id>`.
@@ -267,6 +272,7 @@ For maintenance mode, skip source chat collection and start from the shared inde
 - Redact private customer details, phone numbers, personal names, and sensitive identifiers unless the target is explicitly internal and access-controlled.
 - For all private-chat and broad all-chat scans, redact names, phone numbers, emails, private handles, and personal conversation by default.
 - Prefer reusable patterns over one-off customer details.
+- Do not use a report title such as `工单总结报告`, `统计概览`, or `知识沉淀建议` as a candidate knowledge page unless the user explicitly asks for a report-only artifact. Candidate pages must be case-level FAQ/fault/SOP/Pending drafts with candidate keys, evidence, maturity, review status, and missing-information fields.
 - If source material is unresolved or incomplete, produce a pending record rather than a candidate knowledge draft.
 - New products and new issues often start with immature material. This is normal; capture them as Pending or low-maturity candidates until final cause, solution, and verification become available.
 - When content came from screenshots or cards, state whether the text was fully readable.

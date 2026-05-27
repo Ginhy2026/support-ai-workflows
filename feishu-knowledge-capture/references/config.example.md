@@ -18,6 +18,8 @@ FEISHU_KNOWLEDGE_INDEX_DOC_TOKEN=<支持知识碎片候选池 docx token>
 FEISHU_KNOWLEDGE_INDEX_DOC_URL=<支持知识碎片候选池 url>
 ```
 
+Do not set `FEISHU_KNOWLEDGE_CANDIDATE_NODE_TOKEN` to the root `候选知识碎片` landing page. The root page is only an entrance and should never receive generated case content. If a teammate only has the root URL, run dry-run and ask for the `待审核` child node and index document.
+
 Optional values:
 
 ```text
@@ -39,6 +41,15 @@ FEISHU_KNOWLEDGE_CANDIDATE_NODE_URL=https://www.feishu.cn/wiki/QiPGwE9Y4iukxfkMh
 FEISHU_KNOWLEDGE_INDEX_DOC_TOKEN=Xaf8dtkaboAsQ3xHzBtc1WD6n3e
 FEISHU_KNOWLEDGE_INDEX_DOC_URL=https://www.feishu.cn/wiki/SarowXaTji5farkayOBcbYfqn2d
 ```
+
+Known non-target in this pool:
+
+```text
+FEISHU_KNOWLEDGE_ROOT_NODE_TOKEN=Ukb5wsoo3ihWWUkVMwzcSV6dn4b
+FEISHU_KNOWLEDGE_ROOT_NODE_URL=https://pudutech.feishu.cn/wiki/Ukb5wsoo3ihWWUkVMwzcSV6dn4b
+```
+
+The root node above is the `候选知识碎片` landing page. It is useful for navigation or maintenance-only edits, but it must not be used as the candidate write target.
 
 Only use these shared-pool values when the user explicitly wants all teammates to write into the same candidate pool and the current Feishu identity has write permission.
 
@@ -77,6 +88,7 @@ Use these defaults:
 - `time_window`: today from 00:00 to now in Asia/Shanghai.
 - `source_scope`: visible groups containing `JSWO-` plus configured support-triage topic groups.
 - `target`: team candidate node and shared index when `FEISHU_KNOWLEDGE_MODE=team`.
+- `output`: case-level candidate/Pending records. Do not produce a single `工单总结报告` as the knowledge artifact.
 
 ## Automation and Manual Runs
 
