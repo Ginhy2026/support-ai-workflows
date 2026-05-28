@@ -61,15 +61,9 @@ Use these templates for Feishu Docs or Wiki candidate pages. Keep the status lin
 |---|---|---|---|---|---|---|
 |  |  | M0/M1/M2/M3/M4 | A0/A1/A2/A3 | 是/否 | 已附/未复制/无 |  |
 
-## 10. 来源证据索引
-| 来源 | 时间 | 发送人/角色 | 类型 | message/thread | 是否已读取 | 关键结论/原文摘录 | 影响 |
-|---|---|---|---|---|---|---|---|
-|  |  |  | 文本/截图/卡片/文件/参考文档 |  | 是/否 |  | 根因/方案/版本/待确认 |
-
-## 11. 来源与可信度
+## 10. 来源与可信度
 - 来源消息：
 - 截图/卡片文本是否完整可读：
-- 关键图片/附件处理：
 - 引用的正式知识/候选知识：
 - 资料成熟度：
 - 当前案例适用性：A3 直接适用 / A2 部分适用 / A1 背景参考 / A0 不适用
@@ -77,13 +71,13 @@ Use these templates for Feishu Docs or Wiki candidate pages. Keep the status lin
 - 待确认：
 - 仅初步判断：
 
-## 12. 审核
+## 11. 审核
 - 审核状态：待审核
 - 发布建议：适合 / 条件适合 / 暂不适合
 - 发布前需补充：
 - 审核通过后目标成熟度：M3 已审核候选 / M4 正式知识
 
-## 13. 更新记录
+## 12. 更新记录
 | 版本 | 时间 | 触发来源 | 变更摘要 | 新增证据 | 处理人/机器人 | 来源消息 |
 |---|---|---|---|---|---|---|
 | v001 | YYYY-MM-DD HH:mm | 自动/手动 | 初次创建候选知识 |  |  |  |
@@ -127,24 +121,18 @@ Use these templates for Feishu Docs or Wiki candidate pages. Keep the status lin
 - 贡献人：
 - 最后更新人：
 - 截图/卡片文本是否完整可读：
-- 关键图片/附件处理：
 - 引用的正式知识/候选知识：
 - 资料成熟度：
 - 当前案例适用性：A3 直接适用 / A2 部分适用 / A1 背景参考 / A0 不适用
 - 可信度：已验证 / 待确认 / 仅初步判断
 
-## 7. 来源证据索引
-| 来源 | 时间 | 发送人/角色 | 类型 | message/thread | 是否已读取 | 关键结论/原文摘录 | 影响 |
-|---|---|---|---|---|---|---|---|
-|  |  |  | 文本/截图/卡片/文件/参考文档 |  | 是/否 |  | 答案/范围/待确认 |
-
-## 8. 审核
+## 7. 审核
 - 审核状态：待审核
 - 发布建议：适合 / 条件适合 / 暂不适合
 - 发布前需补充：
 - 审核通过后目标成熟度：M3 已审核候选 / M4 正式知识
 
-## 9. 更新记录
+## 8. 更新记录
 | 版本 | 时间 | 触发来源 | 变更摘要 | 新增证据 | 处理人/机器人 | 来源消息 |
 |---|---|---|---|---|---|---|
 | v001 | YYYY-MM-DD HH:mm | 自动/手动 | 初次创建候选 FAQ |  |  |  |
@@ -221,41 +209,14 @@ Use this in the daily report, not as a full Wiki page unless the user asks for a
 |---|---|---|---|---|---|---|
 ```
 
-## Shared Candidate Base Record
+## Shared Index Row
 
-Create or update one Feishu Base record per generated candidate document. The Base table is the canonical candidate pool index.
-
-`唯一键` is required. Do not emit or write a row when this value is blank, `-`, or only a human-readable source/date. Generate a deterministic `thread:`, `workorder:`, `node:`, or `hash:` key first, and use the exact same value in the candidate page, GitHub archive frontmatter, Base record, and run report.
+Append one row per generated candidate document.
 
 ```markdown
-| 唯一键 | 日期 | 类型 | 产品/模块 | 工单号 | 来源 thread | 标题 | 来源群/来源渠道 | 负责人/同事 | 候选文档链接 | 成熟度 | 审核状态 | 审核人 | 发布目标 | 公共文档链接 | 最后更新时间 | GitHub归档路径 | 备注/风险提示 |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| thread:omt_xxx | YYYY-MM-DD | 故障/FAQ/SOP/故障+FAQ/故障/SOP/待确认 |  |  | omt_xxx |  |  | 待确认 |  | M2 候选草稿 | 待审核 |  |  |  | YYYY-MM-DD HH:mm | knowledge-archive/.../v001.md | 初次创建 |
-```
-
-For API writes, generate JSON fields instead of Markdown rows:
-
-```json
-{
-  "唯一键": "thread:omt_xxx",
-  "日期": "YYYY-MM-DD",
-  "类型": "故障",
-  "产品/模块": "",
-  "工单号": "",
-  "来源 thread": "omt_xxx",
-  "标题": "",
-  "来源群/来源渠道": "",
-  "负责人/同事": "待确认",
-  "候选文档链接": "",
-  "成熟度": "M2 候选草稿",
-  "审核状态": "待审核",
-  "审核人": "",
-  "发布目标": "",
-  "公共文档链接": "",
-  "最后更新时间": "YYYY-MM-DD HH:mm",
-  "GitHub归档路径": "knowledge-archive/.../v001.md",
-  "备注/风险提示": ""
-}
+| 唯一键 | 日期 | 类型 | 成熟度 | 产品/模块 | 工单号 | 来源 thread | 标题 | 来源群 | 技术支持负责人 | 部门 Leader | 产品/中台服务代表 | 触发人 | 贡献人 | 最后更新人 | 候选文档链接 | GitHub归档 | 版本号 | 最后更新时间 | 最近变更摘要 | 审核状态 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| thread:omt_xxx | YYYY-MM-DD | 故障/FAQ/SOP/待补充 | M2 候选草稿 |  |  | omt_xxx |  |  | 待确认 | 待确认 | 待确认 |  |  |  |  | knowledge-archive/.../v001.md | v001 | YYYY-MM-DD HH:mm | 初次创建 | 待审核 |
 ```
 
 ## GitHub Archive Frontmatter
@@ -292,7 +253,7 @@ last_updated_by: ""
 
 ```text
 knowledge-archive/
-  supportman/
+  support-triage/
     YYYY-MM-DD/
       thread-omt_xxx/
         v001.md
@@ -318,10 +279,10 @@ knowledge-archive/
 
 - 运行时间：
 - 触发方式：自动任务 / 手动调用
-- 来源范围：supportman / JSWO工单群 / 所有群聊 / 所有私聊 / 指定群
+- 来源范围：support-triage / JSWO工单群 / 所有群聊 / 所有私聊 / 指定群
 - 时间范围：
 - 飞书候选目录：
-- 飞书候选 Base：
+- 飞书索引文档：
 
 ## 结果
 | 指标 | 数量 |
@@ -335,6 +296,6 @@ knowledge-archive/
 | GitHub 快照 |  |
 
 ## 明细
-| 唯一键 | 类型 | 标题 | 审核状态 | 飞书链接 | GitHub归档路径 | 处理结果 | 写入验证 |
-|---|---|---|---|---|---|---|---|
+| 唯一键 | 类型 | 标题 | 飞书链接 | GitHub版本 | 处理结果 |
+|---|---|---|---|---|---|
 ```
