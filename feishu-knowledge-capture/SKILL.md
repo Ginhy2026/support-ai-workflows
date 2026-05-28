@@ -1,310 +1,202 @@
 ---
 name: feishu-knowledge-capture
-description: Capture single support cases, support-triage outputs, Feishu topic threads, JSWO work-order groups, and manually requested Feishu chat scopes into candidate Feishu Wiki knowledge drafts and GitHub Markdown archives. Use when Codex needs to convert one resolved or pending support case into candidate FAQ/fault/SOP/Pending knowledge, collect support-triage cases in batch, extract reusable knowledge from Feishu messages, run daily knowledge capture, prepare a shared candidate knowledge pool, update a Feishu Wiki or index document, or archive candidate knowledge snapshots for version history.
+description: Capture personally selected Feishu support material, visible work-order groups, and pasted case summaries into high-quality personal case notes, with an optional lightweight personal index. Use when Codex needs to help an individual turn support discussions into reusable case documents without scanning company-wide chats or maintaining a company candidate-pool console.
 ---
 
 # Feishu Knowledge Capture
 
 ## Purpose
 
-Use this skill to turn one support case or many Feishu support discussions into candidate knowledge drafts for human review. It is the unified knowledge-capture layer after `support-triage`: collect source material, group it into cases, classify whether it is suitable for knowledge capture, write candidate drafts to Feishu Wiki, update a shared index, and optionally archive Markdown snapshots to GitHub for version history.
+Use this skill to help one person actively preserve useful support knowledge from material they can see or provide. The default output is one concrete case note under the user's personal Feishu document group or Wiki parent, plus an optional lightweight personal index entry.
 
-The default automated source is the user's configured support-triage topic group. Single-case manual capture, JSWO work-order groups, and broad chat scopes are supported for manual or configured runs, but generated knowledge must still be treated as a candidate draft until reviewed.
+This is not a company-wide chat crawler, formal knowledge publisher, or management console. The skill should prioritize the quality, evidence, and future usefulness of each case document. The index is only a finding and status aid.
 
 ## Composing With Other Skills
 
-This skill stays focused on Feishu knowledge capture. If another support workflow such as `supportman` has already produced a final case summary, paste or link that output as source material and extract only the facts, evidence, final solution, and missing information needed for the Feishu candidate draft.
+This skill stays focused on Feishu knowledge capture. If another support workflow such as `supportman` has already produced a useful case summary, paste or link that output as source material and extract only the facts, evidence, final solution, current state, and missing information needed for the personal case note.
 
 ## Load References
 
-- For Feishu IM, Docs, Wiki, and index-update commands, read `references/lark-workflow.md`.
-- For candidate FAQ, fault, SOP, pending, and index templates, read `references/templates.md`.
+- For Feishu IM, Docs, Wiki, and personal-index commands, read `references/lark-workflow.md`.
+- For personal case note and lightweight index templates, read `references/templates.md`.
 - For review status, confidence, closure, deduplication, and privacy rules, read `references/review-rules.md`.
-- For personal/team target configuration and teammate usage examples, read `references/config.example.md`.
+- For personal target configuration and usage examples, read `references/config.example.md`.
 - For JSWO group-name parsing, run or inspect `scripts/parse_work_order_group.py`.
-- For deterministic candidate keys, run or inspect `scripts/candidate_key.py`.
-- For GitHub Markdown archive snapshots, run or inspect `scripts/archive_snapshot.py`.
+- For deterministic case keys, run or inspect `scripts/candidate_key.py`.
+- For GitHub Markdown archive snapshots, run or inspect `scripts/archive_snapshot.py` when archive output is enabled.
 
 ## Configuration Needed
 
 Before writing to Feishu, obtain or ask the user for these values:
 
-- Source chat names or chat IDs.
-- Target Feishu Wiki space or parent node for `候选知识碎片/待审核`.
-- Shared index document URL or token, such as `支持知识碎片候选池`.
-- Run window, defaulting to today in Asia/Shanghai for daily automation.
+- Source material: pasted case text, selected chat names/IDs, selected work-order groups, or explicit message/thread links.
+- Target personal Feishu document group, Wiki parent node, or folder for case notes.
+- Optional personal index document URL/token.
+- Time window, defaulting to today in Asia/Shanghai when the user does not specify one.
 - Optional GitHub archive root, defaulting to `knowledge-archive/` in the repository.
-- Optional role mapping for support owners, department leaders, and product/service representatives.
 
-If any target write location is missing, complete source analysis and output a dry-run report instead of guessing where to publish.
+If the personal write target is missing, complete source analysis and output a dry-run case note instead of guessing where to publish.
 
-For team use, prefer a local config or environment variables instead of hardcoding internal Feishu URLs in a public repository. If a teammate asks `/飞书知识沉淀 获取今天我所有工单群内容并沉淀`, load the configured team target and write to the shared candidate pool.
+## Output Model
+
+Default structure:
+
+- One long-lived personal document group or Wiki parent.
+- One case note document per useful case.
+- One optional personal index list with only these fields: `关键词`, `类型`, `模块`, `标题`, `来源`, `文档链接`, `状态`.
+
+Recommended status values:
+
+- `待整理`: useful signal identified but not enough context yet.
+- `已沉淀`: case note created with enough source traceability.
+- `需补充`: important evidence, cause, solution, or verification is missing.
+- `可复用`: the note is clean enough for future reuse or manual submission.
+- `已废弃`: duplicate, obsolete, or no longer useful.
 
 ## Capture Modes
 
-### Maintenance Mode
-
-Use maintenance mode when the user asks to clean the candidate pool, fix a wrong answer, merge duplicates, mark obsolete drafts, or repair the shared index. This mode maintains existing candidate knowledge; it does not collect new source chats by default.
-
-Accept inputs such as:
-
-```text
-清理候选池里重复的 T300 网络域 FAQ
-修正这个候选答案，并把重复文档标记废弃
-检查支持知识碎片候选池里是否有重复候选
-把同一 thread/workorder 的重复候选合并到一个主文档
-```
-
-For maintenance mode:
-
-- Read the shared index and candidate pages before writing.
-- Choose one canonical page per exact key (`thread:<id>` or `workorder:<JSWO-id>`).
-- Correct the canonical page when the existing answer conflicts with newer evidence or human review.
-- Mark duplicate or empty pages as obsolete with a link to the canonical page; do not delete them unless the user explicitly requests deletion.
-- Update the shared index row to point to the canonical page and record the correction/update time.
-- If GitHub archive is enabled, create the next archive version for the corrected canonical candidate.
-- Return a cleanup report listing canonical pages, obsolete pages, corrected facts, and any remaining possible duplicates.
-
 ### Single-Case Mode
 
-Use single-case mode when the user pastes one customer case, one `support-triage` output, one internal discussion, one final solution, or one work-order summary. This mode replaces the default recommendation to use `case-capture`.
+Use single-case mode when the user pastes one customer case, one internal discussion, one final solution, one work-order summary, or a summary produced by another workflow.
 
 Accept inputs such as:
 
 ```text
-Use $feishu-knowledge-capture to turn this support-triage output and final solution into a candidate knowledge draft.
-使用 feishu-knowledge-capture，把下面这个已闭环案例沉淀成候选排障知识。
-使用 feishu-knowledge-capture，把这个还没闭环的新产品问题放入 Pending 候选池。
+使用 feishu-knowledge-capture，把下面这段案例摘要沉淀成个人 case 文档。
+使用 feishu-knowledge-capture，把下面这个已闭环案例整理成个人排障沉淀。
+使用 feishu-knowledge-capture，把这个还没闭环的新产品问题放入个人 Pending 线索。
 ```
 
 For single-case mode:
 
 - Do not fetch broad chat history unless the user provides a source link or explicitly asks.
 - Normalize the pasted material into one case.
-- If the input is a `support-triage` output, parse its knowledge-capture section automatically instead of asking the user to fill a separate intake template.
-- If final cause, solution, or verification is missing, generate a Pending record rather than a high-confidence FAQ/SOP.
-- If the case is closed enough, generate one or more candidate drafts: FAQ, fault troubleshooting article, or SOP.
-- Use `hash:<sha1(product|module|title|core_symptom)>` as the fallback candidate key when no thread ID or work-order ID exists.
+- If final cause, solution, or verification is missing, generate a Pending/线索 note rather than a high-confidence FAQ/SOP.
+- If the case is closed enough, generate one personal case note that can contain FAQ, fault, and SOP sections as needed.
+- Use `hash:<sha1(product|module|title|core_symptom)>` as the fallback case key when no thread ID or work-order ID exists.
 
-### Support-Triage Handoff Parsing
+### Selected Chat Mode
 
-When the pasted material contains a `support-triage` knowledge-capture decision, extract these fields when present:
+Use selected chat mode when the user names one or more Feishu groups/chats or work-order groups.
 
-```text
-是否建议进入 feishu-knowledge-capture 候选池
-- 判断：不沉淀 / 待闭环后沉淀 / 建议立即候选沉淀
-- 理由：
-- 建议沉淀类型：FAQ / SOP / 排障知识 / Pending
-- 进入候选池前缺失：
-```
-
-Also accept English equivalents:
-
-- `Not captured` -> `不沉淀`.
-- `Capture after closure` -> `待闭环后沉淀`.
-- `Candidate now` -> `建议立即候选沉淀`.
-
-Map the decision to action:
-
-- `不沉淀`: do not create a candidate page; include the case in the run report as skipped.
-- `待闭环后沉淀`: create or update a Pending record with maturity `M0` or `M1`.
-- `建议立即候选沉淀`: create or update a candidate FAQ, SOP, or fault/troubleshooting article with default maturity `M2`.
-
-If the support-triage output says `建议立即候选沉淀` but still lacks final cause, solution, or verification, prefer Pending or a low-confidence fault draft and clearly list missing evidence. Do not turn triage-only hypotheses into final knowledge.
-
-### Batch Mode
-
-Use batch mode for configured support-triage topic groups, JSWO work-order groups, named chats, or broader Feishu scopes.
-
-## Source Selection
-
-### Default Automation
-
-Daily automation should process only configured support-triage related topic threads unless the automation prompt explicitly enables more sources:
-
-- messages containing `/support-triage`
-- messages mentioning Gin or the support-triage bot and asking for triage
-- bot replies produced by the support-triage workflow
-- threads in a group tagged or named `Support-triage`
-
-Treat one topic thread as one case. Do not turn each individual message into a separate candidate document.
-
-### Manual Source Scopes
-
-Manual invocations may request a wider scope. Support these source phrases:
+Accept inputs such as:
 
 ```text
-/飞书知识沉淀 获取今天 support-triage 话题并沉淀
-/飞书知识沉淀 获取今天所有 JSWO 工单群并沉淀
-/飞书知识沉淀 获取昨天所有群聊中的技术支持问题并沉淀
-/飞书知识沉淀 获取今天所有私聊中的工单问题并沉淀
-/飞书知识沉淀 获取群聊「PUDU T300法国JSWO-202604220005」并沉淀
+/飞书知识沉淀 获取今天群聊「xxx」里的关键信息并沉淀
+/飞书知识沉淀 获取本周这些群聊：A、B、C，整理成个人 case 文档
+/飞书知识沉淀 获取昨天 JSWO-202604220005 工单群内容并沉淀
 ```
 
 Interpret the command into:
 
-- Source scope: `support-triage`, `jswo-groups`, `all-group-chats`, `all-private-chats`, or `named-chat`.
-- Time window: today by default; also support yesterday, this week, and explicit date ranges.
-- Output mode: default is Feishu candidate write plus GitHub archive; `dry-run` only reports.
-- Target: configured candidate Wiki node and shared index document.
+- Source scope: explicitly named chats, explicit chat IDs, explicit message/thread links, or visible work-order groups requested by the user.
+- Time window: user-specified first; default to today when omitted.
+- Output mode: personal case documents plus optional personal index update; `dry-run` reports only when targets are missing.
+- Target: configured personal document group/Wiki parent and optional personal index.
 
-For `all-group-chats` and `all-private-chats`, first filter by technical-support signals such as `/support-triage`, `JSWO-`, robot/product names, error/fault words, troubleshooting language, FAQ wording, or configured keywords. Do not summarize unrelated chatter, administrative messages, or personal conversation.
+### Personal Visible Group Mode
 
-### JSWO Work-Order Groups
+Use this only when the user explicitly asks to process their own visible groups, such as `获取我可见的工单群`.
 
-Also support configured JSWO work-order groups when the user enables them. Recognize group names that contain a work-order ID such as `JSWO-202604220005`, for example:
+Rules:
 
-```text
-【新问题_进行中】PUDU T300法国JSWO-202604220005
-【已解决】KettyBot法国JSWO-202604220006
-```
+- Process only the current identity's visible chats.
+- Prefer configured keywords, explicit group names, or ticket patterns such as `JSWO-`.
+- Do not claim access to all company chats or other people's private conversations.
+- Filter by technical-support signals before case extraction.
+- Redact unrelated personal conversation and administrative chatter.
 
-Use `scripts/parse_work_order_group.py` to extract status, product/customer text, and work-order ID. The status text is a signal, not the final closure decision.
+## Source Handling
 
-## Teammate Invocation
+### Time Window
 
-When a teammate uses this skill through a Feishu bot, support concise Chinese commands such as:
+- If the user says today, yesterday, this week, a date, or a time range, use that exact window.
+- If the user omits the window, default to today in Asia/Shanghai.
+- If a case crosses the window boundary, include enough nearby thread context to make the case understandable when tools allow.
 
-```text
-@Pierre的飞书智能体 /飞书知识沉淀 获取今天我所有工单群内容并沉淀
-@Pierre的飞书智能体 /飞书知识沉淀 获取本周 JSWO 工单群内容并沉淀
-@Pierre的飞书智能体 /飞书知识沉淀 只处理已闭环工单
-```
+### Case Grouping
 
-Interpret these as:
+Treat one topic thread, one work-order group issue, or one coherent pasted problem as one case. Do not turn each message into a separate document.
 
-- Source owner: the invoking teammate unless specified otherwise.
-- Source scope: all visible work-order groups for that teammate, especially groups whose names contain `JSWO-`.
-- Target: the configured team candidate Wiki node and shared index document.
-- Output policy: candidate drafts only, pending report for unresolved cases.
+For work-order groups, recognize names that contain IDs such as `JSWO-202604220005`, and use `scripts/parse_work_order_group.py` for metadata. The group status text is only a hint; closure depends on message evidence.
 
-Do not write to another person's private candidate pool unless the configured target explicitly points there and the current identity has permission.
+### Evidence Quality
 
-## Multi-User Work-Order Groups
+Before writing a personal case note:
 
-Multiple teammates may run this skill in the same JSWO work-order group. Treat the work order, not the invoking person, as the deduplication unit:
+- Preserve source group/chat, message IDs or thread IDs, time range, participants when useful, and readable cards/images/files.
+- Extract exact versions, thresholds, error codes, logs, robot models, country/region, and configuration values.
+- If a screenshot, file, or card appears to contain key diagnosis or solution but cannot be read, mark it as unread evidence and lower confidence.
+- Prefer human-written final solutions and verified steps over model-generated summaries.
+- Keep customer-facing wording separate from internal facts when both are present.
 
-- Use `workorder:<JSWO-id>` as the candidate key for JSWO groups.
-- If A, B, and C run the skill on the same work order, create only one candidate page.
-- If a later run adds a final cause, verified solution, product confirmation, or closure evidence, update the existing candidate and create the next GitHub archive version.
-- If a later run has no material new information, skip writing and report `duplicate_skipped`.
-- Record the trigger person and last updater for audit, but do not treat the trigger person as the work-order owner by default.
+## Personal Index
 
-## Role Attribution
+The personal index is intentionally lightweight. It is not an audit console.
 
-Record work-order responsibility by role:
+Append or update one row per case note:
 
-- `技术支持负责人`: person mainly troubleshooting, replying to the customer, or driving the case.
-- `部门 Leader`: technical support department leader in the group.
-- `产品/中台服务代表`: product or middle-platform service representative for the involved product/service.
-- `触发人`: person who invoked this skill for the current run.
-- `贡献人`: people who provided final cause, solution, verification, customer confirmation, or other key evidence.
-- `最后更新人`: person or bot identity that last updated the candidate.
+| 关键词 | 类型 | 模块 | 标题 | 来源 | 文档链接 | 状态 |
+|---|---|---|---|---|---|---|
 
-Prefer explicit configuration or a local role mapping. If not available, infer roles from group membership and message behavior. If a role cannot be determined reliably, write `待确认` instead of guessing.
+Field guidance:
 
-## Leader Pilot
+- `关键词`: 3-8 searchable words, including product/model, symptom, error code, scenario, or customer region.
+- `类型`: `故障`, `FAQ`, `SOP`, `故障+FAQ`, `线索/Pending`, or `其他`.
+- `模块`: product, subsystem, service, feature, or `待确认`.
+- `标题`: concise case title.
+- `来源`: source chat/group, work-order ID, thread/message ID, and time window when available.
+- `文档链接`: personal case note link.
+- `状态`: one of `待整理`, `已沉淀`, `需补充`, `可复用`, `已废弃`.
 
-For a department leader pilot, start with manual use before daily automation:
+## Deduplication
 
-```text
-@Leader的飞书智能体 /skill install https://github.com/Ginhy2026/support-ai-workflows/tree/main/feishu-knowledge-capture
-@Leader的飞书智能体 /skill update https://github.com/Ginhy2026/support-ai-workflows/tree/main/feishu-knowledge-capture
-@Leader的飞书智能体 使用 feishu-knowledge-capture，候选目录写入：https://www.feishu.cn/wiki/QiPGwE9Y4iukxfkMh8YcXPKNnBd ，统一索引文档写入：https://www.feishu.cn/wiki/SarowXaTji5farkayOBcbYfqn2d ，GitHub归档写入 Ginhy2026/support-ai-workflows 的 knowledge-archive。
-@Leader的飞书智能体 /飞书知识沉淀 获取群聊「PUDU T300法国JSWO-202604220005」并沉淀
-@Leader的飞书智能体 /飞书知识沉淀 获取今天所有 JSWO 工单群并沉淀
-```
+Use a stable key to avoid writing the same case repeatedly:
 
-After the manual run looks correct, daily automation may process the leader's visible JSWO groups and support-triage topics at 18:30.
+- `thread:<thread_id>` for a Feishu thread.
+- `workorder:<JSWO-id>` for a work-order group.
+- `node:<wiki_node_token>` for a source document node.
+- `hash:<sha1(product|module|title|core_symptom)>` when no stable source ID exists.
 
-## Workflow
+If an existing personal case note has the same key, update that note only when new material information appears. If only a similar title exists but the key differs, report a possible duplicate for the user to decide.
 
-For maintenance mode, skip source chat collection and start from the shared index/candidate pages. Follow `references/lark-workflow.md` and `references/review-rules.md` for canonical selection, correction, duplicate marking, and index repair.
+## Writing Rules
 
-1. Resolve source chats:
-   - Use Feishu chat search when only names are known.
-   - Prefer explicit `chat_id` when configured.
-2. Fetch messages for the configured run window.
-3. Filter sources:
-   - First version: keep only support-triage related messages and their threads.
-   - Company extension: keep configured work-order groups that match JSWO or configured ticket patterns.
-4. Expand each thread:
-   - Collect root message, replies, visible text from screenshots/cards when available, bot answer, human follow-up, and closure evidence.
-   - If image or card content cannot be read, record it as missing evidence.
-5. Normalize each case:
-   - Source group, message IDs, thread ID, sender names, timestamps, product/module, customer/region, language, work-order ID, trigger person, support owner, department leader, product/service representative, contributors, and last updater when present.
-6. Generate a deterministic candidate key:
-   - Support-triage thread: `thread:<thread_id>`.
-   - JSWO work-order group: `workorder:<JSWO-id>`.
-   - Fallback when both are missing: `hash:<sha1(product|module|title|core_symptom)>`.
-   - Use `scripts/candidate_key.py` for consistent key generation.
-7. Read the shared index before writing:
-   - Search for the candidate key first.
-   - If the key exists and there is no material new information, skip creating a new page and report `duplicate_skipped`.
-   - If the key exists and there is new resolution, append an `更新记录` section to the existing candidate page and update the index row/report instead of creating a new page.
-   - If only a similar title/symptom exists but the key differs, do not auto-merge. Report `possible_duplicate` for human review.
-8. Decide case state:
-   - Closed enough for candidate knowledge: has final action, cause, workaround, verified result, customer confirmation, or explicit case closure.
-   - Pending: still in troubleshooting, missing root cause, missing final answer, or only has first-pass triage.
-9. Classify output:
-   - Fault: abnormal robot behavior, error, failure, navigation issue, hardware/software/cloud fault, or troubleshooting case.
-   - FAQ: recurring question, product difference, configuration, policy, usage, or short "how to" answer.
-   - SOP: reusable internal handling procedure, escalation playbook, or multi-role workflow.
-   - Pending: useful signal but not ready for candidate knowledge.
-   - For single-case mode, this classification replaces the old separate `case-capture` flow.
-10. Generate Markdown or XML using `references/templates.md`.
-11. Write to Feishu:
-   - Create one candidate document or Wiki node per eligible case.
-   - Append one row to the shared index document, including the unique key.
-   - Never overwrite formal knowledge pages.
-12. Archive to GitHub when enabled:
-   - Save only the structured candidate Markdown and necessary metadata, not full raw chat logs.
-   - New cases become `v001.md`; updated cases become `v002.md`, `v003.md`, and so on.
-   - Store snapshots below `knowledge-archive/` following `references/templates.md`.
-13. Return a daily report with collected message count, candidate documents, archive snapshots, pending cases, duplicate skips, possible duplicates, write links, and review tasks.
+- Create or update one personal case note per eligible case.
+- Update the personal index only after the case note link is known.
+- Never publish a personal note as formal company knowledge.
+- Do not write to another person's private document area unless the configured target explicitly points there and the current identity has permission.
+- Do not store raw full chat transcripts in GitHub archives. Archive only generated case Markdown, source identifiers, Feishu links, status, and minimal metadata.
+- If write targets are missing or permissions fail, return a dry-run case note and a short configuration checklist.
 
-## Quality Rules
-
-- Do not publish any output as formal knowledge. Always mark it as `候选草稿，需人工审核`.
-- Do not invent final causes, solutions, verification results, or customer confirmations.
-- Keep source traceability: include source chat, message ID, thread ID, date, and owner when available.
-- Redact private customer details, phone numbers, personal names, and sensitive identifiers unless the target is explicitly internal and access-controlled.
-- For all private-chat and broad all-chat scans, redact names, phone numbers, emails, private handles, and personal conversation by default.
-- Prefer reusable patterns over one-off customer details.
-- If source material is unresolved or incomplete, produce a pending record rather than a candidate knowledge draft.
-- New products and new issues often start with immature material. This is normal; capture them as Pending or low-maturity candidates until final cause, solution, and verification become available.
-- When content came from screenshots or cards, state whether the text was fully readable.
-- Do not archive raw chat transcripts to GitHub. Archive only the generated candidate Markdown, source identifiers, Feishu links, and review metadata.
-- Separate role ownership from invocation: `触发人` is audit metadata, while `技术支持负责人`, `部门 Leader`, and `产品/中台服务代表` describe the work-order roles.
-
-## Output Report
+## Report Format
 
 Always end with a compact Markdown report:
 
 ```markdown
-# 知识沉淀日报
+# 个人知识沉淀运行报告
 
-## 1. 采集范围
-- 来源群：
+- 运行时间：
+- 来源范围：
 - 时间范围：
-- 来源范围：support-triage / JSWO工单群 / 所有群聊 / 所有私聊 / 指定群
+- 个人文档组：
+- 个人索引清单：
 
-## 2. 处理结果
-- 读取消息：
-- 识别 case：
-- 生成候选故障：
-- 生成候选 FAQ：
-- 生成候选 SOP：
-- 生成 Pending：
-- 待补充/待闭环：
-- 跳过：
-- GitHub 归档：
+## 结果
+| 指标 | 数量 |
+|---|---:|
+| 读取消息 |  |
+| 识别 case |  |
+| 新建 case 文档 |  |
+| 更新 case 文档 |  |
+| Pending/需补充 |  |
+| 跳过重复 |  |
 
-## 3. 已写入候选区
-| 类型 | 标题 | 成熟度 | 工单号 | 来源 | 飞书链接 | GitHub 版本 | 审核状态 |
-|---|---|---|---|---|---|---|---|
+## 已沉淀
+| 关键词 | 类型 | 模块 | 标题 | 来源 | 文档链接 | 状态 |
+|---|---|---|---|---|---|---|
 
-## 4. 待补充
-| 标题/线索 | 缺失信息 | 建议动作 |
-|---|---|---|
+## 需补充
+| 标题 | 来源 | 缺失信息 | 建议下一步 |
+|---|---|---|---|
 ```

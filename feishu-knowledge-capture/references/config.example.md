@@ -1,147 +1,111 @@
 # Configuration Example
 
-Use this reference when setting up `feishu-knowledge-capture` for one person or for a team.
+Use this reference when setting up `feishu-knowledge-capture` for personal knowledge capture.
 
-Do not commit private Feishu target URLs or tokens to a public repository. Prefer environment variables, a local untracked config file, or an automation prompt.
+Do not commit private Feishu URLs or tokens to a public repository. Prefer environment variables, a local untracked config file, or an automation prompt.
 
-## Team Mode
+## Default Personal Mode
 
-Use team mode when multiple teammates should all write candidate knowledge into the same review pool.
+Personal mode is the default. It writes case notes to a personal document group or Wiki parent and optionally updates one lightweight personal index.
 
 Required target values:
 
 ```text
-FEISHU_KNOWLEDGE_MODE=team
-FEISHU_KNOWLEDGE_CANDIDATE_NODE_TOKEN=<待审核 wiki node token>
-FEISHU_KNOWLEDGE_CANDIDATE_NODE_URL=<待审核 wiki url>
-FEISHU_KNOWLEDGE_INDEX_DOC_TOKEN=<支持知识碎片候选池 docx token>
-FEISHU_KNOWLEDGE_INDEX_DOC_URL=<支持知识碎片候选池 url>
+FEISHU_KNOWLEDGE_MODE=personal
+FEISHU_KNOWLEDGE_PERSONAL_PARENT_TOKEN=<个人沉淀文档组或 Wiki 父节点 token>
+FEISHU_KNOWLEDGE_PERSONAL_PARENT_URL=<个人沉淀文档组或 Wiki 父节点 url>
 ```
 
 Optional values:
 
 ```text
+FEISHU_KNOWLEDGE_PERSONAL_INDEX_DOC_TOKEN=<个人索引清单文档 token>
+FEISHU_KNOWLEDGE_PERSONAL_INDEX_DOC_URL=<个人索引清单文档 url>
 FEISHU_KNOWLEDGE_DEFAULT_TIMEZONE=Asia/Shanghai
-FEISHU_KNOWLEDGE_SOURCE_PATTERNS=/support-triage,JSWO-
-FEISHU_KNOWLEDGE_OWNER_FIELD=sender_name
+FEISHU_KNOWLEDGE_SOURCE_PATTERNS=JSWO-,故障,报错,异常,排查,解决,FAQ,SOP
 FEISHU_KNOWLEDGE_ARCHIVE_ROOT=knowledge-archive
-FEISHU_KNOWLEDGE_DEFAULT_AUTOMATION_SCOPE=support-triage
-FEISHU_KNOWLEDGE_MANUAL_SCOPES=single-case,support-triage,jswo-groups,all-group-chats,all-private-chats,named-chat
-FEISHU_KNOWLEDGE_ROLE_MAP_FILE=<local untracked role map path>
-FEISHU_KNOWLEDGE_DEFAULT_LEADER=<leader name or open_id>
+FEISHU_KNOWLEDGE_DEFAULT_TIME_WINDOW=today
+FEISHU_KNOWLEDGE_MANUAL_SCOPES=single-case,named-chat,selected-chats,visible-workorder-groups
 ```
 
-With the current shared pool, the values are:
+## Personal Index Fields
+
+The personal index is a lightweight list, not a control console. Use exactly these fields:
 
 ```text
-FEISHU_KNOWLEDGE_CANDIDATE_NODE_TOKEN=QiPGwE9Y4iukxfkMh8YcXPKNnBd
-FEISHU_KNOWLEDGE_CANDIDATE_NODE_URL=https://www.feishu.cn/wiki/QiPGwE9Y4iukxfkMh8YcXPKNnBd
-FEISHU_KNOWLEDGE_INDEX_DOC_TOKEN=Xaf8dtkaboAsQ3xHzBtc1WD6n3e
-FEISHU_KNOWLEDGE_INDEX_DOC_URL=https://www.feishu.cn/wiki/SarowXaTji5farkayOBcbYfqn2d
+关键词, 类型, 模块, 标题, 来源, 文档链接, 状态
 ```
 
-Only use these shared-pool values when the user explicitly wants all teammates to write into the same candidate pool and the current Feishu identity has write permission.
-
-## Personal Mode
-
-Use personal mode when each teammate keeps a private candidate pool.
+Recommended status values:
 
 ```text
-FEISHU_KNOWLEDGE_MODE=personal
-FEISHU_KNOWLEDGE_CANDIDATE_NODE_TOKEN=<their own 待审核 node token>
-FEISHU_KNOWLEDGE_INDEX_DOC_TOKEN=<their own index docx token>
+待整理, 已沉淀, 需补充, 可复用, 已废弃
 ```
 
 ## Source Discovery
 
-For support-triage topic groups, resolve the source chat by configured chat name or chat ID.
+For named chats, resolve the source chat by configured chat name or chat ID:
 
-For work-order groups, search visible chats by ticket pattern and parse names with `scripts/parse_work_order_group.py`.
+```powershell
+lark-cli.cmd im +chat-search --query "PUDU T300法国JSWO-202604220005" --format json
+```
 
-Examples:
+For work-order groups, search visible chats by ticket pattern and parse names with `scripts/parse_work_order_group.py`:
 
 ```powershell
 lark-cli.cmd im +chat-search --query "JSWO-" --format json
 python feishu-knowledge-capture\scripts\parse_work_order_group.py "【新问题_进行中】PUDU T300法国JSWO-202604220005"
 ```
 
-If a teammate asks:
-
-```text
-@Pierre的飞书智能体 /飞书知识沉淀 获取今天我所有工单群内容并沉淀
-```
-
-Use these defaults:
-
-- `owner`: Pierre or the invoking Feishu user.
-- `time_window`: today from 00:00 to now in Asia/Shanghai.
-- `source_scope`: visible groups containing `JSWO-` plus configured support-triage topic groups.
-- `target`: team candidate node and shared index when `FEISHU_KNOWLEDGE_MODE=team`.
+Only process chats visible to the current identity. Do not imply access to company-wide or other people's private chats.
 
 ## Automation and Manual Runs
 
-Default scheduled automation should use:
-
-```text
-source_scope=support-triage
-time_window=today
-output=feishu+github-archive
-```
-
-Manual runs may override the source scope:
+Manual runs should usually specify the source:
 
 ```text
 source_scope=single-case
-source_scope=jswo-groups
-source_scope=all-group-chats
-source_scope=all-private-chats
 source_scope=named-chat:<chat name>
+source_scope=selected-chats:<chat A>,<chat B>
+source_scope=visible-workorder-groups
 ```
 
-For `all-group-chats` and `all-private-chats`, the runner must filter by technical-support signals before generating candidates and must redact private conversation by default.
+Time window rules:
 
-## Role Attribution
-
-Use role attribution to separate work-order responsibility from the person who invokes the skill.
-
-Recommended local role map shape:
-
-```json
-{
-  "leaders": ["open_id_or_name_b"],
-  "service_representatives": {
-    "PUDU T300": ["open_id_or_name_c"],
-    "KettyBot": ["open_id_or_name_d"]
-  },
-  "support_owners": {
-    "JSWO-202604220005": "open_id_or_name_a"
-  }
-}
+```text
+time_window=today
+time_window=yesterday
+time_window=this-week
+time_window=2026-05-21
+time_window=2026-05-21T00:00:00+08:00..2026-05-21T18:00:00+08:00
 ```
 
-Resolution priority:
+If the user omits the time window, use today in `Asia/Shanghai`.
 
-1. Explicit role map or configured values.
-2. Work-order metadata from the source system, if available.
-3. Group membership and message behavior.
-4. `待确认` when the role cannot be determined reliably.
+## Optional Advanced Team Setup
 
-Track the invoking user separately as `触发人`; do not treat the invoking user as the work-order owner unless the role map or evidence supports it.
+Team or shared targets may be configured later, but they are not the default mode for this skill. When using a shared target, keep the same document-quality rules and do not turn the personal index into a large review console.
+
+Example optional values:
+
+```text
+FEISHU_KNOWLEDGE_MODE=team
+FEISHU_KNOWLEDGE_TEAM_PARENT_TOKEN=<team review parent token>
+FEISHU_KNOWLEDGE_TEAM_INDEX_DOC_TOKEN=<team lightweight index token>
+```
+
+Only use team mode when the user explicitly asks for a shared target and the current identity has write permission.
 
 ## GitHub Archive
 
-Use GitHub Markdown archive snapshots for version history. The runner should create or update files under `FEISHU_KNOWLEDGE_ARCHIVE_ROOT` and commit them with the skill/repo workflow.
-
-Do not store raw full chat transcripts in the archive. Store only generated candidate Markdown, minimal source identifiers, Feishu document links, review status, and run reports.
+Use GitHub Markdown archive snapshots only for generated case notes and minimal metadata. Do not store raw full chat transcripts.
 
 ## Permission Requirements
 
 The identity running the bot or automation must have:
 
-- Read access to the source work-order groups.
-- `im:chat:read` and message read/search scopes as needed.
-- Write permission to the target candidate Wiki node.
-- Write permission to the shared index document.
+- Read access to the selected source chats or work-order groups.
+- Message read/search scopes as needed.
+- Write permission to the personal document group or Wiki parent.
+- Write permission to the optional personal index document.
 - GitHub push or repository write permission when Markdown archive snapshots are enabled.
-
-If the teammate can read their work-order groups but cannot write to the shared pool, ask the pool owner to grant edit permission to the teammate or to the bot.

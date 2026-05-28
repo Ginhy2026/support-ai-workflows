@@ -36,24 +36,25 @@ feishu-cli-setup/
 
 ### feishu-knowledge-capture
 
-`feishu-knowledge-capture` is an independent knowledge-capture skill. It can turn single support cases, JSWO work-order groups, manually requested Feishu chat scopes, or pasted summaries from other workflows into candidate Feishu Wiki knowledge drafts. It writes candidate FAQ/fault/SOP/Pending entries, appends an entry to a shared index document such as `支持知识碎片候选池`, labels maturity (`M0`-`M4`), and can archive Markdown snapshots to GitHub for version history.
+`feishu-knowledge-capture` is an independent personal knowledge-capture skill. It turns user-selected Feishu chats, visible work-order groups, message links, or pasted case summaries into high-quality personal case notes. It can optionally maintain a lightweight personal index with only `关键词`, `类型`, `模块`, `标题`, `来源`, `文档链接`, and `状态`.
 
 Core scope:
 
 - Capture one pasted case or case summary when explicitly invoked.
-- Batch-read configured support-related topic threads when explicitly invoked.
+- Read user-selected Feishu groups or visible work-order groups when explicitly invoked.
 - Treat one topic thread or one work order as one case.
-- Write only candidate drafts under a Feishu Wiki review area such as `候选知识碎片/待审核`.
-- Never publish content as formal knowledge without human review.
+- Write one personal case note per useful case under the user's personal document group or Wiki parent.
+- Keep the case note complete and traceable; keep the index intentionally lightweight.
+- Never publish content as formal company knowledge without human review.
 
-Future company-wide scope:
+Personal capture scope:
 
 - Recognize work-order group names containing ticket IDs such as `JSWO-202604220005`.
-- Parse group names like `【新问题_进行中】PUDU T300法国JSWO-202604220005`.
-- Use message content, not only group status text, to decide whether a case is closed enough for candidate knowledge.
-- Support manual scopes such as all JSWO work-order groups, all visible group chats, all private chats, or a named chat with filtering and redaction safeguards.
-- Store candidate Markdown versions under `knowledge-archive/` for GitHub-based diff and recovery.
-- Dedupe multi-user runs in the same work-order group by `workorder:<JSWO-id>` and record roles separately: technical support owner, department leader, product/service representative, trigger person, contributors, and last updater.
+- Parse group names such as `【新问题_进行中】PUDU T300法国JSWO-202604220005`.
+- Use message content, not only group status text, to decide whether a case is ready for a reusable note.
+- Support selected chats, selected work-order groups, and pasted summaries.
+- Store generated case Markdown versions under `knowledge-archive/` when archive output is enabled.
+- Dedupe repeated personal runs by `thread:<id>`, `workorder:<JSWO-id>`, `node:<token>`, or fallback hash.
 
 Skill folder:
 
@@ -100,18 +101,18 @@ For Feishu knowledge capture:
 ```text
 /skill install https://github.com/Ginhy2026/support-ai-workflows/tree/main/feishu-knowledge-capture
 /skill update https://github.com/Ginhy2026/support-ai-workflows/tree/main/feishu-knowledge-capture
-Use $feishu-knowledge-capture to collect today's configured support threads and write candidate knowledge drafts to Feishu Wiki.
-Use $feishu-knowledge-capture to turn this closed case summary and final solution into a candidate fault/FAQ/SOP/Pending entry.
+Use $feishu-knowledge-capture to collect today's key information from Feishu group "xxx" and create personal case notes.
+Use $feishu-knowledge-capture to turn this closed case summary and final solution into a personal case note.
 ```
 
-`SupportMan` and `feishu-knowledge-capture` are maintained as separate skills. If another skill already produced a useful case summary, pass that summary in as source material; `feishu-knowledge-capture` should still apply its own Feishu candidate review, dedupe, and archive rules.
+`SupportMan` and `feishu-knowledge-capture` are maintained as separate skills. If another skill already produced a useful case summary, pass that summary in as source material; `feishu-knowledge-capture` should still apply its own personal note, evidence, dedupe, and archive rules.
 
 Manual Feishu knowledge capture examples:
 
 ```text
-Use $feishu-knowledge-capture to collect today's JSWO work-order groups and archive candidate drafts.
-Use $feishu-knowledge-capture to collect yesterday's technical-support discussions from all visible group chats.
-Use $feishu-knowledge-capture to run a leader pilot on one JSWO group and record support owner, leader, and service representative roles.
+/飞书知识沉淀 获取今天群聊「xxx」里的关键信息并沉淀
+/飞书知识沉淀 获取本周这些群聊：A、B、C，整理成个人 case 文档
+使用 feishu-knowledge-capture，把下面这段案例摘要沉淀成个人 case 文档
 ```
 
 Chinese example:

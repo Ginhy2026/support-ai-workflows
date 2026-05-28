@@ -1,4 +1,4 @@
 interface:
   display_name: "Feishu Knowledge Capture"
-  short_description: "Capture single or batch support cases into candidate Wiki knowledge."
-  default_prompt: "Use $feishu-knowledge-capture to turn a single support case, support-triage output, JSWO work-order group, or Feishu chat scope into candidate FAQ/fault/SOP/Pending knowledge; dedupe by work order, record roles, label maturity, write candidate drafts to Feishu Wiki, and archive Markdown snapshots to GitHub."
+  short_description: "Capture selected Feishu support material into personal case notes."
+  default_prompt: "Use $feishu-knowledge-capture to turn selected Feishu chats, visible work-order groups, message links, or pasted case summaries into high-quality personal case notes; prioritize the case document, update only a lightweight personal index, and archive generated Markdown snapshots when configured."

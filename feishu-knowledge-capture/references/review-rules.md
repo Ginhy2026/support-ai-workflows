@@ -1,226 +1,82 @@
 # Review Rules
 
-## Closure Signals
+These rules keep personal case notes useful, traceable, and honest about uncertainty.
 
-Treat a case as closed enough for candidate knowledge only when at least one strong signal exists:
+## Closure and Confidence
 
-- A final cause, fix, workaround, or recommended handling is explicitly stated.
-- A customer, service owner, or technical owner confirms the result.
-- The work order is closed, solved, verified, or moved out of active troubleshooting.
-- The support-triage second-pass output includes a final technical judgment, reusable troubleshooting steps, or a clear recommendation to enter the candidate pool.
+Treat a case as ready for a reusable personal note only when at least one strong signal exists:
+
+- A final cause, workaround, configuration, or handling path is stated by a human.
+- The customer, support owner, product/service colleague, or source discussion confirms the issue was resolved.
+- A referenced SOP/manual clearly applies to the current case.
+- The case is not fully solved but contains a reusable signal worth keeping as Pending/线索.
 
 Weak signals are not enough by themselves:
 
-- The group name says `进行中`.
-- A first-pass support-triage answer only asks for more information.
-- The discussion contains hypotheses but no final action.
-- A screenshot shows an error, but no diagnosis or result is available.
+- A first-pass model answer only asks for more information.
+- A screenshot or log is present but not readable.
+- The group name says solved, but the message content does not show what solved it.
+- A hypothesis is repeated without verification.
 
-## Suitability Labels
+## Personal Status
 
-- `适合`: reusable symptom/question, clear scope, verified answer or fix, low risk of misuse.
-- `条件适合`: useful but missing version scope, image evidence, confirmation, or reviewer approval.
-- `暂不适合`: unresolved, one-off, speculative, sensitive, or missing final solution.
+Use status values to describe the personal note state:
 
-## Confidence Labels
+- `待整理`: material was found but not yet turned into a complete note.
+- `已沉淀`: a traceable case note exists.
+- `需补充`: key evidence, cause, solution, or verification is missing.
+- `可复用`: the note is clear enough for future reuse or manual submission.
+- `已废弃`: duplicate, obsolete, or no longer useful.
 
-- `已验证`: supported by final solution, official documentation, logs, reproduced result, or explicit technical confirmation.
-- `待确认`: plausible and partly supported, but not validated by final result or official source.
-- `仅初步判断`: inferred from symptoms or discussion with weak evidence.
-
-## Maturity Labels
-
-Use maturity labels to describe how reusable the candidate knowledge is. Maturity is about the knowledge item itself, not whether it applies to a future case.
-
-- `M0 原始线索`: raw customer message, screenshot, work-order fragment, or unverified observation.
-- `M1 初步判断`: support-triage output or internal hypothesis, but no closure.
-- `M2 候选草稿`: candidate FAQ/fault/SOP/Pending with a handling path, but not reviewed or fully verified.
-- `M3 已审核候选`: human-reviewed candidate that can be used internally, with scope and boundary notes.
-- `M4 正式知识`: approved official FAQ/SOP/fault article in the formal knowledge base.
-
-Default maturity:
-
-- Pending records are usually `M0` or `M1`.
-- Newly generated candidate drafts are usually `M2`.
-- Do not mark `M3` or `M4` unless a human reviewer explicitly approves it or the source is already formal knowledge.
-
-## Applicability Labels
-
-Use applicability labels to describe whether a source or prior candidate can be used for the current case:
-
-- `A3 直接适用`: product/model, module, symptom/error code, scenario, and steps match.
-- `A2 部分适用`: symptom or module is similar, but product/version/scenario differs.
-- `A1 背景参考`: useful context only; not enough for operational or customer-facing steps.
-- `A0 不适用`: conflicts with the case or key conditions do not match.
-
-When writing a candidate, include known applicability boundaries and non-applicable scenarios. A high-maturity source can still be only `A2` or `A1` for a specific case.
-
-## Candidate Type Quality Gates
-
-FAQ is suitable when one question maps to one high-confidence standard answer with clear scope, non-applicable scenarios, and low risk of misuse.
-
-SOP is suitable when the procedure is complete from trigger to closure, with roles, steps, expected results, exception branches, and escalation conditions.
-
-Fault/troubleshooting knowledge is suitable when the symptom, troubleshooting logic, final cause or cause range, solution, and verification result are clear.
-
-Pending is required when the case is valuable but not closed enough for a candidate FAQ/SOP/fault article.
-
-## Support-Triage Decision Mapping
-
-When ingesting a `support-triage` output, normalize its knowledge-capture decision before writing anything.
-
-Accepted labels:
-
-- `不沉淀` or `Not captured`
-- `待闭环后沉淀` or `Capture after closure`
-- `建议立即候选沉淀` or `Candidate now`
-
-Action mapping:
-
-| support-triage decision | Feishu capture action | Default maturity |
-|---|---|---|
-| 不沉淀 / Not captured | Do not create a candidate page; report skipped with reason. | none |
-| 待闭环后沉淀 / Capture after closure | Create or update Pending only. | M0 原始线索 or M1 初步判断 |
-| 建议立即候选沉淀 / Candidate now | Create or update FAQ, SOP, or fault/troubleshooting candidate according to the suggested type and evidence. | M2 候选草稿 |
-
-The `support-triage` decision is an input signal, not proof of closure. If final cause, solution, verification, or scope is still missing, keep the output as Pending or low-confidence candidate content and list the missing evidence.
+Pending is required when the case is valuable but not closed enough for a stable FAQ/SOP/fault note. Clearly state why it cannot yet become stable knowledge.
 
 ## Deduplication
 
-Before writing a new candidate, read the shared index and compare deterministic keys first. This is mandatory for every run, including manual reruns and scheduled automations.
+Before writing a new personal case note, compare deterministic keys first:
 
-### Candidate Key
-
-Use exactly one of these keys:
-
-- `thread:<thread_id>` for support-triage topic threads.
-- `workorder:<JSWO-id>` for JSWO work-order groups.
-- `hash:<sha1>` only when no thread ID or work-order ID exists.
-
-For fallback hashes, normalize the concatenation of product, module, title, and core symptom. Use lowercase ASCII where possible, trim whitespace, collapse repeated spaces, and compute SHA-1.
-
-Use `scripts/candidate_key.py` when available instead of hand-building keys.
+- `thread:<thread_id>` for a Feishu thread.
+- `workorder:<JSWO-id>` for a work-order group.
+- `node:<wiki_node_token>` for a source document node.
+- `hash:<sha1(product|module|title|core_symptom)>` when no stable source ID exists.
 
 Duplicate signals:
 
-- Same work-order ID.
-- Same source thread ID.
-- Same product/module and highly similar symptom.
-- Same FAQ question with equivalent answer.
+- Exact key exists + no new material information: skip writing and report `duplicate_skipped`.
+- Exact key exists + new final cause, solution, verification, customer confirmation, or better evidence: update the existing case note and add `更新记录`.
+- Similar title/symptom but different key: report `possible_duplicate`; do not merge automatically.
+- No matching key: create a new personal case note and optional index row.
 
-### Write Decision
+## Evidence Priority
 
-- Exact key exists + no material new information: skip creating a page and report `duplicate_skipped`.
-- Exact key exists + new final cause, solution, verification, or customer confirmation: update the existing candidate page by appending `更新记录`, then update/report the existing index entry.
-- Different key + very similar title/symptom: do not merge automatically. Report `possible_duplicate` with both links/titles for human review.
-- No matching key: create a new candidate page and append a new index row.
+Use this source priority when evidence conflicts:
 
-Never create a second candidate page for the same exact key unless the user explicitly asks for a new page.
-
-### Multi-User Runs
-
-When several teammates run the skill on the same JSWO work-order group, the work order remains the deduplication unit:
-
-- Same `workorder:<JSWO-id>` means same candidate, regardless of whether A, B, C, a leader, or a service representative triggered the run.
-- Trigger person changes are not material knowledge updates by themselves.
-- If a later trigger contributes final cause, solution, verification, product confirmation, or closure evidence, update the existing page and create the next GitHub archive version.
-- If no material new information exists, skip writing and report `duplicate_skipped`.
-
-## Update and Versioning
-
-When a candidate already exists, update the existing Feishu page only when new material information appears:
-
-- Final cause, verified solution, workaround, rollback path, or customer confirmation.
-- Work-order closure or explicit movement out of active troubleshooting.
-- Evidence that changes the recommended answer, risk, applicable scope, or escalation condition.
-- Maturity change, such as Pending becoming candidate draft, candidate draft being reviewed, or reviewed content becoming formal knowledge.
-
-Do not update the candidate as a final answer when the new material is only a screenshot, progress reminder, repeated question, unsupported hypothesis, or personal conversation.
-
-For every new or updated candidate, also create a GitHub Markdown snapshot when archive output is enabled:
-
-- New candidate: `v001.md`.
-- Updated candidate: next version such as `v002.md`.
-- The Feishu candidate page keeps only the latest content plus a compact `更新记录`.
-- GitHub is the source for full Markdown version history and diff review.
-
-## Human-Curated Final Answers
-
-When the source contains a human-curated final answer, troubleshooting manual, numbered SOP, customer-ready reply, or reviewer correction, treat it as the primary source of truth for the candidate body.
-
-- Preserve explicit numbered steps, measurement values, thresholds, pass/fail criteria, warnings, and customer reply wording unless they conflict with safety or privacy rules.
-- Do not replace a concrete manual with a generic summary such as "replace module" or "check connection" when the source provides step-by-step diagnostics.
-- If support-triage output, knowledge-base search results, and a human final answer disagree, prefer the human final answer and record the discrepancy in `更新记录` or `内部注意事项`.
-- If a value is operationally important, such as resistance, voltage, port, error code, or firmware version, copy it exactly and include units and tolerance where provided.
-- If the final answer is customer-facing but the candidate is internal, keep both: a reusable internal SOP section and a customer reply template section.
-- When the manual is incomplete, keep the known steps and mark missing evidence explicitly instead of inventing the rest of the procedure.
-
-## Reference Documents and Media
-
-When a case cites Feishu, Yuque, GitHub, web pages, SOPs, official manuals, or other reference documents, preserve traceability in the candidate output.
-
-- Always keep the original reference link in a `参考资料` section, even when key content is quoted or summarized elsewhere.
-- Record the reference title, URL, maturity (`M0`-`M4`), applicability (`A0`-`A3`), whether the link was readable, and why it was used.
-- If the link cannot be read, do not infer technical content from the title. Mark it as `未读取` and ask for pasted content or key paragraphs when needed.
-- If the reference is readable, extract only the key conclusion, steps, warnings, scope, and version boundaries needed for the current case. Do not copy an entire mature article into a candidate.
-- If the reference contains critical images, screenshots, tables, wiring diagrams, measurement diagrams, error screenshots, or port tables, attach the relevant media when the runtime can download or insert it.
-- If media cannot be downloaded or inserted because of permission, tool, or format limits, keep the reference link and state where the image/table appears, such as `图片未复制，仅可从原文查看：第 3 节接线图`.
-- Do not move all images by default. Only copy media that directly supports diagnosis, troubleshooting steps, customer reply, or review evidence.
-
-### Mature Reference Decision Table
-
-| Reference maturity and applicability | Default action |
-|---|---|
-| `M4 正式知识` + `A3 直接适用` | Do not create a duplicate long-form candidate. Create/update only an index or case-application record that links to the formal knowledge and explains why it applies. |
-| `M4 正式知识` + new boundary, exception, customer wording, or local workaround | Create a supplemental candidate focused only on the new value, and cite the formal knowledge as the authority. |
-| `M3 已审核候选` + `A3 直接适用` | Prefer updating/reusing the existing candidate or recording reuse. Do not duplicate content into a new page. |
-| `M2` or lower | Candidate capture is allowed, but mark reference maturity, applicability, missing evidence, and review status. |
-
-Content priority:
-
-1. Human-curated final manual or final customer reply.
-2. Mature formal reference document.
-3. `support-triage` output.
-4. Similar historical case.
+1. Human-written final solution, verified troubleshooting manual, or reviewer correction.
+2. Source Feishu messages and thread replies.
+3. Readable screenshots, cards, logs, and files.
+4. Formal or candidate reference documents.
 5. Model-generated summary.
 
-If a mature document fully covers the issue, the candidate should summarize the current case fit: why the document applies, applicable conditions, differences, follow-up actions, and the link to the source. Do not duplicate the formal article body.
+When a human final answer and a model summary disagree, prefer the human final answer and record the discrepancy in `判断过程` or `更新记录`.
 
-## Maintenance and Correction
+## Reference Handling
 
-Use maintenance rules when the user asks to clean an existing candidate pool, fix a wrong answer, merge duplicate candidates, or repair index rows.
+When a case cites Feishu, Yuque, GitHub, web pages, SOPs, official manuals, or other reference documents:
 
-- Exact same key (`thread:<id>` or `workorder:<JSWO-id>`): keep one canonical candidate page and mark all other pages as obsolete duplicates.
-- Same title/question but different key: do not merge automatically. Report `possible_duplicate` unless a human reviewer confirms they are the same knowledge item.
-- Wrong or misleading answer: correct the canonical page, add a compact update record, and update the shared index row title/status if needed.
-- Empty or partial page for an existing key: mark obsolete and link to the canonical page.
-- Obsolete pages should be overwritten or prefixed with a clear notice such as `已废弃：重复候选，请以主文档为准`; do not delete pages unless explicitly requested.
-- The index should point only to the canonical page for an exact key. If older rows remain, mark them obsolete or replace them with the canonical row.
-- Corrections based on human review are material updates and should generate the next GitHub archive version when archive output is enabled.
+- Record the reference title, URL, source type, read status, and why it was used.
+- If the content is not readable, preserve the title/link and mark `读取状态：未读取`.
+- If readable, extract only the key conclusion, steps, warnings, scope, and version boundaries needed for the current case.
+- Do not copy an entire mature article into the case note.
 
-## Role Attribution
+## Privacy and Scope
 
-Use role fields for traceability, but do not invent responsibility.
+- Process only material the current user provides or can see with their current Feishu identity.
+- Do not claim access to company-wide chats or other people's private conversations.
+- Redact private names, phone numbers, emails, chat handles, and unrelated conversation when they are not needed for technical traceability.
+- Keep source traceability through group name, work-order ID, thread/message ID, and time range rather than raw full chat transcripts.
 
-- `技术支持负责人`: person driving troubleshooting or customer response.
-- `部门 Leader`: configured support leader or clearly identified leader in the group.
-- `产品/中台服务代表`: product or middle-platform representative for the involved product/service.
-- `触发人`: person who invoked the skill in this run.
-- `贡献人`: people who added final cause, solution, verification, customer confirmation, or other key evidence.
-- `最后更新人`: person or bot identity that updated the candidate.
+## Writing Boundaries
 
-Prefer explicit role maps or source-system metadata. Message behavior is a fallback signal. If evidence is insufficient, write `待确认`.
-
-## Privacy and Safety
-
-- Redact personal phone numbers, email addresses, private chat handles, and personal names unless internal traceability requires them.
-- Prefer customer/region and work-order ID over private person names.
-- Do not expose internal blame or unsupported defect claims.
-- Keep source message IDs and links in internal sections only.
-- For `all-group-chats`, keep only technical-support, fault, FAQ, SOP, robot/product, or work-order related content. Ignore casual, administrative, meeting, HR, and sales-only chatter.
-- For `all-private-chats`, redact private names, phone numbers, emails, chat handles, personal comments, and unrelated conversation by default. Use source type and stable message IDs for traceability instead of full personal details.
-- Do not write raw full chat transcripts to GitHub. Archive only generated candidate Markdown, source identifiers, Feishu links, review status, and other minimal metadata.
-
-## Publishing Boundary
-
-This skill only creates candidate drafts. Do not move pages into a formal Wiki category, remove the candidate warning, or mark content as approved unless a human reviewer explicitly says it has been approved.
+- This skill creates personal case notes, not formal company knowledge.
+- Do not mark content as approved, published, or submitted unless the user explicitly says that happened.
+- Do not implement automatic Spark-plan submission in this skill.
+- Do not store raw full chat transcripts in GitHub archives.

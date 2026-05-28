@@ -1,8 +1,8 @@
 # Feishu Knowledge Capture 使用文档
 
-`feishu-knowledge-capture` 是独立的飞书知识沉淀 skill，用来把已闭环案例、JSWO 工单群、指定飞书群聊或手动粘贴的案例摘要整理成候选知识。
+`feishu-knowledge-capture` 是独立的个人知识沉淀 skill，用来把你主动选择的飞书群聊、JSWO 工单群、消息链接或手动粘贴的案例材料整理成高质量个人 case 文档。
 
-它和 `supportman` 分开维护：`supportman` 负责日常技术支持处理和沉淀价值判断；`feishu-knowledge-capture` 负责真正写入候选 Wiki、更新候选池索引，并按配置做 GitHub Markdown 归档。需要组合时，只把 `supportman` 的输出当作输入材料之一。
+它和 `supportman` 分开维护：`supportman` 负责日常技术支持处理和沉淀价值判断；`feishu-knowledge-capture` 负责把值得保留的材料写成个人 case 文档，并可选更新个人索引清单。需要组合时，只把 `supportman` 的输出当作输入材料之一。
 
 ## 安装和更新
 
@@ -20,40 +20,59 @@
 
 正式维护统一使用 `main/feishu-knowledge-capture` 这个地址。
 
+## 默认产物
+
+- 一个个人沉淀文档组或个人 Wiki 父节点。
+- 每个 case 一个独立文档。
+- 一个可选个人索引清单。
+
+个人索引清单只保留：
+
+```text
+关键词, 类型, 模块, 标题, 来源, 文档链接, 状态
+```
+
 ## 常用调用
-
-单个案例沉淀：
-
-```text
-使用 feishu-knowledge-capture，把下面这个已闭环案例沉淀成候选排障知识。
-```
-
-未闭环线索进入 Pending：
-
-```text
-使用 feishu-knowledge-capture，把这个还没闭环的新产品问题放入 Pending 候选池。
-```
-
-JSWO 工单群批量沉淀：
-
-```text
-/飞书知识沉淀 获取今天所有 JSWO 工单群并沉淀
-```
 
 指定群聊沉淀：
 
 ```text
-/飞书知识沉淀 获取群聊「PUDU T300法国JSWO-202604220005」并沉淀
+/飞书知识沉淀 获取今天群聊「xxx」里的关键信息并沉淀
 ```
 
-组合使用其他 skill 输出：
+多群本周沉淀：
 
 ```text
-使用 feishu-knowledge-capture，把下面这份案例摘要和最终方案沉淀成候选 FAQ/排障知识。
+/飞书知识沉淀 获取本周这些群聊：A、B、C，整理成个人 case 文档
 ```
+
+单个案例沉淀：
+
+```text
+使用 feishu-knowledge-capture，把下面这段案例摘要沉淀成个人 case 文档。
+```
+
+未闭环线索：
+
+```text
+使用 feishu-knowledge-capture，把这个还没闭环的新产品问题写成个人 Pending 线索。
+```
+
+可见工单群：
+
+```text
+/飞书知识沉淀 获取我可见的 JSWO 工单群中今天的关键信息并沉淀
+```
+
+## 使用边界
+
+- 只处理你主动提供或当前身份可见的材料。
+- 不默认扫描公司所有群聊，也不读取其他人的私聊。
+- 文档质量优先，索引只做定位和状态追踪。
+- 暂不自动投稿星火计划；单篇 case 文档后续可由你人工加工或投稿。
 
 ## 维护边界
 
-- 更新飞书沉淀流程、候选 Wiki、索引、归档、去重规则时，改 `feishu-knowledge-capture/`。
+- 更新个人沉淀流程、case 文档模板、索引字段、去重规则时，改 `feishu-knowledge-capture/`。
 - 更新日常技术支持处理、客户回复、售前判断、知识检索问题生成时，改 `supportman/`。
 - 不要把 `supportman` 的完整处理规则复制进 `feishu-knowledge-capture`；只保留必要的组合调用说明。
