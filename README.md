@@ -36,11 +36,11 @@ feishu-cli-setup/
 
 ### feishu-knowledge-capture
 
-`feishu-knowledge-capture` is an independent knowledge-capture skill. It can turn single support cases, SupportMan outputs, JSWO work-order groups, and manually requested Feishu chat scopes into candidate Feishu Wiki knowledge drafts. It writes candidate FAQ/fault/SOP/Pending entries, appends an entry to a shared index document such as `支持知识碎片候选池`, labels maturity (`M0`-`M4`), and can archive Markdown snapshots to GitHub for version history.
+`feishu-knowledge-capture` is an independent knowledge-capture skill. It can turn single support cases, JSWO work-order groups, manually requested Feishu chat scopes, or pasted summaries from other workflows into candidate Feishu Wiki knowledge drafts. It writes candidate FAQ/fault/SOP/Pending entries, appends an entry to a shared index document such as `支持知识碎片候选池`, labels maturity (`M0`-`M4`), and can archive Markdown snapshots to GitHub for version history.
 
 Core scope:
 
-- Capture one pasted case or one SupportMan output when explicitly invoked.
+- Capture one pasted case or case summary when explicitly invoked.
 - Batch-read configured support-related topic threads when explicitly invoked.
 - Treat one topic thread or one work order as one case.
 - Write only candidate drafts under a Feishu Wiki review area such as `候选知识碎片/待审核`.
@@ -59,6 +59,12 @@ Skill folder:
 
 ```text
 feishu-knowledge-capture/
+```
+
+Usage doc:
+
+```text
+docs/feishu-knowledge-capture-usage.md
 ```
 
 ## Install
@@ -92,15 +98,13 @@ Use $feishu-cli-setup to check lark-cli, Feishu login, search permission, and do
 For Feishu knowledge capture:
 
 ```text
+/skill install https://github.com/Ginhy2026/support-ai-workflows/tree/main/feishu-knowledge-capture
+/skill update https://github.com/Ginhy2026/support-ai-workflows/tree/main/feishu-knowledge-capture
 Use $feishu-knowledge-capture to collect today's configured support threads and write candidate knowledge drafts to Feishu Wiki.
-Use $feishu-knowledge-capture to turn this supportman output and final solution into a candidate fault/FAQ/SOP/Pending entry.
+Use $feishu-knowledge-capture to turn this closed case summary and final solution into a candidate fault/FAQ/SOP/Pending entry.
 ```
 
-When explicitly invoked with a SupportMan output, `feishu-knowledge-capture` can use these SupportMan decision labels:
-
-- `不沉淀` / `Not captured` -> skipped report only.
-- `待闭环后沉淀` / `Capture after closure` -> Pending, usually `M0/M1`.
-- `建议立即候选沉淀` / `Candidate now` -> candidate FAQ/SOP/fault article, usually `M2`.
+`SupportMan` and `feishu-knowledge-capture` are maintained as separate skills. If another skill already produced a useful case summary, pass that summary in as source material; `feishu-knowledge-capture` should still apply its own Feishu candidate review, dedupe, and archive rules.
 
 Manual Feishu knowledge capture examples:
 
