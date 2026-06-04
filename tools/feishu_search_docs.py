@@ -47,6 +47,8 @@ def search(query: str, count: int, docs_types: list[str]) -> dict:
         cli,
         "drive",
         "+search",
+        "--as",
+        "user",
         "--query",
         query,
         "--doc-types",

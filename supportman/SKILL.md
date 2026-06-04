@@ -33,8 +33,8 @@ Use this skill as the v2 of `support-triage` and as a personal technical-support
 4. Identify whether the request is first-pass or second-pass:
    - First-pass: no Feishu knowledge-base answer is provided.
    - Second-pass: the user includes Feishu knowledge-base answer content or asks to整理/生成正式回复 after Feishu lookup.
-5. Before making technical judgments, search or use available reference material. Prefer Feishu knowledge-base results first, then user-supplied SOP/Yuque/Feishu/web links or pasted reference text, then customer evidence. Never claim to have read a link unless its contents are available in the current context.
-6. If a Feishu API/search utility is available, search with multiple query variants based on product/model, module, symptom, error code, customer-language phrases, and Chinese synonyms before drafting technical conclusions. If `lark-cli` is missing, not logged in, lacks `search:docs:read`, or search fails, tell the user to run `$feishu-cli-setup` and include exact suggested search queries for manual Feishu lookup.
+5. Before making technical judgments, search or use available reference material. Prefer the broad Feishu reference scope from `references/knowledge-sources.md`: formal Feishu knowledge bases first, then user-visible Feishu cloud documents/shared drive results, then relevant personal Feishu message history, then user-supplied SOP/Yuque/Feishu/web links or pasted reference text, then customer evidence. Never claim to have read a link, document, wiki space, shared-drive item, or chat message unless its contents are available in the current context.
+6. If a Feishu API/search utility is available, search with multiple query variants based on product/model, module, symptom, error code, customer-language phrases, and Chinese synonyms before drafting technical conclusions. Use document/wiki search for formal and cloud-document sources, and use message search only for relevant historical discussion or prior case clues. If `lark-cli` is missing, not logged in, lacks required scopes such as `search:docs:read` or IM message-search permission, or search fails, tell the user to run `$feishu-cli-setup` and include exact suggested search queries for manual Feishu lookup.
 7. Judge every reference source for applicability: Directly relevant, Partially relevant, Background only, or Not applicable. Prefer sources that include applicable model, exact symptom or error code, clear troubleshooting steps, verified historical cases, or official SOP content.
 8. If the user provides an SOP, Yuque, Feishu, GitHub, or web link, attempt to use it when readable in the current environment. If it cannot be read, ask the user to paste the article body or key paragraphs. Do not infer technical content from an unread link title alone.
 9. Preserve the customer's original language and infer it if not explicitly provided. Customer-facing drafts default to the customer's language. Internal notes default to Chinese.
@@ -85,9 +85,15 @@ Recommend internal escalation when any of these apply:
 
 ## Feishu Knowledge-Base Query Guidance
 
-Primary reference source when accessible:
+Primary formal reference source when accessible:
 
 `https://pudutech.feishu.cn/wiki/ZXWUw8OBniPEzqkYbymc2E6AnJe?from=from_copylink`
+
+Also search the broader user-visible Feishu scope when available:
+
+- All accessible Feishu wiki spaces, including the "All knowledge bases" view: `https://pudutech.feishu.cn/wiki/?wiki_all_space_view_source=space_sidebar`
+- User-visible Feishu cloud documents and shared drive results, including shared drive entry points such as `https://pudutech.feishu.cn/drive/shared/`
+- Relevant personal Feishu message history when the user asks for prior-case clues or the current case likely appeared in past chat.
 
 Create three to five focused query variants for troubleshooting cases. Cover product/model, module, symptom, scenario, exact error code/log phrase if available, recent changes, customer-language phrases, and Chinese synonyms. Avoid vague questions like "how to fix this robot problem".
 
