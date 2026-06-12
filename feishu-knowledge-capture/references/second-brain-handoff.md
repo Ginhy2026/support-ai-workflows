@@ -2,6 +2,8 @@
 
 Use this flow when the user wants a Feishu case, translation correction, support lesson, or work insight to become part of their Obsidian second brain.
 
+The preferred front-end input is SupportMan's compact `第二大脑反馈建议`. Accept it only after the user has agreed to create a pending candidate. Preserve its feedback type, reusable conclusion, source evidence, relationship to existing knowledge, scope, exceptions, and open verification items.
+
 ## Role Boundary
 
 This skill is a candidate submitter, not the formal Obsidian writer.
@@ -67,6 +69,18 @@ target_note: ""
 
 ## 待确认问题
 ```
+
+When the candidate comes from SupportMan, map the handoff without upgrading certainty:
+
+| SupportMan field | Candidate destination |
+|---|---|
+| 反馈类型 | `candidate_kind` and relationship section |
+| 可复用结论 | candidate conclusion |
+| 来源与证据 | source and evidence section |
+| 与现有知识的关系 | existing-knowledge relationship |
+| 适用范围与例外 | scope and exceptions |
+| 仍需验证 | open questions |
+| 建议产物 | `suggested_output` |
 
 For a translation correction, also record:
 

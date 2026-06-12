@@ -2,9 +2,9 @@
 
 `SupportMan` (`supportman`) 是 `support-triage` 的第二个版本，也是个人技术支持日常工作入口，用于处理海外支持、售前咨询、星火计划/项目线索、WhatsApp 截图、飞书截图、飞书邮件/消息和补充 SOP 资料。
 
-它不会直接自动回复客户，而是帮助 Hermes 输出可复制的 Markdown：工作项分类、资料检索问题、适用性判断、客户回复草稿、中文内部说明、下一步动作、升级建议，以及是否具备后续知识沉淀价值。
+它不会直接自动回复客户，而是帮助 Hermes 输出可复制的 Markdown：工作项分类、飞书与第二大脑双源检索结果、适用性判断、自然的客户回复草稿、中文内部说明、下一步动作、升级建议，以及第二大脑反馈建议。
 
-`SupportMan` 和 `feishu-knowledge-capture` 是两个独立 skill。`SupportMan` 只做当前工作处理和沉淀价值判断；需要真正创建候选知识时，再单独调用 `feishu-knowledge-capture`。
+`SupportMan` 是日常工作入口和第二大脑前端反馈传感器；`second-brain-reader` 只读正式知识；`feishu-knowledge-capture` 只在用户确认后创建待审核候选。三者各司其职。
 
 ## 文件结构
 

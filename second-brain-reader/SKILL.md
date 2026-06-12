@@ -1,6 +1,6 @@
 ---
 name: second-brain-reader
-description: Read and answer from an approved, AI-readable GitHub publication of an Obsidian second brain. Use when an agent should consult the user's governed long-term knowledge while handling work, answer “according to my second brain”, find relevant SOPs/checklists/cases, cite repository paths, identify knowledge gaps, or assess draft/review/stale/conflicted knowledge without reading or modifying the full Obsidian source vault.
+description: Read and answer from an approved, AI-readable GitHub publication of an Obsidian second brain. Use directly or as SupportMan's formal personal-knowledge channel when handling work, answering “according to my second brain”, finding relevant SOPs/checklists/cases, citing repository paths, identifying knowledge gaps, or assessing draft/review/stale/conflicted knowledge without reading or modifying the full Obsidian source vault.
 ---
 
 # Second Brain Reader
@@ -67,6 +67,21 @@ When the repository lacks sufficient evidence, say:
 ```
 
 Then ask focused questions or propose a knowledge candidate.
+
+## SupportMan Handoff
+
+When called during a SupportMan workflow, return a compact retrieval result that SupportMan can combine with Feishu and current-case evidence:
+
+```markdown
+## 第二大脑检索结果
+- 实际读取路径：
+- 可用结论：
+- 状态与风险：
+- 与当前问题的匹配度：
+- 知识缺口或冲突：
+```
+
+Report a gap or conflict as feedback only. SupportMan decides whether to suggest preservation; `feishu-knowledge-capture` creates a pending candidate only after user confirmation.
 
 ## Write Boundary
 

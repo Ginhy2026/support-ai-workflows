@@ -28,10 +28,11 @@ These URLs are entry points, not proof that their contents were read. Treat them
 1. User-provided pasted reference content or readable direct links that are explicitly relevant to the case.
 2. Formal Feishu knowledge-base/wiki results, especially approved SOPs, official troubleshooting articles, and reviewed historical cases.
 3. User-visible Feishu cloud documents and shared drive results, including docs, docx, sheets, files, and wiki-backed documents when their snippets or fetched content match the case.
-4. Relevant personal Feishu message history, used only as historical case clues, owner/context discovery, or evidence that a similar issue was discussed before.
-5. Customer evidence from screenshots, chats, attachments, error codes, logs, and videos.
-6. The user's preliminary judgment.
-7. Model inference, only as an internal hypothesis.
+4. Approved second-brain knowledge retrieved through `second-brain-reader`, with actual paths and maturity warnings.
+5. Relevant personal Feishu message history, used only as historical case clues, owner/context discovery, or evidence that a similar issue was discussed before.
+6. Customer evidence from screenshots, chats, attachments, error codes, logs, and videos.
+7. The user's preliminary judgment.
+8. Model inference, only as an internal hypothesis.
 
 ## Access Rules
 
@@ -43,6 +44,7 @@ These URLs are entry points, not proof that their contents were read. Treat them
 - Treat copied Feishu knowledge-base content as internal reference material. Do not paste internal-only wording directly into customer replies.
 - If the knowledge-base content conflicts with customer evidence, explain the mismatch in the internal section and keep the customer reply conservative.
 - Treat personal chat records as private and low-maturity evidence. Do not expose private sender names, chat names, customer names, or internal discussion details in customer-facing replies.
+- Query the approved second brain separately from Feishu search. A missing second-brain match does not mean no Feishu answer exists, and a second-brain match does not remove the need to check current applicability.
 
 ## Feishu Source Types
 

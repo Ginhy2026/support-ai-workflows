@@ -1,4 +1,4 @@
 interface:
   display_name: "Feishu Knowledge Capture"
-  short_description: "Capture selected Feishu support material into personal case notes."
-  default_prompt: "Use $feishu-knowledge-capture to turn selected Feishu chats, visible work-order groups, message links, or pasted case summaries into high-quality personal case notes; prioritize the case document, update only a lightweight personal index, and archive generated Markdown snapshots when configured."
+  short_description: "Turn user-approved SupportMan feedback or Feishu material into candidates."
+  default_prompt: "Use $feishu-knowledge-capture after I confirm preservation. Turn the SupportMan feedback handoff or selected Feishu material into a traceable personal case note or pending second-brain candidate without modifying formal knowledge."

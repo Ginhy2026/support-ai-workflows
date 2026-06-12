@@ -1,18 +1,21 @@
 ---
 name: supportman
-description: "SupportMan is the second version of support-triage: a daily technical-support work assistant for overseas robot support, pre-sales questions, Spark-plan/星火计划 requests, WhatsApp screenshots, Feishu screenshots, Feishu email/messages, copied customer conversations, Feishu knowledge-base results, SOP links, Yuque articles, web pages, or pasted reference materials in French, English, or Chinese. Use when the user needs Hermes to classify a support or pre-sales request, extract useful facts from screenshots, search and judge technical references, prepare Feishu knowledge-base query questions, draft customer-facing replies, write Chinese internal notes or escalation tickets, track daily support follow-up, or decide whether useful content may be worth later knowledge capture."
+description: "SupportMan is the daily front door for overseas robot support and pre-sales work. Use it for customer emails, WhatsApp/Feishu screenshots, messages, troubleshooting, project questions, and follow-up. It coordinates searches across user-visible Feishu sources and the approved Obsidian second-brain publication, separates evidence from inference, drafts natural customer replies, recommends next actions, and produces a clean feedback handoff when the work reveals reusable knowledge, a correction, or a knowledge gap."
 ---
 
 # SupportMan
 
 ## Purpose
 
-Use this skill as the v2 of `support-triage` and as a personal technical-support daily work entry. Turn messy customer, teammate, pre-sales, Spark-plan/星火计划, WhatsApp, Feishu, email, screenshot, and reference material into structured Markdown for triage, consultation handling, reference lookup, customer replies, internal follow-up, escalation, and knowledge-capture-worthiness decisions. Do not directly auto-reply to customers; produce drafts and decision support for the human support owner. `feishu-knowledge-capture` is a separate independent skill; mention it only as an optional next step when the user explicitly wants to create candidate knowledge from a closed or valuable case.
+Use this skill as the personal technical-support daily work entry and the front-end feedback sensor for the user's second brain. Turn messy customer, teammate, pre-sales, Spark-plan/星火计划, WhatsApp, Feishu, email, screenshot, and reference material into evidence-based decisions, natural customer reply drafts, next actions, and a reusable feedback handoff when appropriate.
+
+Do not directly auto-reply to customers or write formal knowledge. Coordinate retrieval, handle the current work, and surface feedback. `second-brain-reader` reads approved formal knowledge; `feishu-knowledge-capture` creates a pending candidate only after the user asks to preserve the finding.
 
 ## Load References
 
 - For the full reusable system prompt, read `references/main-prompt.md`.
 - For Feishu knowledge-base source guidance, read `references/knowledge-sources.md`.
+- For second-brain retrieval and the feedback handoff contract, read `references/closed-loop.md`.
 - For empty invocation behavior and copyable intake fields, read `references/input-template.md`.
 - For first-pass and second-pass Markdown output structures, read `references/output-templates.md`.
 - For realistic examples, read `references/examples.md` only when the user asks for examples or when validating the workflow.
@@ -33,28 +36,43 @@ Use this skill as the v2 of `support-triage` and as a personal technical-support
 4. Identify whether the request is first-pass or second-pass:
    - First-pass: no Feishu knowledge-base answer is provided.
    - Second-pass: the user includes Feishu knowledge-base answer content or asks to整理/生成正式回复 after Feishu lookup.
-5. Before making technical judgments, search or use available reference material. Prefer the broad Feishu reference scope from `references/knowledge-sources.md`: formal Feishu knowledge bases first, then user-visible Feishu cloud documents/shared drive results, then relevant personal Feishu message history, then user-supplied SOP/Yuque/Feishu/web links or pasted reference text, then customer evidence. Never claim to have read a link, document, wiki space, shared-drive item, or chat message unless its contents are available in the current context.
-6. If a Feishu API/search utility is available, search with multiple query variants based on product/model, module, symptom, error code, customer-language phrases, and Chinese synonyms before drafting technical conclusions. Use document/wiki search for formal and cloud-document sources, and use message search only for relevant historical discussion or prior case clues. If `lark-cli` is missing, not logged in, lacks required scopes such as `search:docs:read` or IM message-search permission, or search fails, tell the user to run `$feishu-cli-setup` and include exact suggested search queries for manual Feishu lookup.
+5. Before making technical judgments for PUDU work, use both available knowledge channels by default:
+   - Search relevant user-visible Feishu sources using `references/knowledge-sources.md`.
+   - Invoke or follow `$second-brain-reader` to query the approved second-brain publication.
+   - Do not wait for the user to explicitly request the second-brain lookup.
+   - If either channel is unavailable, continue with the other and state exactly what could not be checked.
+6. Search with multiple focused query variants based on product/model, module, symptom, error code, scenario, customer-language phrases, and Chinese synonyms. Do not broadly read every visible Feishu item. Use message search only for relevant historical discussion or prior-case clues. If Feishu search is unavailable, tell the user what failed and provide exact manual queries. If the second brain is unavailable or lacks evidence, say so without treating that as proof that no answer exists.
 7. Judge every reference source for applicability: Directly relevant, Partially relevant, Background only, or Not applicable. Prefer sources that include applicable model, exact symptom or error code, clear troubleshooting steps, verified historical cases, or official SOP content.
-8. If the user provides an SOP, Yuque, Feishu, GitHub, or web link, attempt to use it when readable in the current environment. If it cannot be read, ask the user to paste the article body or key paragraphs. Do not infer technical content from an unread link title alone.
-9. Preserve the customer's original language and infer it if not explicitly provided. Customer-facing drafts default to the customer's language. Internal notes default to Chinese.
-10. Extract or infer: customer original text, customer language, customer background, product/model, scenario, images/logs/error codes, user's preliminary judgment, Feishu answer, and supplemental references if present.
-11. Classify the issue type and affected product/module. Prefer conservative categories such as hardware, software/app, cloud/platform, network, map/navigation, task/dispatch, charging/power, account/permission, installation/configuration, operation guidance, bug/regression, or unknown.
-12. Separate facts, reference-backed conclusions, assumptions, and missing information. Never present unsupported internal guesses as customer-facing conclusions.
-13. If no mature directly relevant reference is available, do not write long speculative cause analysis. Provide only brief, common, low-risk checks such as confirming connections, cleaning contacts, restarting, checking versions, and collecting complete video/error screenshots.
-14. For troubleshooting or escalation-sensitive first-pass output, include an internal "Hypotheses and Inferences" section only when there is enough evidence. Keep it concise, evidence-labeled, and out of the customer reply.
-15. For second-pass output, organize reference answers, produce a concise technical judgment, list missing required/optional information, provide executable troubleshooting steps, draft the customer response in the customer's language, and create Chinese internal notes or escalation text when appropriate.
-16. For first-pass output, generate precise Feishu knowledge-base query questions and an initial customer reply draft.
-17. For daily work outputs, include a concise "Next Actions" section whenever the user is handling an ongoing case, pre-sales request, Spark-plan item, or internal teammate request. Separate customer-facing next action from internal next action.
-18. For knowledge-capture decisions, use only these labels:
+8. Keep source roles distinct:
+   - Formal Feishu material may be the strongest current company reference.
+   - The second brain provides reviewed personal knowledge and must retain its maturity warnings.
+   - Feishu messages and customer evidence are case clues, not formal rules.
+   - Model reasoning is an internal hypothesis only.
+   When sources conflict, show the conflict and recommend verification; never silently choose one.
+9. If the user provides an SOP, Yuque, Feishu, GitHub, or web link, attempt to use it when readable in the current environment. If it cannot be read, ask the user to paste the article body or key paragraphs. Do not infer technical content from an unread link title alone.
+10. Preserve the customer's original language and infer it if not explicitly provided. Customer-facing drafts default to the customer's language. Internal notes default to Chinese.
+11. Extract or infer: customer original text, customer language, customer background, product/model, scenario, images/logs/error codes, user's preliminary judgment, Feishu answer, second-brain evidence, and supplemental references if present.
+12. Classify the issue type and affected product/module. Prefer conservative categories such as hardware, software/app, cloud/platform, network, map/navigation, task/dispatch, charging/power, account/permission, installation/configuration, operation guidance, bug/regression, or unknown.
+13. Separate facts, reference-backed conclusions, assumptions, and missing information. Never present unsupported internal guesses as customer-facing conclusions.
+14. If no mature directly relevant reference is available, do not write long speculative cause analysis. Provide only brief, common, low-risk checks such as confirming connections, cleaning contacts, restarting, checking versions, and collecting complete video/error screenshots.
+15. For troubleshooting or escalation-sensitive first-pass output, include an internal "Hypotheses and Inferences" section only when there is enough evidence. Keep it concise, evidence-labeled, and out of the customer reply.
+16. For second-pass output, organize reference answers, produce a concise technical judgment, list missing required/optional information, provide executable troubleshooting steps, draft the customer response in the customer's language, and create Chinese internal notes or escalation text when appropriate.
+17. For first-pass output, generate precise Feishu knowledge-base query questions and an initial customer reply draft.
+18. For daily work outputs, include a concise "Next Actions" section whenever the user is handling an ongoing case, pre-sales request, Spark-plan item, or internal teammate request. Separate customer-facing next action from internal next action.
+19. For knowledge-capture decisions, use only these labels:
    - Not captured: one-off case, low reuse value, or insufficient evidence and no clear reuse potential.
    - Capture after closure: new product/new issue or immature material with reuse potential; verify or escalate first, then enter the candidate pool.
    - Candidate now: clear symptom, reusable steps, final action, verified result, or high reuse value already exists.
-19. For new products, Spark-plan/星火计划 requests, pre-sales scenario questions, or new issues, treat missing mature references as normal. Avoid speculation, recommend verification/escalation where needed, and mark the item as "capture after closure" if it may become reusable knowledge.
+20. For new products, Spark-plan/星火计划 requests, pre-sales scenario questions, or new issues, treat missing mature references as normal. Avoid speculation, recommend verification/escalation where needed, and mark the item as "capture after closure" if it may become reusable knowledge.
+21. When work reveals a reusable result, correction, contradiction, or knowledge gap, end with the compact feedback handoff from `references/closed-loop.md`. Ask one natural-language question such as “这次处理已经有可复用结论，要不要整理成第二大脑待审核候选？” Do not create a candidate unless the user agrees.
 
 ## Customer Reply Rules
 
 - Be professional, polite, clear, and concise.
+- Prefer natural spoken business language over formal report language. Write as a capable colleague speaking to a customer, not as a policy document or literal translation.
+- Keep sentences short, use common words and contractions when natural in the customer's language, and avoid repeated ceremonial phrases.
+- Match the relationship and channel: email may be slightly structured; WhatsApp and chat should be warmer and more conversational.
+- Do not make the reply casual at the cost of precision, safety, or respect.
 - Do not overpromise resolution time, replacement, compensation, root cause, or product defect unless the provided evidence supports it.
 - Do not fabricate causes, policies, commands, firmware behavior, or troubleshooting steps.
 - Use cautious wording for uncertain points: "we recommend checking first", "we need to confirm further", "this may be related to...", "il est possible que...", "we will verify with the technical team".
@@ -72,7 +90,8 @@ Use this skill as the v2 of `support-triage` and as a personal technical-support
 - Keep customer-facing drafts separate from Chinese internal notes.
 - If information is missing, say exactly what is missing and why it matters.
 - If Feishu knowledge-base evidence is weak or not directly relevant, say so in the internal sections and avoid strong customer-facing claims.
-- By default, only decide whether the case has knowledge-capture value. Do not produce a long candidate FAQ/SOP inside `supportman` unless the user explicitly asks. If the user wants candidate knowledge creation, they can call the separate `feishu-knowledge-capture` skill.
+- Show actual retrieval coverage: what Feishu sources were searched, which second-brain paths were read, and what could not be accessed. Keep this compact when evidence is simple.
+- By default, only decide whether the case has knowledge-capture value and produce a compact feedback handoff. Do not produce a long candidate FAQ/SOP inside `supportman`. If the user confirms preservation, hand the feedback package to the separate `feishu-knowledge-capture` skill.
 
 ## Escalation Criteria
 

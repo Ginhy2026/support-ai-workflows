@@ -1,19 +1,19 @@
 ---
 name: feishu-knowledge-capture
-description: Capture personally selected Feishu support material, visible work-order groups, and pasted case summaries into high-quality personal case notes, with an optional lightweight personal index. Use when Codex needs to help an individual turn support discussions into reusable case documents without scanning company-wide chats or maintaining a company candidate-pool console.
+description: Capture user-approved Feishu support material, SupportMan feedback handoffs, visible work-order groups, and pasted case summaries into high-quality personal case notes or pending second-brain candidates. Use after the user explicitly chooses to preserve a reusable result, correction, conflict, or knowledge gap; do not use it to handle the current support request or read formal second-brain knowledge.
 ---
 
 # Feishu Knowledge Capture
 
 ## Purpose
 
-Use this skill to help one person actively preserve useful support knowledge from material they can see or provide. The default output is one concrete case note under the user's personal Feishu document group or Wiki parent, plus an optional lightweight personal index entry.
+Use this skill to help one person actively preserve useful support knowledge from material they can see or provide. It is the capture stage after SupportMan handles the current work and the user agrees that a finding should be preserved. The default output is one concrete case note under the user's personal Feishu document group or Wiki parent, plus an optional lightweight personal index entry.
 
-This is not a company-wide chat crawler, formal knowledge publisher, or management console. The skill should prioritize the quality, evidence, and future usefulness of each case document. The index is only a finding and status aid.
+This is not a current-work assistant, second-brain reader, company-wide chat crawler, formal knowledge publisher, or management console. The skill should prioritize the quality, evidence, and future usefulness of each case document or pending candidate. The index is only a finding and status aid.
 
 ## Composing With Other Skills
 
-This skill stays focused on Feishu knowledge capture. If another support workflow such as `supportman` has already produced a useful case summary, paste or link that output as source material and extract only the facts, evidence, final solution, current state, and missing information needed for the personal case note.
+This skill stays focused on Feishu knowledge capture. If `supportman` produced a `第二大脑反馈建议`, treat that compact handoff as the preferred intake summary. Re-read any available source evidence, preserve uncertainty, and extract only the facts, evidence, final solution, current state, existing-knowledge relationship, and missing information needed for the personal case note or pending candidate.
 
 ## Load References
 
@@ -39,6 +39,8 @@ Before writing to Feishu, obtain or ask the user for these values:
 - Optional dedicated second-brain intake repository and `knowledge-intake/feishu/` path. It must not be the Obsidian source repository or AI publication repository.
 
 If the personal write target is missing, complete source analysis and output a dry-run case note instead of guessing where to publish.
+
+If the user has not explicitly agreed to preserve the finding, return to SupportMan's current-work result and ask for confirmation rather than creating a note or candidate.
 
 ## Output Model
 
@@ -68,6 +70,7 @@ Accept inputs such as:
 使用 feishu-knowledge-capture，把下面这段案例摘要沉淀成个人 case 文档。
 使用 feishu-knowledge-capture，把下面这个已闭环案例整理成个人排障沉淀。
 使用 feishu-knowledge-capture，把这个还没闭环的新产品问题放入个人 Pending 线索。
+把 SupportMan 的这条第二大脑反馈建议整理成待审核候选。
 ```
 
 For single-case mode:
@@ -76,6 +79,7 @@ For single-case mode:
 - Normalize the pasted material into one case.
 - If final cause, solution, or verification is missing, generate a Pending/线索 note rather than a high-confidence FAQ/SOP.
 - If the case is closed enough, generate one personal case note that can contain FAQ, fault, and SOP sections as needed.
+- If the input is a SupportMan feedback handoff, preserve its feedback type, existing-knowledge relationship, scope, exceptions, and open verification items.
 - Use `hash:<sha1(product|module|title|core_symptom)>` as the fallback case key when no thread ID or work-order ID exists.
 
 ### Selected Chat Mode
@@ -170,6 +174,7 @@ If an existing personal case note has the same key, update that note only when n
 - Never publish a personal note as formal company knowledge.
 - Never write directly to an Obsidian source repository, formal knowledge directory, entry page, README, `.obsidian`, or AI publication repository.
 - When the user asks to pass material to their second brain, create a new pending candidate only in a dedicated intake repository under `knowledge-intake/feishu/`; do not modify existing intake files.
+- Never turn SupportMan's recommendation into a candidate unless the user confirmed the handoff.
 - Describe a verified intake-repository write as “已创建待审核候选”.
 - When returning candidate Markdown without a verified repository write, say “已生成待审核候选草稿，请交给 Codex 导入”; never claim it was created or synchronized.
 - Never describe either result as “长期知识已沉淀”.

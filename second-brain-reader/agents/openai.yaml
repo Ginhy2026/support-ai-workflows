@@ -1,4 +1,4 @@
 interface:
   display_name: "Second Brain Reader"
-  short_description: "Read approved second-brain knowledge with citations."
-  default_prompt: "Use $second-brain-reader to answer from my approved second-brain GitHub knowledge."
+  short_description: "Read approved second-brain knowledge for direct answers or SupportMan."
+  default_prompt: "Use $second-brain-reader to retrieve relevant approved second-brain knowledge, cite actual paths, preserve maturity warnings, and report gaps or conflicts without writing back."

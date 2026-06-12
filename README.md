@@ -6,7 +6,7 @@ Shared Hermes/Codex skills and workflows for AI-assisted technical support.
 
 ### SupportMan (`supportman`)
 
-`SupportMan` is the v2 of `support-triage` and the daily technical-support work assistant. It helps overseas support teams process WhatsApp screenshots, Feishu screenshots, Feishu email/messages, pasted customer conversations, pre-sales questions, Spark-plan/星火计划 requests, internal follow-ups, and robot troubleshooting cases. It supports first-pass handling, Feishu knowledge-base search guidance, supplemental SOP/Yuque/Feishu/web reference handling, source applicability judgment, customer reply drafts, internal notes, next actions, escalation notes, and knowledge-capture-worthiness decisions. It is independent from `feishu-knowledge-capture`; that separate skill is only an optional next step when the user explicitly wants to create candidate knowledge.
+`SupportMan` is the daily front door for technical-support work and the front-end feedback sensor for the user's second brain. It handles WhatsApp/Feishu screenshots, emails, customer conversations, pre-sales questions, projects, follow-ups, and troubleshooting. For PUDU work it coordinates relevant user-visible Feishu search with the approved `second-brain-reader`, drafts natural customer replies, and surfaces a compact feedback handoff when work reveals reusable knowledge, a correction, conflict, or knowledge gap. It never writes formal knowledge.
 
 Skill folder:
 
@@ -36,7 +36,7 @@ feishu-cli-setup/
 
 ### feishu-knowledge-capture
 
-`feishu-knowledge-capture` is an independent personal knowledge-capture skill. It turns user-selected Feishu chats, visible work-order groups, message links, or pasted case summaries into high-quality personal case notes. It can optionally maintain a lightweight personal index with only `关键词`, `类型`, `模块`, `标题`, `来源`, `文档链接`, and `状态`.
+`feishu-knowledge-capture` is the user-approved capture stage. It turns SupportMan feedback handoffs, selected Feishu chats, visible work-order groups, message links, or pasted case summaries into high-quality personal case notes or pending second-brain candidates. It never handles the current support request or modifies formal knowledge.
 
 Core scope:
 
@@ -70,7 +70,7 @@ docs/feishu-knowledge-capture-usage.md
 
 ### second-brain-reader
 
-`second-brain-reader` reads approved formal knowledge from a separate GitHub AI publication repository. It cites actual repository paths, warns about draft/review/stale/conflicted knowledge, states knowledge gaps, and never writes back to the publication repository or full Obsidian vault.
+`second-brain-reader` reads approved formal knowledge from a separate GitHub AI publication repository, directly or as SupportMan's personal-knowledge channel. It cites actual repository paths, warns about draft/review/stale/conflicted knowledge, states knowledge gaps, and never writes back to the publication repository or full Obsidian vault.
 
 Skill folder:
 
@@ -115,7 +115,7 @@ Use $feishu-knowledge-capture to collect today's key information from Feishu gro
 Use $feishu-knowledge-capture to turn this closed case summary and final solution into a personal case note.
 ```
 
-`SupportMan` and `feishu-knowledge-capture` are maintained as separate skills. If another skill already produced a useful case summary, pass that summary in as source material; `feishu-knowledge-capture` should still apply its own personal note, evidence, dedupe, and archive rules.
+`SupportMan`, `second-brain-reader`, and `feishu-knowledge-capture` are maintained as separate skills with a small handoff contract. SupportMan handles and detects; the reader retrieves; capture preserves only after user confirmation; Codex/Obsidian reviews and publishes formal knowledge.
 
 Manual Feishu knowledge capture examples:
 
@@ -220,12 +220,12 @@ If you invoke it without case details, Hermes should return a compact intake for
 ## Recommended Workflow
 
 1. Paste the customer message and case background into Hermes.
-2. Run `$supportman` without Feishu knowledge-base results for first-pass handling.
-3. Let the skill generate multiple Feishu search queries by model, module, symptom, error code, customer phrase, and Chinese synonyms.
-4. Paste Feishu answers or supplemental SOP/Yuque/Feishu/web references back into Hermes.
-5. If Feishu CLI search is not ready, run `$feishu-cli-setup` or manually search Feishu with the generated queries.
-6. Run `$supportman` again to judge source applicability, produce executable troubleshooting steps, draft the customer reply, and decide whether the material has later knowledge-capture value.
-7. When the case is closed or worth tracking and the user explicitly wants to write candidate knowledge, run the independent `$feishu-knowledge-capture` skill in single-case or batch mode.
+2. Run `$supportman`; for PUDU work it should search relevant Feishu sources and query the approved second brain when available.
+3. Let SupportMan distinguish formal Feishu references, second-brain paths, historical clues, customer facts, and internal hypotheses.
+4. If Feishu search is not ready, run `$feishu-cli-setup` or manually use the generated queries; if second-brain retrieval is unavailable, continue without inventing a result.
+5. Use the natural customer reply draft and next actions to handle the current work.
+6. When SupportMan surfaces a reusable feedback handoff, confirm preservation only if it is worth keeping.
+7. After confirmation, run `$feishu-knowledge-capture` to create a pending candidate; Codex/Obsidian later reviews and publishes it.
 
 ## Repository Layout
 

@@ -20,12 +20,12 @@ Use when no Feishu knowledge-base result is provided.
 - 模块：
 - 关联信息：
 
-## 4. 资料检索结果与适用性判断
-> 如果当前无法自动检索，列出建议检索词；不要把未读取资料当作依据。
+## 4. 双源检索结果与适用性判断
+> 分别报告飞书资料与第二大脑的实际检索情况；无法自动检索时列出建议检索词，不要把未读取资料当作依据。
 
-| 来源/检索词 | 适用性 | 可用信息 | 仍需确认 |
-|---|---|---|---|
-|  | 直接相关 / 部分相关 / 仅背景参考 / 不适用 / 未检索 |  |  |
+| 渠道 | 实际来源/路径或检索词 | 适用性 | 可用信息 | 仍需确认 |
+|---|---|---|---|---|
+| 飞书 / 第二大脑 / 客户事实 / 历史线索 |  | 直接相关 / 部分相关 / 仅背景参考 / 不适用 / 未检索 |  |  |
 
 ## 5. 缺失信息
 ### 必须补充
@@ -65,11 +65,15 @@ Use when no Feishu knowledge-base result is provided.
 - 理由：
 - 建议升级对象/方向：
 
-## 11. 是否具备后续知识沉淀价值
-- 判断：不沉淀 / 待闭环后沉淀 / 建议立即候选沉淀
-- 理由：
-- 建议沉淀类型：FAQ / SOP / 排障知识 / Pending
-- 后续沉淀前缺失：
+## 11. 第二大脑反馈建议
+- 判断：不沉淀 / 待闭环后沉淀 / 建议创建候选
+- 反馈类型：新知识 / 纠正 / 冲突 / 知识缺口 / 真实结果反馈
+- 可复用结论：
+- 来源与证据：
+- 与现有知识的关系：
+- 适用范围与例外：
+- 仍需验证：
+- 建议产物：FAQ / SOP / checklist / case / rule update / knowledge-gap
 ```
 
 ## Screenshot Or Chat First-Pass Output
@@ -103,12 +107,12 @@ Use when the user provides a WhatsApp screenshot, Feishu screenshot, Feishu card
 |---|---|---|
 |  |  | 高 / 中 / 低 |
 
-## 5. 资料检索结果与适用性判断
-> 如已自动检索或用户提供资料，先判断资料是否能用于本案；如未检索，列出建议检索词。
+## 5. 双源检索结果与适用性判断
+> 分别报告飞书资料与第二大脑的实际检索情况；如未检索，列出建议检索词。
 
-| 来源/检索词 | 适用性 | 可用信息 | 仍需确认 |
-|---|---|---|---|
-|  | 直接相关 / 部分相关 / 仅背景参考 / 不适用 / 未检索 |  |  |
+| 渠道 | 实际来源/路径或检索词 | 适用性 | 可用信息 | 仍需确认 |
+|---|---|---|---|---|
+| 飞书 / 第二大脑 / 客户事实 / 历史线索 |  | 直接相关 / 部分相关 / 仅背景参考 / 不适用 / 未检索 |  |  |
 
 ## 6. 当前可以直接问飞书知识问答的问题
 1.
@@ -153,11 +157,15 @@ Use when the user provides a WhatsApp screenshot, Feishu screenshot, Feishu card
 - 判断：
 - 理由：
 
-## 12. 是否具备后续知识沉淀价值
-- 判断：不沉淀 / 待闭环后沉淀 / 建议立即候选沉淀
-- 理由：
-- 建议沉淀类型：FAQ / SOP / 排障知识 / Pending
-- 后续沉淀前缺失：
+## 12. 第二大脑反馈建议
+- 判断：不沉淀 / 待闭环后沉淀 / 建议创建候选
+- 反馈类型：新知识 / 纠正 / 冲突 / 知识缺口 / 真实结果反馈
+- 可复用结论：
+- 来源与证据：
+- 与现有知识的关系：
+- 适用范围与例外：
+- 仍需验证：
+- 建议产物：FAQ / SOP / checklist / case / rule update / knowledge-gap
 ```
 
 ## Second-Pass Output
@@ -169,15 +177,16 @@ Use when Feishu knowledge-base result, SOP content, Yuque article, Feishu doc, w
 
 ## 1. 资料整理
 - 飞书知识库结果：
+- 第二大脑知识路径：
 - 补充 SOP/外部资料：
 - 与本案直接相关的结论：
 - 推荐操作：
 - 注意事项：
 
 ## 2. 资料适用性判断
-| 来源 | 适用性 | 匹配点 | 不匹配/仍需确认 |
-|---|---|---|---|
-|  | 直接相关 / 部分相关 / 仅背景参考 / 不适用 |  |  |
+| 渠道 | 实际来源/路径 | 适用性 | 匹配点 | 不匹配/仍需确认 |
+|---|---|---|---|---|
+| 飞书 / 第二大脑 / 客户事实 / 历史线索 |  | 直接相关 / 部分相关 / 仅背景参考 / 不适用 |  |  |
 
 ## 3. 缺失信息
 ### 必须补充
@@ -240,12 +249,17 @@ Use when Feishu knowledge-base result, SOP content, Yuque article, Feishu doc, w
 
 **紧急程度和影响：**
 
-## 10. 是否具备后续知识沉淀价值
-- 判断：不沉淀 / 待闭环后沉淀 / 建议立即候选沉淀
-- 理由：
-- 建议沉淀类型：FAQ / SOP / 排障知识 / Pending
-- 后续沉淀前缺失：
-- 备注：如用户明确要生成候选知识草稿或写入候选池，可单独调用独立的 `$feishu-knowledge-capture`。
+## 10. 第二大脑反馈建议
+- 判断：不沉淀 / 待闭环后沉淀 / 建议创建候选
+- 反馈类型：新知识 / 纠正 / 冲突 / 知识缺口 / 真实结果反馈
+- 可复用结论：
+- 来源与证据：
+- 与现有知识的关系：
+- 适用范围与例外：
+- 仍需验证：
+- 建议产物：FAQ / SOP / checklist / case / rule update / knowledge-gap
+
+> 判断为“建议创建候选”时，自然询问用户是否交给 `$feishu-knowledge-capture`；不要在 SupportMan 内直接创建候选。
 ```
 
 ## Customer Reply Tone Snippets
@@ -253,23 +267,23 @@ Use when Feishu knowledge-base result, SOP content, Yuque article, Feishu doc, w
 English:
 
 ```markdown
-Thank you for the details. We recommend checking the following points first:
+Thanks for the details. Could you please check these points first?
 
-If the issue persists after these checks, please send us the robot SN, software version, error message, and a short video or log screenshot. We will verify further with the technical team.
+If the issue is still there afterward, please send us the robot SN, software version, error message, and a short video or log screenshot. We'll check it further with the technical team.
 ```
 
 French:
 
 ```markdown
-Merci pour ces informations. Nous recommandons de verifier d'abord les points suivants :
+Merci pour ces informations. Pourriez-vous d'abord verifier les points suivants ?
 
-Si le probleme persiste apres ces verifications, merci de nous envoyer le numero de serie du robot, la version logicielle, le message d'erreur et, si possible, une courte video ou une capture des journaux. Nous ferons une verification plus approfondie avec l'equipe technique.
+Si le probleme persiste ensuite, pourriez-vous nous envoyer le numero de serie du robot, la version logicielle, le message d'erreur et, si possible, une courte video ou une capture des journaux ? Nous verifierons cela avec l'equipe technique.
 ```
 
 Chinese:
 
 ```markdown
-感谢反馈。建议先按以下方向做基础确认：
+收到，麻烦先帮忙确认下面几点：
 
-如果检查后问题仍然存在，请补充机器人 SN、软件版本、错误提示截图以及相关日志/视频，我们会进一步和技术团队确认。
+如果检查后问题还在，请把机器人 SN、软件版本、错误提示截图以及相关日志或视频发给我们，我们再和技术团队进一步确认。
 ```
