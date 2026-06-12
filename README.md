@@ -68,6 +68,16 @@ Usage doc:
 docs/feishu-knowledge-capture-usage.md
 ```
 
+### second-brain-reader
+
+`second-brain-reader` reads approved formal knowledge from a separate GitHub AI publication repository. It cites actual repository paths, warns about draft/review/stale/conflicted knowledge, states knowledge gaps, and never writes back to the publication repository or full Obsidian vault.
+
+Skill folder:
+
+```text
+second-brain-reader/
+```
+
 ## Install
 
 Copy the `supportman` folder into your Hermes/Codex skills directory.
