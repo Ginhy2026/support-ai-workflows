@@ -28,6 +28,15 @@ FEISHU_KNOWLEDGE_DEFAULT_TIME_WINDOW=today
 FEISHU_KNOWLEDGE_MANUAL_SCOPES=single-case,named-chat,selected-chats,visible-workorder-groups
 ```
 
+Optional second-brain handoff values:
+
+```text
+FEISHU_SECOND_BRAIN_INTAKE_REPO=<dedicated intake repository; never the Obsidian source or AI publication repository>
+FEISHU_SECOND_BRAIN_INTAKE_ROOT=knowledge-intake/feishu
+```
+
+If `FEISHU_SECOND_BRAIN_INTAKE_REPO` is missing or cannot be verified as a dedicated intake repository, return a dry-run candidate instead of writing to GitHub.
+
 ## Personal Index Fields
 
 The personal index is a lightweight list, not a control console. Use exactly these fields:
@@ -99,6 +108,8 @@ Only use team mode when the user explicitly asks for a shared target and the cur
 ## GitHub Archive
 
 Use GitHub Markdown archive snapshots only for generated case notes and minimal metadata. Do not store raw full chat transcripts.
+
+The optional `knowledge-archive/` is an audit snapshot, not formal Obsidian knowledge. The optional `knowledge-intake/feishu/` is a candidate handoff queue. Neither may point to or modify the Obsidian source repository.
 
 ## Permission Requirements
 

@@ -24,6 +24,8 @@ This skill stays focused on Feishu knowledge capture. If another support workflo
 - For JSWO group-name parsing, run or inspect `scripts/parse_work_order_group.py`.
 - For deterministic case keys, run or inspect `scripts/candidate_key.py`.
 - For GitHub Markdown archive snapshots, run or inspect `scripts/archive_snapshot.py` when archive output is enabled.
+- When the user wants a case or correction to enter their Obsidian second brain, read `references/second-brain-handoff.md`.
+- After a GitHub intake commit, run `scripts/validate_second_brain_handoff.py <repo> --base <before> --head <after>` before reporting success.
 
 ## Configuration Needed
 
@@ -34,6 +36,7 @@ Before writing to Feishu, obtain or ask the user for these values:
 - Optional personal index document URL/token.
 - Time window, defaulting to today in Asia/Shanghai when the user does not specify one.
 - Optional GitHub archive root, defaulting to `knowledge-archive/` in the repository.
+- Optional dedicated second-brain intake repository and `knowledge-intake/feishu/` path. It must not be the Obsidian source repository or AI publication repository.
 
 If the personal write target is missing, complete source analysis and output a dry-run case note instead of guessing where to publish.
 
@@ -165,6 +168,9 @@ If an existing personal case note has the same key, update that note only when n
 - Create or update one personal case note per eligible case.
 - Update the personal index only after the case note link is known.
 - Never publish a personal note as formal company knowledge.
+- Never write directly to an Obsidian source repository, formal knowledge directory, entry page, README, `.obsidian`, or AI publication repository.
+- When the user asks to pass material to their second brain, create a new pending candidate only in a dedicated intake repository under `knowledge-intake/feishu/`; do not modify existing intake files.
+- Describe intake output as “已创建待审核候选”, never as “长期知识已沉淀”.
 - Do not write to another person's private document area unless the configured target explicitly points there and the current identity has permission.
 - Do not store raw full chat transcripts in GitHub archives. Archive only generated case Markdown, source identifiers, Feishu links, status, and minimal metadata.
 - If write targets are missing or permissions fail, return a dry-run case note and a short configuration checklist.
