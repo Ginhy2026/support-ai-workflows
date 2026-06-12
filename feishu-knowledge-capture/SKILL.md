@@ -170,7 +170,9 @@ If an existing personal case note has the same key, update that note only when n
 - Never publish a personal note as formal company knowledge.
 - Never write directly to an Obsidian source repository, formal knowledge directory, entry page, README, `.obsidian`, or AI publication repository.
 - When the user asks to pass material to their second brain, create a new pending candidate only in a dedicated intake repository under `knowledge-intake/feishu/`; do not modify existing intake files.
-- Describe intake output as “已创建待审核候选”, never as “长期知识已沉淀”.
+- Describe a verified intake-repository write as “已创建待审核候选”.
+- When returning candidate Markdown without a verified repository write, say “已生成待审核候选草稿，请交给 Codex 导入”; never claim it was created or synchronized.
+- Never describe either result as “长期知识已沉淀”.
 - Do not write to another person's private document area unless the configured target explicitly points there and the current identity has permission.
 - Do not store raw full chat transcripts in GitHub archives. Archive only generated case Markdown, source identifiers, Feishu links, status, and minimal metadata.
 - If write targets are missing or permissions fail, return a dry-run case note and a short configuration checklist.

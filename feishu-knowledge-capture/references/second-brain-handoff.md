@@ -34,6 +34,7 @@ When GitHub intake is explicitly enabled:
 - Re-read the committed file and verify that no path outside the intake directory changed.
 - Run `scripts/validate_second_brain_handoff.py` against the before/after commits. Report success only when it passes.
 - Report “已创建待审核候选” only after verification.
+- If no verified repository write occurred, report “已生成待审核候选草稿，请交给 Codex 导入”; do not claim creation or synchronization.
 
 ## Candidate Template
 
@@ -89,7 +90,8 @@ If the configured GitHub target is the Obsidian source repository, the AI public
 
 1. refuse the GitHub write;
 2. return the candidate Markdown as a dry-run;
-3. explain that a dedicated intake repository or Feishu candidate queue is required.
+3. report “已生成待审核候选草稿，请交给 Codex 导入”;
+4. explain that a dedicated intake repository or Feishu candidate queue is required.
 
 ## Deterministic Verification
 
